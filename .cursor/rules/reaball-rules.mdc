@@ -1,0 +1,278 @@
+# REBALL Project - Cursor Rules
+
+## Project Overview
+REBALL is a professional football training platform specializing in 1v1 scenario training with video analysis features (SISW & TAV). Built with Next.js 14+, TypeScript, Supabase, and Tailwind CSS.
+
+## Core Technology Stack Rules
+
+### Next.js 14+ App Router (MANDATORY)
+- **ALWAYS** use App Router (`app/` directory) - never use Pages Router
+- **ALWAYS** use Server Components by default unless client interactivity is needed
+- **ALWAYS** add `"use client"` directive only when necessary (hooks, event handlers, browser APIs)
+- **ALWAYS** use `app/layout.tsx` for root layout with proper metadata
+- **ALWAYS** implement proper loading.tsx and error.tsx files
+- **ALWAYS** use Next.js built-in optimizations: `next/image`, `next/font`, `next/link`
+- **ALWAYS** implement proper route handlers in `app/api/` directory
+
+### TypeScript Safety (STRICT)
+- **ALWAYS** use strict TypeScript configuration
+- **ALWAYS** define proper interfaces for all data structures
+- **ALWAYS** use type-safe database queries with Prisma
+- **NEVER** use `any` type - use `unknown` or proper typing
+- **ALWAYS** create proper type definitions in `types/` directory
+- **ALWAYS** use TypeScript for all files (.ts, .tsx)
+
+### Shadcn/UI + Tailwind CSS (PRIMARY UI STACK)
+- **ALWAYS** use Shadcn/UI as the primary component library
+- **ALWAYS** use Tailwind CSS for styling with Shadcn integration
+- **ALWAYS** follow Shadcn conventions and file structure
+- **ALWAYS** customize Shadcn components to match REBALL design system
+- **NEVER** create duplicate functionality that exists in Shadcn
+
+### Database & Prisma Rules
+- **ALWAYS** use Prisma as the ORM with existing Supabase PostgreSQL
+- **NEVER** recreate existing database tables - connect to existing schema
+- **ALWAYS** run `prisma generate` after schema changes
+- **ALWAYS** use transactions for related database operations
+- **ALWAYS** implement proper error handling for database operations
+- **ALWAYS** use connection pooling for database connections
+- **NEVER** expose sensitive database operations to client-side
+
+### Authentication (NextAuth v5)
+- **ALWAYS** use NextAuth v5 (NOT v4) with proper v5 syntax
+- **ALWAYS** use `auth()` function instead of `getServerSession`
+- **ALWAYS** implement proper session management
+- **ALWAYS** use Google OAuth for authentication
+- **ALWAYS** extend session with user profile data
+- **ALWAYS** implement proper middleware for protected routes
+- **ALWAYS** validate user permissions on server-side
+
+## Security Rules (CRITICAL)
+
+### Environment Variables
+- **NEVER** commit `.env` files to version control
+- **ALWAYS** use `NEXT_PUBLIC_` prefix only for client-safe variables
+- **ALWAYS** validate environment variables at startup
+- **ALWAYS** use strong, unique secrets for production
+- **ALWAYS** rotate API keys and secrets regularly
+
+### Data Validation
+- **ALWAYS** validate all user inputs using Zod
+- **ALWAYS** sanitize data before database operations
+- **ALWAYS** implement proper CSRF protection
+- **ALWAYS** validate file uploads (type, size, content)
+- **NEVER** trust client-side validation alone
+
+### API Security
+- **ALWAYS** implement rate limiting on API routes
+- **ALWAYS** use proper HTTP status codes
+- **ALWAYS** implement proper error handling without exposing sensitive info
+- **ALWAYS** validate user authentication/authorization on protected routes
+- **ALWAYS** use HTTPS in production
+- **NEVER** expose internal system details in error messages
+
+## Styling & UI Rules
+
+### Tailwind CSS
+- **ALWAYS** use Tailwind utility classes following the design system
+- **ALWAYS** use the exact color palette defined in specification:
+  ```css
+  --pure-black: #000000
+  --pure-white: #FFFFFF
+  --charcoal: #0A0A0A
+  --dark-gray: #1A1A1A
+  --text-gray: #737373
+  ```
+- **ALWAYS** implement responsive design with mobile-first approach
+- **ALWAYS** use Tailwind's dark mode classes with `class` strategy
+- **NEVER** use arbitrary values unless absolutely necessary
+- **ALWAYS** prefer Tailwind utilities over custom CSS
+
+### Design System
+- **ALWAYS** use Permanent Marker font for headings/navbar/buttons
+- **ALWAYS** use Poppins font (300,400,500,600,700) for body text
+- **ALWAYS** implement proper glassmorphism effects:
+  ```css
+  backdrop-filter: blur(20px)
+  background: rgba(255, 255, 255, 0.25)
+  border: 1px solid rgba(255, 255, 255, 0.3)
+  ```
+- **ALWAYS** maintain diabrowser.com aesthetic inspiration
+- **ALWAYS** implement smooth transitions and hover effects
+
+### Component Architecture
+- **ALWAYS** create reusable components in `components/` directory
+- **ALWAYS** use proper component composition patterns
+- **ALWAYS** implement proper props interfaces with TypeScript
+- **ALWAYS** use React.forwardRef for components that need refs
+- **ALWAYS** implement proper error boundaries
+- **ALWAYS** use proper loading states and skeleton screens
+
+## File Structure Rules
+
+### Directory Organization
+```
+app/
+├── (auth)/
+│   ├── login/
+│   └── register/
+├── (dashboard)/
+│   ├── dashboard/
+│   ├── bookings/
+│   └── progress/
+├── about/
+├── contact/
+├── api/
+│   ├── auth/
+│   ├── bookings/
+│   └── users/
+├── globals.css
+├── layout.tsx
+└── page.tsx
+
+components/
+├── ui/              # Shadcn/UI components (auto-generated)
+│   ├── button.tsx
+│   ├── input.tsx
+│   ├── form.tsx
+│   ├── dialog.tsx
+│   └── ...
+├── forms/           # Custom form components using Shadcn
+├── navigation/      # Navigation components with Shadcn
+├── dashboard/       # Dashboard-specific components
+└── layout/          # Layout components
+
+lib/
+├── auth.ts
+├── db.ts
+├── utils.ts         # Shadcn utils (cn function, etc.)
+└── validations.ts
+
+types/
+├── auth.ts
+├── database.ts
+└── api.ts
+
+styles/
+└── globals.css      # Shadcn CSS variables + custom styles
+```
+
+### Naming Conventions
+- **ALWAYS** use PascalCase for React components
+- **ALWAYS** use camelCase for functions and variables
+- **ALWAYS** use kebab-case for file names and routes
+- **ALWAYS** use SCREAMING_SNAKE_CASE for constants
+- **ALWAYS** use descriptive, meaningful names
+
+## Performance Rules
+
+### Optimization
+- **ALWAYS** use Next.js Image component with proper optimization
+- **ALWAYS** implement proper code splitting with dynamic imports
+- **ALWAYS** use React.memo for expensive components
+- **ALWAYS** implement proper caching strategies
+- **ALWAYS** optimize bundle size and remove unused dependencies
+- **ALWAYS** implement proper lazy loading for heavy components
+
+### Data Fetching
+- **ALWAYS** prefer Server Components for data fetching
+- **ALWAYS** use proper error handling for async operations
+- **ALWAYS** implement proper loading states
+- **ALWAYS** use React Query/SWR for client-side data fetching when needed
+- **ALWAYS** implement proper pagination for large datasets
+
+## Business Logic Rules
+
+### REBALL-Specific Features
+- **ALWAYS** implement SISW (Session in Slow-motion with Voiceover) functionality
+- **ALWAYS** implement TAV (Technical Analysis Videos) functionality
+- **ALWAYS** support all player positions: Strikers, Wingers, CAM, Full-backs
+- **ALWAYS** implement proper 1v1 scenario tracking
+- **ALWAYS** implement progress tracking with confidence ratings
+- **ALWAYS** support both Group and 1v1 training types
+
+### Pricing & Payments
+- **NEVER** show pricing to non-authenticated users (homepage)
+- **ALWAYS** show pricing only in authenticated user dashboard
+- **ALWAYS** implement proper Stripe integration for payments
+- **ALWAYS** validate payment status server-side
+- **ALWAYS** implement proper subscription management
+
+## Code Quality Rules
+
+### General Practices
+- **ALWAYS** write self-documenting code with clear variable names
+- **ALWAYS** implement proper error handling and logging
+- **ALWAYS** write unit tests for critical business logic
+- **ALWAYS** use ESLint and Prettier for code formatting
+- **ALWAYS** implement proper Git commit message conventions
+- **ALWAYS** review code for security vulnerabilities
+
+### React Best Practices
+- **ALWAYS** use functional components with hooks
+- **ALWAYS** implement proper dependency arrays in useEffect
+- **ALWAYS** avoid prop drilling - use context when appropriate
+- **ALWAYS** implement proper cleanup in useEffect
+- **ALWAYS** use proper key props in lists
+- **NEVER** mutate state directly - use proper state updates
+
+## Deployment & Environment Rules
+
+### Development
+- **ALWAYS** use local development environment with proper .env.local
+- **ALWAYS** test all features locally before committing
+- **ALWAYS** use proper version control with meaningful commits
+- **ALWAYS** implement proper branch management strategy
+
+### Production
+- **ALWAYS** deploy to Vercel with proper environment variables
+- **ALWAYS** configure custom domain (reball.uk) with proper DNS
+- **ALWAYS** implement proper monitoring and error tracking
+- **ALWAYS** use proper caching strategies for production
+- **ALWAYS** implement proper backup strategies for database
+
+## Error Handling Rules
+
+### Client-Side
+- **ALWAYS** implement proper error boundaries
+- **ALWAYS** show user-friendly error messages
+- **ALWAYS** implement proper retry mechanisms
+- **ALWAYS** log errors for debugging (without sensitive data)
+
+### Server-Side
+- **ALWAYS** implement proper try-catch blocks
+- **ALWAYS** return appropriate HTTP status codes
+- **ALWAYS** log errors with proper context
+- **NEVER** expose internal errors to clients
+- **ALWAYS** implement proper fallback mechanisms
+
+## Accessibility Rules
+
+### A11y Requirements
+- **ALWAYS** implement proper semantic HTML
+- **ALWAYS** use proper ARIA labels and roles
+- **ALWAYS** ensure proper keyboard navigation
+- **ALWAYS** maintain proper color contrast ratios
+- **ALWAYS** implement proper focus management
+- **ALWAYS** test with screen readers
+
+## Testing Rules
+
+### Testing Strategy
+- **ALWAYS** write unit tests for utility functions
+- **ALWAYS** write integration tests for API routes
+- **ALWAYS** test critical user flows
+- **ALWAYS** implement proper mocking for external services
+- **ALWAYS** test responsive design across devices
+- **ALWAYS** test dark/light mode functionality
+
+## Documentation Rules
+
+### Code Documentation
+- **ALWAYS** document complex business logic
+- **ALWAYS** maintain README with setup instructions
+- **ALWAYS** document API endpoints with proper schemas
+- **ALWAYS** document database schema changes
+- **ALWAYS** maintain changelog for releases
+
+Remember: These rules ensure code quality, security, performance, and maintainability. Follow them strictly to build a professional, scalable REBALL platform.
