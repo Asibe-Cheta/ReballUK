@@ -22,6 +22,7 @@
         <button onclick="testSimpleRegistrationAPI()" style="background-color: #20c997; color: white;">Test Simple Registration API</button>
         <button onclick="testRegistration()">Test Registration API</button>
         <button onclick="testGoogleOAuth()" style="background-color: #dc3545; color: white;">Test Google OAuth</button>
+        <button onclick="testLogin()" style="background-color: #6f42c1; color: white;">Test Login</button>
         <button onclick="testAuthStatus()">Test Auth Status</button>
     </div>
 
@@ -195,6 +196,33 @@
                 }
             } catch (error) {
                 showResult('Google OAuth Test Error', 'error', { error: error.message });
+            }
+        }
+
+        async function testLogin() {
+            showResult('Testing login functionality...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/test-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'bervicdigital@gmail.com',
+                        password: 'Openitnow@112c'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Login Test Success', 'success', result);
+                } else {
+                    showResult('Login Test Failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Login Test Error', 'error', { error: error.message });
             }
         }
 
