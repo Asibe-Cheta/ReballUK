@@ -45,7 +45,6 @@ const positionLabels = {
 
 export default function RegisterPage() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [passwordValue, setPasswordValue] = useState("");
   const searchParams = useSearchParams();
   const { login, isAuthenticated, redirectToDashboard } = useAuth();
 
@@ -64,6 +63,9 @@ export default function RegisterPage() {
     },
   });
 
+  // Watch password field for strength indicator
+  const passwordValue = form.watch("password");
+
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
@@ -74,6 +76,8 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterFormData) => {
     try {
       console.log("Form data being submitted:", data)
+      console.log("Form data keys:", Object.keys(data))
+      console.log("confirmPassword value:", data.confirmPassword)
       
       // Register user with email/password
       const response = await fetch("/api/auth/register", {
@@ -231,7 +235,6 @@ export default function RegisterPage() {
                     value={field.value}
                     onChange={(value) => {
                       field.onChange(value);
-                      setPasswordValue(value);
                     }}
                   />
                 </FormControl>
