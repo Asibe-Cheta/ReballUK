@@ -27,6 +27,7 @@
          <button onclick="resetDatabaseConnection()" style="background-color: #6c757d; color: white;">Reset DB Connection</button>
          <button onclick="createSessionsTable()" style="background-color: #e83e8c; color: white;">Create Sessions Table</button>
          <button onclick="fixDatabaseSchema()" style="background-color: #ffc107; color: black;">Fix Database Schema</button>
+         <button onclick="generatePrismaSchema()" style="background-color: #17a2b8; color: white;">Analyze DB Schema</button>
          <button onclick="testSession()" style="background-color: #20c997; color: white;">Test Session</button>
          <button onclick="testAuthStatus()">Test Auth Status</button>
     </div>
@@ -92,15 +93,15 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        name: 'Test User Simple',
-                        email: 'test-simple@example.com',
-                        password: 'TestPassword123!',
-                        confirmPassword: 'TestPassword123!',
-                        position: 'STRIKER',
-                        agreeToTerms: true,
-                        agreeToPrivacy: true
-                    })
+                                         body: JSON.stringify({
+                         name: 'Test User Simple',
+                         email: 'test-simple-' + Date.now() + '@example.com',
+                         password: 'TestPassword123!',
+                         confirmPassword: 'TestPassword123!',
+                         position: 'STRIKER',
+                         agreeToTerms: true,
+                         agreeToPrivacy: true
+                     })
                 });
                 
                 const result = await response.json();
@@ -311,6 +312,25 @@
                  }
              } catch (error) {
                  showResult('Database Schema Fix Error', 'error', { error: error.message });
+             }
+         }
+
+         async function generatePrismaSchema() {
+             showResult('Analyzing database schema...', 'info');
+             
+             try {
+                 const response = await fetch('/api/debug/generate-prisma-schema', {
+                     method: 'POST'
+                 });
+                 const result = await response.json();
+                 
+                 if (response.ok) {
+                     showResult('Database Schema Analysis Complete', 'success', result);
+                 } else {
+                     showResult('Database Schema Analysis Failed', 'error', result);
+                 }
+             } catch (error) {
+                 showResult('Database Schema Analysis Error', 'error', { error: error.message });
              }
          }
 
