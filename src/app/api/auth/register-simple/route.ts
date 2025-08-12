@@ -6,6 +6,11 @@ export async function POST(request: NextRequest) {
   try {
     console.log("=== SIMPLE REGISTRATION API START ===")
     
+    // Reset database connection to avoid prepared statement conflicts
+    await db.$disconnect()
+    await new Promise(resolve => setTimeout(resolve, 100))
+    await db.$connect()
+    
     const body = await request.json()
     console.log("Received body:", body)
     
@@ -60,11 +65,11 @@ export async function POST(request: NextRequest) {
     
     console.log("Creating user with ID:", userId)
     
-    // Create user and profile using Prisma ORM
+    // Create user and profile using Prisma ORM with minimal required fields
     console.log("Creating user with Prisma ORM...")
     
     const result = await db.$transaction(async (tx) => {
-      // Create user
+      // Create user with only essential fields
       const user = await tx.user.create({
         data: {
           id: userId,
@@ -72,12 +77,13 @@ export async function POST(request: NextRequest) {
           email,
           password: hashedPassword,
           emailVerified: new Date(),
+          // createdAt and updatedAt will be handled by Prisma defaults
         }
       })
       
       console.log("User created, now creating profile...")
       
-      // Create profile
+      // Create profile with only essential fields
       const profile = await tx.profile.create({
         data: {
           id: profileId,
@@ -87,9 +93,8 @@ export async function POST(request: NextRequest) {
           position: position as any, // Type assertion for enum
           trainingLevel: 'BEGINNER',
           onboardingCompleted: false,
-          preferredLanguage: 'en',
-          timezone: 'UTC',
           isActive: true,
+          // Other fields will use defaults or be nullable
         }
       })
       

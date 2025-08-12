@@ -5,11 +5,13 @@ export async function POST(request: NextRequest) {
   try {
     console.log("=== FIXING DATABASE SCHEMA ===")
     
-    // Add missing email_verified column to users table
-    await db.$executeRaw`
-      ALTER TABLE "users" 
-      ADD COLUMN IF NOT EXISTS "email_verified" TIMESTAMP(3)
-    `
+         // Add missing columns to users table
+     await db.$executeRaw`
+       ALTER TABLE "users" 
+       ADD COLUMN IF NOT EXISTS "email_verified" TIMESTAMP(3),
+       ADD COLUMN IF NOT EXISTS "created_at" TIMESTAMP(3) DEFAULT NOW(),
+       ADD COLUMN IF NOT EXISTS "updated_at" TIMESTAMP(3) DEFAULT NOW()
+     `
     
     // Add missing columns to profiles table if they don't exist
     await db.$executeRaw`
