@@ -107,7 +107,7 @@ export default function WelcomePage() {
   // Redirect if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      router.push("/login?callbackUrl=/welcome")
+      router.push("/login-simple?callbackUrl=/welcome")
     }
   }, [isAuthenticated, authLoading, router])
 

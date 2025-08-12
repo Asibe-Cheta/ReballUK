@@ -23,13 +23,6 @@ const createPrismaClient = () => {
         enableEngineDebugMode: false,
       },
     },
-    // Connection pool settings for serverless
-    connection: {
-      pool: {
-        min: 0,
-        max: 1,
-      },
-    },
   })
 }
 

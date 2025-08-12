@@ -41,7 +41,7 @@ export default function DashboardPage() {
   // Redirect if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      router.push("/login?callbackUrl=/dashboard")
+      router.push("/login-simple?callbackUrl=/dashboard")
     }
   }, [isAuthenticated, authLoading, router])
 

@@ -39,14 +39,13 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Check if user already exists using Prisma
+    // Check if user already exists using raw SQL
     console.log("Checking if user exists...")
-    const existingUser = await db.user.findUnique({
-      where: { email },
-      select: { id: true }
-    })
+    const existingUsers = await db.$executeRaw`
+      SELECT id FROM "users" WHERE email = ${email} LIMIT 1
+    `
     
-    if (existingUser) {
+    if (existingUsers) {
       console.log("User already exists")
       return NextResponse.json(
         { success: false, error: "Email already registered" },
@@ -64,39 +63,50 @@ export async function POST(request: NextRequest) {
     
     console.log("Creating user with ID:", userId)
     
-    // Create user and profile in a transaction
-    const result = await db.$transaction(async (tx) => {
-      // Create user
-      const user = await tx.user.create({
-        data: {
-          id: userId,
-          name,
-          email,
-          password: hashedPassword,
-          emailVerified: new Date(),
-        }
-      })
-      
-      console.log("User created, now creating profile...")
-      
-      // Create profile
-      const profile = await tx.profile.create({
-        data: {
-          id: profileId,
-          userId: userId,
-          firstName: name.split(' ')[0] || name,
-          lastName: name.split(' ').slice(1).join(' ') || '',
-          position,
-          trainingLevel: 'BEGINNER',
-          onboardingCompleted: false,
-          preferredLanguage: 'en',
-          timezone: 'UTC',
-          isActive: true,
-        }
-      })
-      
-      return { user, profile }
-    })
+    // Create user and profile using raw SQL
+    console.log("Creating user with raw SQL...")
+    
+    // Create user
+    await db.$executeRaw`
+      INSERT INTO "users" (
+        "id", "name", "email", "password", "emailVerified", 
+        "createdAt", "updatedAt"
+      ) VALUES (
+        ${userId}, ${name}, ${email}, ${hashedPassword}, NOW(),
+        NOW(), NOW()
+      )
+    `
+    
+    console.log("User created, now creating profile...")
+    
+    // Create profile
+    await db.$executeRaw`
+      INSERT INTO "profiles" (
+        "id", "userId", "firstName", "lastName", "position", 
+        "trainingLevel", "onboardingCompleted", "preferredLanguage", 
+        "timezone", "isActive", "createdAt", "updatedAt"
+      ) VALUES (
+        ${profileId}, ${userId}, ${name.split(' ')[0] || name}, 
+        ${name.split(' ').slice(1).join(' ') || ''}, ${position},
+        'BEGINNER', false, 'en', 'UTC', true, NOW(), NOW()
+      )
+    `
+    
+    const result = {
+      user: {
+        id: userId,
+        name,
+        email,
+        emailVerified: new Date(),
+      },
+      profile: {
+        id: profileId,
+        userId,
+        firstName: name.split(' ')[0] || name,
+        lastName: name.split(' ').slice(1).join(' ') || '',
+        position,
+      }
+    }
     
     console.log("Profile created successfully!")
     console.log("=== SIMPLE REGISTRATION API SUCCESS ===")
