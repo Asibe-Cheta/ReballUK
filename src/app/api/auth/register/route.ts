@@ -64,44 +64,76 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await hash(password, 12)
 
-    // Create user and profile in transaction
-    console.log("Starting user creation transaction...")
-    const result = await withRetry(async () => {
-      return await db.$transaction(async (tx) => {
-        console.log("Creating user with data:", { name, email, position })
-        
-        // Create user
-        const user = await tx.user.create({
-          data: {
-            name,
-            email,
-            password: hashedPassword,
-            emailVerified: new Date(), // Auto-verify for now
-          }
-        })
-        
-        console.log("User created successfully with ID:", user.id)
-
-        // Create profile
-        console.log("Creating profile for user:", user.id)
-        const profile = await tx.profile.create({
-          data: {
-            userId: user.id,
-            firstName: name.split(' ')[0] || name,
-            lastName: name.split(' ').slice(1).join(' ') || '',
-            position,
-            trainingLevel: "BEGINNER", // Default level
-            onboardingCompleted: false,
-            preferredLanguage: "en",
-            timezone: "UTC",
-            isActive: true,
-          }
-        })
-        
-        console.log("Profile created successfully with ID:", profile.id)
-        return { user, profile }
-      })
-    })
+    // Create user and profile using raw SQL (same approach as Simple Registration)
+    console.log("Starting user creation with raw SQL...")
+    
+    // Generate unique IDs
+    const userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    const profileId = `profile_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    
+    try {
+      console.log("Creating user with raw SQL...")
+      
+      // Create user
+      await db.$executeRaw`
+        INSERT INTO "users" (
+          "id", "name", "email", "password", "emailVerified", 
+          "createdAt", "updatedAt"
+        ) VALUES (
+          ${userId}, ${name}, ${email}, ${hashedPassword}, NOW(),
+          NOW(), NOW()
+        )
+      `
+      
+      console.log("User created successfully, now creating profile...")
+      
+      // Create profile
+      await db.$executeRaw`
+        INSERT INTO "profiles" (
+          "id", "userId", "firstName", "lastName", "position", 
+          "trainingLevel", "onboardingCompleted", "preferredLanguage", 
+          "timezone", "isActive", "createdAt", "updatedAt"
+        ) VALUES (
+          ${profileId}, ${userId}, ${name.split(' ')[0] || name}, 
+          ${name.split(' ').slice(1).join(' ') || ''}, ${position},
+          'BEGINNER', false, 'en', 'UTC', true, NOW(), NOW()
+        )
+      `
+      
+      console.log("Profile created successfully!")
+      
+      const result = {
+        user: {
+          id: userId,
+          name,
+          email,
+          emailVerified: new Date(),
+        },
+        profile: {
+          id: profileId,
+          userId,
+          firstName: name.split(' ')[0] || name,
+          lastName: name.split(' ').slice(1).join(' ') || '',
+          position,
+        }
+      }
+    } catch (sqlError) {
+      console.error("Raw SQL user creation failed:", sqlError)
+      
+      // Handle duplicate email error
+      if (sqlError instanceof Error && sqlError.message.includes('unique constraint')) {
+        return NextResponse.json(
+          { 
+            success: false, 
+            error: "Email already registered",
+            field: "email"
+          },
+          { status: 400 }
+        )
+      }
+      
+      throw sqlError
+    }
 
     // Return success response (without password)
     return NextResponse.json({

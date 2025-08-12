@@ -20,6 +20,7 @@
         <button onclick="createTables()" style="background-color: #28a745; color: white;">Create Database Tables</button>
         <button onclick="testSimpleRegistration()" style="background-color: #fd7e14; color: white;">Test Simple Registration</button>
         <button onclick="testRegistration()">Test Registration API</button>
+        <button onclick="testGoogleOAuth()" style="background-color: #dc3545; color: white;">Test Google OAuth</button>
         <button onclick="testAuthStatus()">Test Auth Status</button>
     </div>
 
@@ -144,6 +145,23 @@
                 }
             } catch (error) {
                 showResult('Table Creation Error', 'error', { error: error.message });
+            }
+        }
+
+        async function testGoogleOAuth() {
+            showResult('Testing Google OAuth configuration...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/test-google-oauth');
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Google OAuth Configuration', 'success', result);
+                } else {
+                    showResult('Google OAuth Configuration Failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Google OAuth Test Error', 'error', { error: error.message });
             }
         }
 
