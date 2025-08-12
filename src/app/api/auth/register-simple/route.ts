@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { hash } from "bcryptjs"
-import { db, resetDatabaseConnection } from "@/lib/db"
+import { db } from "@/lib/db"
 
 export async function POST(request: NextRequest) {
   try {
     console.log("=== SIMPLE REGISTRATION API START ===")
-    
-    // Perform aggressive database connection reset
-    await resetDatabaseConnection()
     
     const body = await request.json()
     console.log("Received body:", body)
@@ -39,17 +36,17 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Check if user already exists using raw SQL
+    // Check if user already exists using Prisma ORM
     console.log("Checking if user exists...")
-    const existingUsers = await db.$executeRaw`
-      SELECT id FROM "users" WHERE email = ${email} LIMIT 1
-    `
+    const existingUser = await db.user.findUnique({
+      where: { email }
+    })
     
-    if (existingUsers) {
+    if (existingUser) {
       console.log("User already exists")
       return NextResponse.json(
         { success: false, error: "Email already registered" },
-        { status: 400 }
+        { status: 409 } // Conflict status for duplicate
       )
     }
     
@@ -63,50 +60,41 @@ export async function POST(request: NextRequest) {
     
     console.log("Creating user with ID:", userId)
     
-    // Create user and profile using raw SQL
-    console.log("Creating user with raw SQL...")
+    // Create user and profile using Prisma ORM
+    console.log("Creating user with Prisma ORM...")
     
-    // Create user
-    await db.$executeRaw`
-      INSERT INTO "users" (
-        "id", "name", "email", "password", "emailVerified", 
-        "createdAt", "updatedAt"
-      ) VALUES (
-        ${userId}, ${name}, ${email}, ${hashedPassword}, NOW(),
-        NOW(), NOW()
-      )
-    `
-    
-    console.log("User created, now creating profile...")
-    
-    // Create profile
-    await db.$executeRaw`
-      INSERT INTO "profiles" (
-        "id", "userId", "firstName", "lastName", "position", 
-        "trainingLevel", "onboardingCompleted", "preferredLanguage", 
-        "timezone", "isActive", "createdAt", "updatedAt"
-      ) VALUES (
-        ${profileId}, ${userId}, ${name.split(' ')[0] || name}, 
-        ${name.split(' ').slice(1).join(' ') || ''}, ${position},
-        'BEGINNER', false, 'en', 'UTC', true, NOW(), NOW()
-      )
-    `
-    
-    const result = {
-      user: {
-        id: userId,
-        name,
-        email,
-        emailVerified: new Date(),
-      },
-      profile: {
-        id: profileId,
-        userId,
-        firstName: name.split(' ')[0] || name,
-        lastName: name.split(' ').slice(1).join(' ') || '',
-        position,
-      }
-    }
+    const result = await db.$transaction(async (tx) => {
+      // Create user
+      const user = await tx.user.create({
+        data: {
+          id: userId,
+          name,
+          email,
+          password: hashedPassword,
+          emailVerified: new Date(),
+        }
+      })
+      
+      console.log("User created, now creating profile...")
+      
+      // Create profile
+      const profile = await tx.profile.create({
+        data: {
+          id: profileId,
+          userId: userId,
+          firstName: name.split(' ')[0] || name,
+          lastName: name.split(' ').slice(1).join(' ') || '',
+          position: position as any, // Type assertion for enum
+          trainingLevel: 'BEGINNER',
+          onboardingCompleted: false,
+          preferredLanguage: 'en',
+          timezone: 'UTC',
+          isActive: true,
+        }
+      })
+      
+      return { user, profile }
+    })
     
     console.log("Profile created successfully!")
     console.log("=== SIMPLE REGISTRATION API SUCCESS ===")
@@ -129,11 +117,15 @@ export async function POST(request: NextRequest) {
     
     // Check for specific database errors
     let errorMessage = "Registration failed. Please try again."
+    let statusCode = 500
+    
     if (error instanceof Error) {
-      if (error.message.includes("Unique constraint")) {
+      if (error.message.includes("Unique constraint") || error.message.includes("already exists")) {
         errorMessage = "Email already registered"
+        statusCode = 409
       } else if (error.message.includes("prepared statement")) {
         errorMessage = "Database connection issue. Please try again."
+        statusCode = 500
       }
     }
     
@@ -143,7 +135,7 @@ export async function POST(request: NextRequest) {
         error: errorMessage,
         details: error instanceof Error ? error.message : "Unknown error"
       },
-      { status: 500 }
+      { status: statusCode }
     )
   }
 }

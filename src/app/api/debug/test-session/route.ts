@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth-server"
-import { db, resetDatabaseConnection } from "@/lib/db"
+import { db } from "@/lib/db"
 
 export async function GET(request: NextRequest) {
   try {
     console.log("=== TESTING SESSION ===")
-    
-    // Reset database connection first
-    await resetDatabaseConnection()
     
     // Test session retrieval
     const session = await auth()
@@ -16,16 +13,16 @@ export async function GET(request: NextRequest) {
       expires: session.expires
     } : null)
     
-    // Test database connection
-    const dbTest = await db.$queryRaw`SELECT 1 as test`
-    console.log("Database connection test:", dbTest)
+    // Test database connection using Prisma ORM
+    const dbTest = await db.user.count()
+    console.log("Database connection test:", { userCount: dbTest })
     
     // Test user table
-    const userCount = await db.$queryRaw`SELECT COUNT(*) as count FROM "users"`
+    const userCount = await db.user.count()
     console.log("User count:", userCount)
     
     // Test sessions table
-    const sessionCount = await db.$queryRaw`SELECT COUNT(*) as count FROM "sessions"`
+    const sessionCount = await db.session.count()
     console.log("Session count:", sessionCount)
     
     return NextResponse.json({

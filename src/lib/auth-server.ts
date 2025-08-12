@@ -73,20 +73,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         try {
           console.log("Looking up user with email:", credentials.email)
           
-          // Find user by email using raw SQL (same approach as registration)
-          const users = await db.$queryRaw<Array<{
-            id: string
-            name: string
-            email: string
-            password: string
-          }>>`
-            SELECT id, name, email, password 
-            FROM "users" 
-            WHERE email = ${credentials.email} 
-            LIMIT 1
-          `
-
-          const user = users[0]
+          // Find user by email using Prisma ORM
+          const user = await db.user.findUnique({
+            where: { email: credentials.email },
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              password: true
+            }
+          })
 
           if (!user || !user.password) {
             console.log("User not found or no password")
@@ -138,31 +134,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         console.log("Set session user ID:", user.id)
         
         try {
-          // Get user profile to enhance session using raw SQL (consistent with registration/login)
-          const users = await db.$queryRaw<Array<{
-            id: string
-            name: string
-            email: string
-            profile: {
-              id: string
-              position: string
-              trainingLevel: string
-              onboardingCompleted: boolean
-            } | null
-          }>>`
-            SELECT 
-              u.id, u.name, u.email,
-              p.id as "profile.id",
-              p.position as "profile.position",
-              p."trainingLevel" as "profile.trainingLevel",
-              p."onboardingCompleted" as "profile.onboardingCompleted"
-            FROM "users" u
-            LEFT JOIN "profiles" p ON u.id = p."userId"
-            WHERE u.id = ${user.id}
-            LIMIT 1
-          `
-          
-          const userWithProfile = users[0]
+          // Get user profile to enhance session using Prisma ORM
+          const userWithProfile = await db.user.findUnique({
+            where: { id: user.id },
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              profile: {
+                select: {
+                  id: true,
+                  position: true,
+                  trainingLevel: true,
+                  onboardingCompleted: true
+                }
+              }
+            }
+          })
           console.log("User profile lookup result:", userWithProfile ? { 
             id: userWithProfile.id, 
             hasProfile: !!userWithProfile.profile 
