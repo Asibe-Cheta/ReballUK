@@ -16,6 +16,7 @@
     
     <div>
         <button onclick="testDbConnection()">Test Database Connection</button>
+        <button onclick="createTables()" style="background-color: #28a745; color: white;">Create Database Tables</button>
         <button onclick="testRegistration()">Test Registration API</button>
         <button onclick="testAuthStatus()">Test Auth Status</button>
     </div>
@@ -69,6 +70,26 @@
                 }
             } catch (error) {
                 showResult('Registration Network Error', 'error', { error: error.message });
+            }
+        }
+
+        async function createTables() {
+            showResult('Creating database tables...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/create-tables', {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Tables Created Successfully!', 'success', result);
+                } else {
+                    showResult('Table Creation Failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Table Creation Error', 'error', { error: error.message });
             }
         }
 
