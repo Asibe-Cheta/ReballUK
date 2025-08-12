@@ -9,6 +9,22 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     console.log("Registration request body:", JSON.stringify(body, null, 2))
     
+    // Test database connection first
+    try {
+      await db.$connect()
+      console.log("Database connection successful")
+    } catch (dbError) {
+      console.error("Database connection failed:", dbError)
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: "Database connection failed",
+          details: process.env.NODE_ENV === 'development' ? dbError : 'Database unavailable'
+        },
+        { status: 500 }
+      )
+    }
+    
     // Validate input data with safer parsing
     const validationResult = registerFormSchema.safeParse(body)
     
@@ -49,8 +65,11 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await hash(password, 12)
 
     // Create user and profile in transaction
+    console.log("Starting user creation transaction...")
     const result = await withRetry(async () => {
       return await db.$transaction(async (tx) => {
+        console.log("Creating user with data:", { name, email, position })
+        
         // Create user
         const user = await tx.user.create({
           data: {
@@ -60,8 +79,11 @@ export async function POST(request: NextRequest) {
             emailVerified: new Date(), // Auto-verify for now
           }
         })
+        
+        console.log("User created successfully with ID:", user.id)
 
         // Create profile
+        console.log("Creating profile for user:", user.id)
         const profile = await tx.profile.create({
           data: {
             userId: user.id,
@@ -75,7 +97,8 @@ export async function POST(request: NextRequest) {
             isActive: true,
           }
         })
-
+        
+        console.log("Profile created successfully with ID:", profile.id)
         return { user, profile }
       })
     })
@@ -93,7 +116,12 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error("Registration error:", error)
+    console.error("Registration error details:", {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : 'No stack trace',
+      type: error?.constructor?.name,
+      error: error
+    })
     
     if (error instanceof z.ZodError) {
       console.log("Zod validation errors:", error.errors)

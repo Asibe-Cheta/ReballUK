@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>REBALL Database Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; white-space: pre-wrap; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>REBALL Database Debug</h1>
+    
+    <div>
+        <button onclick="testDbConnection()">Test Database Connection</button>
+        <button onclick="testRegistration()">Test Registration API</button>
+        <button onclick="testAuthStatus()">Test Auth Status</button>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        async function testDbConnection() {
+            showResult('Testing database connection...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/db-test');
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Database Connection Success!', 'success', result);
+                } else {
+                    showResult('Database Connection Failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Network Error', 'error', { error: error.message });
+            }
+        }
+
+        async function testRegistration() {
+            showResult('Testing registration API...', 'info');
+            
+            const testData = {
+                name: "Debug User",
+                email: "debug@test.com",
+                password: "DebugPass123!",
+                confirmPassword: "DebugPass123!",
+                position: "STRIKER",
+                agreeToTerms: true,
+                agreeToPrivacy: true
+            };
+            
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Registration Success!', 'success', result);
+                } else {
+                    showResult(`Registration Failed (${response.status})`, 'error', result);
+                }
+            } catch (error) {
+                showResult('Registration Network Error', 'error', { error: error.message });
+            }
+        }
+
+        async function testAuthStatus() {
+            showResult('Testing auth status...', 'info');
+            
+            try {
+                const response = await fetch('/api/auth/status');
+                const result = await response.json();
+                
+                showResult('Auth Status', response.ok ? 'success' : 'error', result);
+            } catch (error) {
+                showResult('Auth Status Error', 'error', { error: error.message });
+            }
+        }
+
+        function showResult(title, type, data = null) {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result ${type}`;
+            
+            let content = `<h3>${title}</h3>`;
+            if (data) {
+                content += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            }
+            
+            resultDiv.innerHTML = content;
+            resultsDiv.appendChild(resultDiv);
+            
+            // Scroll to bottom
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
