@@ -19,6 +19,7 @@
         <button onclick="analyzeDatabase()" style="background-color: #17a2b8; color: white;">Analyze Database</button>
         <button onclick="createTables()" style="background-color: #28a745; color: white;">Create Database Tables</button>
         <button onclick="testSimpleRegistration()" style="background-color: #fd7e14; color: white;">Test Simple Registration</button>
+        <button onclick="testSimpleRegistrationAPI()" style="background-color: #20c997; color: white;">Test Simple Registration API</button>
         <button onclick="testRegistration()">Test Registration API</button>
         <button onclick="testGoogleOAuth()" style="background-color: #dc3545; color: white;">Test Google OAuth</button>
         <button onclick="testAuthStatus()">Test Auth Status</button>
@@ -73,6 +74,38 @@
                 }
             } catch (error) {
                 showResult('Simple Registration Network Error', 'error', { error: error.message });
+            }
+        }
+
+        async function testSimpleRegistrationAPI() {
+            showResult('Testing Simple Registration API...', 'info');
+            
+            try {
+                const response = await fetch('/api/auth/register-simple', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: 'Test User Simple',
+                        email: 'test-simple@example.com',
+                        password: 'TestPassword123!',
+                        confirmPassword: 'TestPassword123!',
+                        position: 'STRIKER',
+                        agreeToTerms: true,
+                        agreeToPrivacy: true
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Simple Registration API Success', 'success', result);
+                } else {
+                    showResult('Simple Registration API Failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Simple Registration API Error', 'error', { error: error.message });
             }
         }
 

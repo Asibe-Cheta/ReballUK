@@ -151,7 +151,7 @@ export default function Navbar() {
                   Sign In
                 </Link>
                 <Button asChild>
-                  <Link href="/register">Register Now</Link>
+                  <Link href="/register-simple">Register Now</Link>
                 </Button>
               </>
             )}
