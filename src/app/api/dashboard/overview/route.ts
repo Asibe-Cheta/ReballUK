@@ -24,16 +24,53 @@ export async function GET(request: NextRequest) {
 
     // Fetch comprehensive dashboard data
     const dashboardData = await withRetry(async () => {
-      // First get user with profile
-      const userWithProfile = await db.user.findUnique({
-        where: { id: userId },
-        include: {
-          profile: true,
-        }
-      })
+      // First get user with profile using raw SQL (consistent with registration)
+      const users = await db.$queryRaw<Array<{
+        id: string
+        name: string
+        email: string
+        profile: {
+          id: string
+          firstName: string
+          lastName: string
+          position: string
+          trainingLevel: string
+          onboardingCompleted: boolean
+        } | null
+      }>>`
+        SELECT 
+          u.id, u.name, u.email,
+          p.id as "profile.id",
+          p."firstName" as "profile.firstName",
+          p."lastName" as "profile.lastName",
+          p.position as "profile.position",
+          p."trainingLevel" as "profile.trainingLevel",
+          p."onboardingCompleted" as "profile.onboardingCompleted"
+        FROM "users" u
+        LEFT JOIN "profiles" p ON u.id = p."userId"
+        WHERE u.id = ${userId}
+        LIMIT 1
+      `
 
-      if (!userWithProfile || !userWithProfile.profile) {
-        throw new Error("User profile not found")
+      const userWithProfile = users[0]
+
+      if (!userWithProfile) {
+        throw new Error("User not found")
+      }
+
+      // Transform the raw SQL result to match expected format
+      const user = {
+        id: userWithProfile.id,
+        name: userWithProfile.name,
+        email: userWithProfile.email,
+        profile: userWithProfile.profile ? {
+          id: userWithProfile.profile.id,
+          firstName: userWithProfile.profile.firstName,
+          lastName: userWithProfile.profile.lastName,
+          position: userWithProfile.profile.position,
+          trainingLevel: userWithProfile.profile.trainingLevel,
+          onboardingCompleted: userWithProfile.profile.onboardingCompleted,
+        } : null
       }
 
       // Fetch all dashboard data in parallel
@@ -154,7 +191,7 @@ export async function GET(request: NextRequest) {
           weeklyGoal: 3,
           monthlyGoal: 12,
         },
-        userWithProfile.profile,
+        user.profile,
         sessionsResponse?.data || []
       )
 
@@ -236,7 +273,7 @@ export async function GET(request: NextRequest) {
       }
 
       const result: DashboardData = {
-        user: userWithProfile,
+        user: user,
         stats: statsResponse?.data || {} as any,
         recentSessions: sessionsResponse?.data || [],
         progressData: progressResponse?.data || { 

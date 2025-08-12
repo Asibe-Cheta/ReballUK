@@ -147,7 +147,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard')
-      const isOnAuth = nextUrl.pathname.startsWith('/login') || nextUrl.pathname.startsWith('/register')
+      const isOnAuth = nextUrl.pathname.startsWith('/login-simple') || nextUrl.pathname.startsWith('/register-simple')
       const isOnWelcome = nextUrl.pathname.startsWith('/welcome')
       
       if (isOnDashboard) {
