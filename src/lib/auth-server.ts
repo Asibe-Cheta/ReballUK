@@ -129,12 +129,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user && session.user) {
         session.user.id = user.id
         
-        // Get user profile to enhance session
-        const userWithProfile = await userProfileOperations.getUserProfile(user.id)
-        if (userWithProfile?.profile) {
-          session.user.position = userWithProfile.profile.position
-          session.user.trainingLevel = userWithProfile.profile.trainingLevel
-          session.user.completedOnboarding = userWithProfile.profile.completedOnboarding
+        try {
+          // Get user profile to enhance session
+          const userWithProfile = await userProfileOperations.getUserProfile(user.id)
+          if (userWithProfile?.profile) {
+            session.user.position = userWithProfile.profile.position
+            session.user.trainingLevel = userWithProfile.profile.trainingLevel
+            session.user.completedOnboarding = userWithProfile.profile.completedOnboarding
+          }
+        } catch (error) {
+          console.error("Error getting user profile for session:", error)
+          // Don't fail the session if profile lookup fails
         }
       }
       return session
@@ -191,6 +196,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         console.log("Profile created for user:", user.email)
       } catch (error) {
         console.error("Error creating profile for user:", user.email, error)
+        // Don't fail the user creation if profile creation fails
       }
     },
     async signIn({ user, account, profile, isNewUser }) {

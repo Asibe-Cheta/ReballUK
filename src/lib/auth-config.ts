@@ -3,15 +3,15 @@ import Google from "next-auth/providers/google"
 
 export const authConfig = {
   pages: {
-    signIn: "/login",
-    signUp: "/register",
-    error: "/login",
+    signIn: "/login-simple",
+    signUp: "/register-simple",
+    error: "/login-simple",
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard')
-      const isOnAuth = nextUrl.pathname.startsWith('/login') || nextUrl.pathname.startsWith('/register')
+      const isOnAuth = nextUrl.pathname.startsWith('/login-simple') || nextUrl.pathname.startsWith('/register-simple')
       const isOnWelcome = nextUrl.pathname.startsWith('/welcome')
       
       if (isOnDashboard) {
