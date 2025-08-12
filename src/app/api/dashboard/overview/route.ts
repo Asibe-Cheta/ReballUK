@@ -73,35 +73,12 @@ export async function GET(request: NextRequest) {
         } : null
       }
 
-      // Fetch all dashboard data in parallel
+      // Fetch basic dashboard data directly from database
       const [
-        statsResponse,
-        sessionsResponse,
-        progressResponse,
         upcomingBookingsData,
         certificatesData,
         recentProgressData,
       ] = await Promise.all([
-        // Stats data (reuse stats API logic)
-        fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/dashboard/stats`, {
-          headers: {
-            'Authorization': `Bearer ${session.user.id}`, // Simple auth for internal calls
-          }
-        }).then(res => res.json()).catch(() => null),
-
-        // Sessions data (reuse sessions API logic)
-        fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/dashboard/sessions?limit=5`, {
-          headers: {
-            'Authorization': `Bearer ${session.user.id}`,
-          }
-        }).then(res => res.json()).catch(() => null),
-
-        // Progress data (reuse progress API logic)
-        fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/dashboard/progress?timeframe=30d`, {
-          headers: {
-            'Authorization': `Bearer ${session.user.id}`,
-          }
-        }).then(res => res.json()).catch(() => null),
 
         // Upcoming bookings
         db.booking.findMany({
@@ -171,28 +148,37 @@ export async function GET(request: NextRequest) {
         isUrgent: dashboardUtils.isBookingUrgent(booking.scheduledFor!),
       }))
 
+      // Generate basic stats from available data
+      const totalSessions = recentProgressData.length
+      const totalWatchTime = recentProgressData.reduce((sum, p) => sum + p.timeSpent, 0)
+      const avgRating = recentProgressData.length > 0 
+        ? recentProgressData.reduce((sum, p) => sum + (p.rating || 0), 0) / recentProgressData.length
+        : 0
+
+      const stats = {
+        totalSessions,
+        completedSessions: totalSessions,
+        totalWatchTime,
+        averageRating: Math.round(avgRating * 100) / 100,
+        certificatesEarned: certificatesData.length,
+        currentStreak: 0,
+        lastActive: recentProgressData[0]?.lastAccessedAt || new Date(),
+        improvementRate: 0,
+        successRate: 85, // Default success rate
+        confidenceGrowth: 0,
+        positionRank: 1,
+        positionProgress: 0,
+        thisWeekSessions: 0,
+        thisMonthSessions: 0,
+        weeklyGoal: 3,
+        monthlyGoal: 12,
+      }
+
       // Generate training recommendations
       const recommendations: TrainingRecommendation[] = dashboardUtils.generateRecommendations(
-        statsResponse?.data || {
-          successRate: 0,
-          currentStreak: 0,
-          averageRating: 0,
-          totalSessions: 0,
-          completedSessions: 0,
-          totalWatchTime: 0,
-          certificatesEarned: 0,
-          lastActive: new Date(),
-          improvementRate: 0,
-          confidenceGrowth: 0,
-          positionRank: 1,
-          positionProgress: 0,
-          thisWeekSessions: 0,
-          thisMonthSessions: 0,
-          weeklyGoal: 3,
-          monthlyGoal: 12,
-        },
+        stats,
         user.profile,
-        sessionsResponse?.data || []
+        []
       )
 
       // Create recent achievements from certificates and milestones
@@ -274,9 +260,26 @@ export async function GET(request: NextRequest) {
 
       const result: DashboardData = {
         user: user,
-        stats: statsResponse?.data || {} as any,
-        recentSessions: sessionsResponse?.data || [],
-        progressData: progressResponse?.data || { 
+        stats: stats,
+        recentSessions: recentProgressData.slice(0, 5).map(p => ({
+          id: p.id,
+          date: p.lastAccessedAt,
+          type: "PRACTICE" as const,
+          title: p.course?.title || "Training Session",
+          duration: p.timeSpent,
+          rating: p.rating,
+          feedback: p.feedback || "",
+          performanceScore: p.completionPercentage,
+          improvementAreas: [],
+          completionPercentage: p.completionPercentage,
+          course: {
+            id: p.courseId,
+            title: p.course?.title || "Training",
+            level: p.course?.level || "BEGINNER",
+            position: p.course?.position || "GENERAL",
+          }
+        })),
+        progressData: { 
           overall: [], 
           bySkill: {}, 
           byPosition: [], 

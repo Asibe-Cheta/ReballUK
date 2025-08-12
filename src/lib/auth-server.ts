@@ -130,12 +130,35 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = user.id
         
         try {
-          // Get user profile to enhance session
-          const userWithProfile = await userProfileOperations.getUserProfile(user.id)
+          // Get user profile to enhance session using raw SQL (consistent with registration/login)
+          const users = await db.$queryRaw<Array<{
+            id: string
+            name: string
+            email: string
+            profile: {
+              id: string
+              position: string
+              trainingLevel: string
+              onboardingCompleted: boolean
+            } | null
+          }>>`
+            SELECT 
+              u.id, u.name, u.email,
+              p.id as "profile.id",
+              p.position as "profile.position",
+              p."trainingLevel" as "profile.trainingLevel",
+              p."onboardingCompleted" as "profile.onboardingCompleted"
+            FROM "users" u
+            LEFT JOIN "profiles" p ON u.id = p."userId"
+            WHERE u.id = ${user.id}
+            LIMIT 1
+          `
+          
+          const userWithProfile = users[0]
           if (userWithProfile?.profile) {
             session.user.position = userWithProfile.profile.position
             session.user.trainingLevel = userWithProfile.profile.trainingLevel
-            session.user.completedOnboarding = userWithProfile.profile.completedOnboarding
+            session.user.completedOnboarding = userWithProfile.profile.onboardingCompleted
           }
         } catch (error) {
           console.error("Error getting user profile for session:", error)

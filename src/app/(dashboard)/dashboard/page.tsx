@@ -38,9 +38,19 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Debug logging
+  useEffect(() => {
+    console.log("Dashboard Auth State:", { 
+      isAuthenticated, 
+      authLoading, 
+      user: user ? { id: user.id, name: user.name, email: user.email } : null 
+    });
+  }, [isAuthenticated, authLoading, user]);
+
   // Redirect if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
+      console.log("Redirecting to login - not authenticated");
       router.push("/login-simple?callbackUrl=/dashboard")
     }
   }, [isAuthenticated, authLoading, router])

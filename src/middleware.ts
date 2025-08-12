@@ -2,6 +2,7 @@ import NextAuth from "next-auth"
 import { authConfig } from "@/lib/auth-config"
 import { onboardingUtils } from "@/lib/onboarding"
 
+// Use the same auth configuration as the server
 const authMiddleware = NextAuth(authConfig).auth
 
 export default authMiddleware(async function middleware(req) {

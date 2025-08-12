@@ -7,7 +7,18 @@ export const authConfig = {
     signUp: "/register-simple",
     error: "/login-simple",
   },
+  session: {
+    strategy: "database",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
   callbacks: {
+    async session({ session, user }) {
+      // With database strategy, we get user from database
+      if (user && session.user) {
+        session.user.id = user.id
+      }
+      return session
+    },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard')
@@ -31,18 +42,18 @@ export const authConfig = {
   providers: [
     // Google OAuth (optional - only include if credentials are available)
     ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET ? [
-          Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
+      Google({
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        authorization: {
+          params: {
+            prompt: "consent",
+            access_type: "offline",
+            response_type: "code",
+          },
         },
-      },
-      allowDangerousEmailAccountLinking: true, // Allow linking accounts with same email
-    })
+        allowDangerousEmailAccountLinking: true, // Allow linking accounts with same email
+      })
     ] : []),
     // Note: Credentials provider is only in auth-server.ts (Node.js runtime)
     // as it requires bcryptjs and database access which don't work in Edge Runtime
