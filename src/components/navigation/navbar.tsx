@@ -147,7 +147,7 @@ export default function Navbar() {
               </div>
             ) : (
               <>
-                <Link href="/login" className={`hidden md:inline font-medium transition-all duration-300 hover:opacity-70 ${isScrolled ? 'text-dark-text dark:text-pure-white' : 'text-pure-white'}`}>
+                <Link href="/login-simple" className={`hidden md:inline font-medium transition-all duration-300 hover:opacity-70 ${isScrolled ? 'text-dark-text dark:text-pure-white' : 'text-pure-white'}`}>
                   Sign In
                 </Link>
                 <Button asChild>

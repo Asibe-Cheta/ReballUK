@@ -5,6 +5,7 @@ import { authConfig } from "@/lib/auth-config"
 import { userProfileOperations } from "@/lib/db-utils"
 import type { PlayerPosition } from "@/types/profile"
 import CredentialsProvider from "next-auth/providers/credentials"
+import Google from "next-auth/providers/google"
 import { compare } from "bcryptjs"
 
 // Extend the built-in session types
@@ -34,10 +35,29 @@ declare module "next-auth" {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  ...authConfig,
   adapter: PrismaAdapter(db),
+  pages: {
+    signIn: "/login-simple",
+    signUp: "/register-simple",
+    error: "/login-simple",
+  },
   providers: [
-    ...authConfig.providers,
+    // Google OAuth
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET ? [
+      Google({
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        authorization: {
+          params: {
+            prompt: "consent",
+            access_type: "offline",
+            response_type: "code",
+          },
+        },
+        allowDangerousEmailAccountLinking: true,
+      })
+    ] : []),
+    // Credentials provider
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -84,7 +104,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
-    ...authConfig.callbacks,
     async session({ session, user }) {
       // With database strategy, we get user from database
       if (user && session.user) {
@@ -99,6 +118,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
       }
       return session
+    },
+    async authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user
+      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard')
+      const isOnAuth = nextUrl.pathname.startsWith('/login') || nextUrl.pathname.startsWith('/register')
+      const isOnWelcome = nextUrl.pathname.startsWith('/welcome')
+      
+      if (isOnDashboard) {
+        if (isLoggedIn) return true
+        return false // Redirect unauthenticated users to login page
+      } else if (isOnAuth) {
+        if (isLoggedIn) return Response.redirect(new URL('/dashboard', nextUrl))
+        return true
+      } else if (isOnWelcome) {
+        // Welcome page requires authentication
+        if (isLoggedIn) return true
+        return false
+      }
+      return true
     },
     async signIn({ user, account, profile }) {
       // Allow OAuth sign-ins

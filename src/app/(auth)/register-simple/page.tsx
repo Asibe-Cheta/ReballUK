@@ -55,7 +55,7 @@ export default function SimpleRegisterPage() {
       if (response.ok && result.success) {
         toast.success("Account created successfully!")
         // Redirect to login or dashboard
-        window.location.href = "/login"
+        window.location.href = "/login-simple"
       } else {
         toast.error(result.error || "Registration failed")
       }
@@ -217,7 +217,7 @@ export default function SimpleRegisterPage() {
             {/* Login Link */}
             <div className="text-center text-sm text-gray-400">
               Already have an account?{" "}
-              <Link href="/login" className="text-blue-400 hover:underline">
+              <Link href="/login-simple" className="text-blue-400 hover:underline">
                 Sign in
               </Link>
             </div>
