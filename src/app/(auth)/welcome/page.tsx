@@ -269,7 +269,7 @@ export default function WelcomePage() {
             <div className="text-center mb-8">
               <h2 className="font-marker text-3xl mb-2">Personal Information</h2>
               <p className="text-text-gray dark:text-medium-gray">
-                Let's start with some basic information about you
+                Let&apos;s start with some basic information about you
               </p>
             </div>
 
@@ -826,7 +826,7 @@ export default function WelcomePage() {
                     </FormControl>
                     <div className="space-y-1 leading-none">
                       <FormLabel>
-                        I'm interested in 1-on-1 training sessions
+                        I&apos;m interested in 1-on-1 training sessions
                       </FormLabel>
                     </div>
                   </FormItem>
@@ -846,7 +846,7 @@ export default function WelcomePage() {
                     </FormControl>
                     <div className="space-y-1 leading-none">
                       <FormLabel>
-                        I'm interested in group training sessions
+                        I&apos;m interested in group training sessions
                       </FormLabel>
                     </div>
                   </FormItem>
@@ -909,7 +909,7 @@ export default function WelcomePage() {
             <div className="p-6 bg-pure-black/5 dark:bg-pure-white/5 rounded-xl border border-pure-black/10 dark:border-pure-white/10">
               <h3 className="font-semibold mb-3">🎉 Ready to start your REBALL journey?</h3>
               <p className="text-sm text-text-gray dark:text-medium-gray mb-4">
-                You're about to join thousands of players who have improved their 1v1 game through our proven training methods. 
+                You&apos;re about to join thousands of players who have improved their 1v1 game through our proven training methods. 
                 Your personalized training program will be ready as soon as you complete this final step.
               </p>
               <div className="text-xs text-text-gray dark:text-medium-gray">
@@ -943,7 +943,7 @@ export default function WelcomePage() {
         <div className="text-center mb-8">
           <h1 className="font-marker text-4xl mb-2">Welcome to REBALL</h1>
           <p className="text-text-gray dark:text-medium-gray">
-            Let's create your personalized training profile
+            Let&apos;s create your personalized training profile
           </p>
         </div>
 

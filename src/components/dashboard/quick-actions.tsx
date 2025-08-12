@@ -232,7 +232,7 @@ export default function QuickActions({
         {/* Encouragement */}
         <div className="mt-4 p-3 bg-light-gray dark:bg-charcoal rounded-lg">
           <p className="text-sm text-text-gray dark:text-medium-gray">
-            💪 You're on track! Complete <strong>1 more session</strong> this week to hit your goal.
+            💪 You&apos;re on track! Complete <strong>1 more session</strong> this week to hit your goal.
           </p>
         </div>
       </div>

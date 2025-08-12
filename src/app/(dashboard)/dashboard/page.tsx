@@ -141,7 +141,7 @@ export default function DashboardPage() {
             Welcome back, {dashboardData.user.profile?.firstName || dashboardData.user.name || "Player"}! 👋
           </h1>
           <p className="text-text-gray dark:text-medium-gray">
-            Here's your training progress and performance overview
+            Here&apos;s your training progress and performance overview
           </p>
         </div>
 
@@ -287,7 +287,7 @@ export default function DashboardPage() {
               <div className="glow-card p-6 rounded-2xl" data-card="weekly-progress">
                 <span className="glow"></span>
                 <h3 className="text-lg font-semibold text-pure-black dark:text-pure-white mb-4">
-                  This Week's Progress
+                  This Week&apos;s Progress
                 </h3>
                 
                 <div className="space-y-3">

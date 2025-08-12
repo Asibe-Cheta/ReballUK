@@ -1,9 +1,5 @@
 import type { NextAuthConfig } from "next-auth"
 import Google from "next-auth/providers/google"
-import Credentials from "next-auth/providers/credentials"
-import { compare } from "bcryptjs"
-import { db } from "@/lib/db"
-import { loginFormSchema } from "@/types/auth"
 
 export const authConfig = {
   pages: {
@@ -48,54 +44,7 @@ export const authConfig = {
       allowDangerousEmailAccountLinking: true, // Allow linking accounts with same email
     })
     ] : []),
-    Credentials({
-      name: "credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
-      },
-      async authorize(credentials) {
-        try {
-          // Validate input
-          const validatedFields = loginFormSchema.safeParse(credentials)
-          if (!validatedFields.success) {
-            return null
-          }
-
-          const { email, password } = validatedFields.data
-
-          // Find user by email
-          const user = await db.user.findUnique({
-            where: { email },
-            include: {
-              profile: true
-            }
-          })
-
-          if (!user || !user.password) {
-            return null
-          }
-
-          // Verify password
-          const isPasswordValid = await compare(password, user.password)
-          if (!isPasswordValid) {
-            return null
-          }
-
-          // Return user object
-          return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            image: user.image,
-            position: user.profile?.position,
-            onboardingCompleted: user.profile?.onboardingCompleted,
-          }
-        } catch (error) {
-          console.error("Credentials authorization error:", error)
-          return null
-        }
-      }
-    }),
+    // Note: Credentials provider is only in auth-server.ts (Node.js runtime)
+    // as it requires bcryptjs and database access which don't work in Edge Runtime
   ],
 } satisfies NextAuthConfig

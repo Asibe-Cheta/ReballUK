@@ -31,7 +31,6 @@ import PasswordInput from "@/components/auth/password-input";
 import PasswordStrengthIndicator from "@/components/auth/password-strength";
 import { RegisterFormData, registerFormSchema, PLAYER_POSITIONS } from "@/types/auth";
 import { useAuth } from "@/hooks/use-auth";
-import FormDebugger from "@/components/debug/form-debugger";
 
 const positionLabels = {
   STRIKER: "Striker",
@@ -369,6 +368,5 @@ export default function RegisterPage() {
         </p>
       </div>
     </AuthCard>
-    <FormDebugger />
   );
 }
