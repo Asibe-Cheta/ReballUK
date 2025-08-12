@@ -66,25 +66,45 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
+          console.log("Missing credentials")
           return null
         }
 
         try {
-          // Find user by email
-          const user = await db.user.findUnique({
-            where: { email: credentials.email }
-          })
+          console.log("Looking up user with email:", credentials.email)
+          
+          // Find user by email using raw SQL (same approach as registration)
+          const users = await db.$queryRaw<Array<{
+            id: string
+            name: string
+            email: string
+            password: string
+          }>>`
+            SELECT id, name, email, password 
+            FROM "users" 
+            WHERE email = ${credentials.email} 
+            LIMIT 1
+          `
+
+          const user = users[0]
 
           if (!user || !user.password) {
+            console.log("User not found or no password")
             return null
           }
+
+          console.log("User found:", { id: user.id, name: user.name, hasPassword: !!user.password })
 
           // Verify password
           const isValidPassword = await compare(credentials.password, user.password)
+          console.log("Password valid:", isValidPassword)
           
           if (!isValidPassword) {
+            console.log("Invalid password")
             return null
           }
+
+          console.log("Login successful for user:", user.email)
 
           return {
             id: user.id,

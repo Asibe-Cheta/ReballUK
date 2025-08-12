@@ -10,10 +10,20 @@ export async function POST(request: NextRequest) {
     console.log("=== LOGIN DEBUG START ===")
     console.log("Attempting login for:", email)
     
-    // Find user
-    const user = await db.user.findUnique({
-      where: { email }
-    })
+    // Find user using raw SQL (same approach as registration)
+    const users = await db.$queryRaw<Array<{
+      id: string
+      name: string
+      email: string
+      password: string
+    }>>`
+      SELECT id, name, email, password 
+      FROM "users" 
+      WHERE email = ${email} 
+      LIMIT 1
+    `
+    
+    const user = users[0]
     
     if (!user) {
       console.log("User not found")
