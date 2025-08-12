@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import { hash } from "bcryptjs"
-import { db } from "@/lib/db"
+import { db, ensureConnection } from "@/lib/db"
 
 export async function POST(request: NextRequest) {
   try {
     console.log("=== SIMPLE REGISTRATION API START ===")
+    
+    // Ensure clean database connection
+    await ensureConnection()
     
     const body = await request.json()
     console.log("Received body:", body)
@@ -36,11 +39,12 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Check if user already exists
+    // Check if user already exists using Prisma
     console.log("Checking if user exists...")
-    const existingUser = await db.$executeRaw`
-      SELECT id FROM "users" WHERE email = ${email} LIMIT 1
-    `
+    const existingUser = await db.user.findUnique({
+      where: { email },
+      select: { id: true }
+    })
     
     if (existingUser) {
       console.log("User already exists")
@@ -60,31 +64,39 @@ export async function POST(request: NextRequest) {
     
     console.log("Creating user with ID:", userId)
     
-    // Create user
-    await db.$executeRaw`
-      INSERT INTO "users" (
-        "id", "name", "email", "password", "emailVerified", 
-        "createdAt", "updatedAt"
-      ) VALUES (
-        ${userId}, ${name}, ${email}, ${hashedPassword}, NOW(),
-        NOW(), NOW()
-      )
-    `
-    
-    console.log("User created, now creating profile...")
-    
-    // Create profile
-    await db.$executeRaw`
-      INSERT INTO "profiles" (
-        "id", "userId", "firstName", "lastName", "position", 
-        "trainingLevel", "onboardingCompleted", "preferredLanguage", 
-        "timezone", "isActive", "createdAt", "updatedAt"
-      ) VALUES (
-        ${profileId}, ${userId}, ${name.split(' ')[0] || name}, 
-        ${name.split(' ').slice(1).join(' ') || ''}, ${position},
-        'BEGINNER', false, 'en', 'UTC', true, NOW(), NOW()
-      )
-    `
+    // Create user and profile in a transaction
+    const result = await db.$transaction(async (tx) => {
+      // Create user
+      const user = await tx.user.create({
+        data: {
+          id: userId,
+          name,
+          email,
+          password: hashedPassword,
+          emailVerified: new Date(),
+        }
+      })
+      
+      console.log("User created, now creating profile...")
+      
+      // Create profile
+      const profile = await tx.profile.create({
+        data: {
+          id: profileId,
+          userId: userId,
+          firstName: name.split(' ')[0] || name,
+          lastName: name.split(' ').slice(1).join(' ') || '',
+          position,
+          trainingLevel: 'BEGINNER',
+          onboardingCompleted: false,
+          preferredLanguage: 'en',
+          timezone: 'UTC',
+          isActive: true,
+        }
+      })
+      
+      return { user, profile }
+    })
     
     console.log("Profile created successfully!")
     console.log("=== SIMPLE REGISTRATION API SUCCESS ===")
@@ -93,9 +105,9 @@ export async function POST(request: NextRequest) {
       success: true,
       message: "Account created successfully",
       user: {
-        id: userId,
-        name,
-        email
+        id: result.user.id,
+        name: result.user.name,
+        email: result.user.email
       }
     })
     
@@ -105,10 +117,20 @@ export async function POST(request: NextRequest) {
     console.error("Error message:", error instanceof Error ? error.message : "Unknown error")
     console.error("Error stack:", error instanceof Error ? error.stack : "No stack")
     
+    // Check for specific database errors
+    let errorMessage = "Registration failed. Please try again."
+    if (error instanceof Error) {
+      if (error.message.includes("Unique constraint")) {
+        errorMessage = "Email already registered"
+      } else if (error.message.includes("prepared statement")) {
+        errorMessage = "Database connection issue. Please try again."
+      }
+    }
+    
     return NextResponse.json(
       { 
         success: false, 
-        error: "Registration failed. Please try again.",
+        error: errorMessage,
         details: error instanceof Error ? error.message : "Unknown error"
       },
       { status: 500 }

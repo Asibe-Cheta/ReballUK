@@ -16,11 +16,18 @@ const createPrismaClient = () => {
         url: env.DATABASE_URL,
       },
     },
-    // Vercel serverless configuration
+    // Serverless configuration to prevent connection issues
     __internal: {
       engine: {
         // Disable query engine auto-restart
         enableEngineDebugMode: false,
+      },
+    },
+    // Connection pool settings for serverless
+    connection: {
+      pool: {
+        min: 0,
+        max: 1,
       },
     },
   })
@@ -38,11 +45,33 @@ export async function ensureConnection() {
   try {
     // Force a disconnect and reconnect to clear any prepared statements
     await db.$disconnect()
+    
+    // Wait a moment to ensure clean disconnection
+    await new Promise(resolve => setTimeout(resolve, 100))
+    
     await db.$connect()
+    
+    // Test the connection with a simple query
+    await db.$queryRaw`SELECT 1`
+    
+    console.log("✅ Database connection reset successfully")
     return true
   } catch (error) {
-    console.error("Connection reset failed:", error)
-    return false
+    console.error("❌ Connection reset failed:", error)
+    
+    // Try to create a new client instance if connection fails
+    try {
+      if (globalThis.__db__) {
+        await globalThis.__db__.$disconnect()
+      }
+      globalThis.__db__ = createPrismaClient()
+      await globalThis.__db__.$connect()
+      console.log("✅ New database client created successfully")
+      return true
+    } catch (retryError) {
+      console.error("❌ Failed to create new database client:", retryError)
+      return false
+    }
   }
 }
 

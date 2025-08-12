@@ -64,64 +64,57 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await hash(password, 12)
 
-    // Create user and profile using raw SQL (same approach as Simple Registration)
-    console.log("Starting user creation with raw SQL...")
+    // Create user and profile using Prisma operations
+    console.log("Starting user creation with Prisma...")
     
     // Generate unique IDs
     const userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     const profileId = `profile_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     
     try {
-      console.log("Creating user with raw SQL...")
+      console.log("Creating user with Prisma...")
       
-      // Create user
-      await db.$executeRaw`
-        INSERT INTO "users" (
-          "id", "name", "email", "password", "emailVerified", 
-          "createdAt", "updatedAt"
-        ) VALUES (
-          ${userId}, ${name}, ${email}, ${hashedPassword}, NOW(),
-          NOW(), NOW()
-        )
-      `
-      
-      console.log("User created successfully, now creating profile...")
-      
-      // Create profile
-      await db.$executeRaw`
-        INSERT INTO "profiles" (
-          "id", "userId", "firstName", "lastName", "position", 
-          "trainingLevel", "onboardingCompleted", "preferredLanguage", 
-          "timezone", "isActive", "createdAt", "updatedAt"
-        ) VALUES (
-          ${profileId}, ${userId}, ${name.split(' ')[0] || name}, 
-          ${name.split(' ').slice(1).join(' ') || ''}, ${position},
-          'BEGINNER', false, 'en', 'UTC', true, NOW(), NOW()
-        )
-      `
+      // Create user and profile in a transaction
+      const result = await db.$transaction(async (tx) => {
+        // Create user
+        const user = await tx.user.create({
+          data: {
+            id: userId,
+            name,
+            email,
+            password: hashedPassword,
+            emailVerified: new Date(),
+          }
+        })
+        
+        console.log("User created successfully, now creating profile...")
+        
+        // Create profile
+        const profile = await tx.profile.create({
+          data: {
+            id: profileId,
+            userId: userId,
+            firstName: name.split(' ')[0] || name,
+            lastName: name.split(' ').slice(1).join(' ') || '',
+            position,
+            trainingLevel: 'BEGINNER',
+            onboardingCompleted: false,
+            preferredLanguage: 'en',
+            timezone: 'UTC',
+            isActive: true,
+          }
+        })
+        
+        return { user, profile }
+      })
       
       console.log("Profile created successfully!")
       
-      const result = {
-        user: {
-          id: userId,
-          name,
-          email,
-          emailVerified: new Date(),
-        },
-        profile: {
-          id: profileId,
-          userId,
-          firstName: name.split(' ')[0] || name,
-          lastName: name.split(' ').slice(1).join(' ') || '',
-          position,
-        }
-      }
-    } catch (sqlError) {
-      console.error("Raw SQL user creation failed:", sqlError)
+    } catch (prismaError) {
+      console.error("Prisma user creation failed:", prismaError)
       
       // Handle duplicate email error
-      if (sqlError instanceof Error && sqlError.message.includes('unique constraint')) {
+      if (prismaError instanceof Error && prismaError.message.includes('Unique constraint')) {
         return NextResponse.json(
           { 
             success: false, 
@@ -132,7 +125,7 @@ export async function POST(request: NextRequest) {
         )
       }
       
-      throw sqlError
+      throw prismaError
     }
 
     // Return success response (without password)
@@ -140,9 +133,9 @@ export async function POST(request: NextRequest) {
       success: true,
       message: "Account created successfully",
       user: {
-        id: result.user.id,
-        name: result.user.name,
-        email: result.user.email,
+        id: userId,
+        name,
+        email,
         position,
       }
     })
@@ -178,6 +171,18 @@ export async function POST(request: NextRequest) {
             field: "email"
           },
           { status: 400 }
+        )
+      }
+      
+      // Handle prepared statement errors
+      if (error.message.includes("prepared statement")) {
+        return NextResponse.json(
+          { 
+            success: false, 
+            error: "Database connection issue. Please try again.",
+            field: "general"
+          },
+          { status: 500 }
         )
       }
     }
