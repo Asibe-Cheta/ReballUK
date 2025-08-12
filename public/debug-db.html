@@ -24,6 +24,7 @@
         <button onclick="testGoogleOAuth()" style="background-color: #dc3545; color: white;">Test Google OAuth</button>
         <button onclick="testLogin()" style="background-color: #6f42c1; color: white;">Test Login</button>
         <button onclick="testPreparedStatements()" style="background-color: #fd7e14; color: white;">Test Prepared Statements</button>
+        <button onclick="testSession()" style="background-color: #20c997; color: white;">Test Session</button>
         <button onclick="testAuthStatus()">Test Auth Status</button>
     </div>
 
@@ -250,6 +251,23 @@
                 }
             } catch (error) {
                 showResult('Prepared Statements Test Error', 'error', { error: error.message });
+            }
+        }
+
+        async function testSession() {
+            showResult('Testing session creation...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/test-session');
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Session Test Success', 'success', result);
+                } else {
+                    showResult('Session Test Failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Session Test Error', 'error', { error: error.message });
             }
         }
 

@@ -125,9 +125,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   callbacks: {
     async session({ session, user }) {
+      console.log("Session callback triggered:", { 
+        hasUser: !!user, 
+        hasSession: !!session,
+        user: user ? { id: user.id, name: user.name, email: user.email } : null,
+        sessionUser: session?.user ? { id: session.user.id, name: session.user.name, email: session.user.email } : null
+      })
+      
       // With database strategy, we get user from database
       if (user && session.user) {
         session.user.id = user.id
+        console.log("Set session user ID:", user.id)
         
         try {
           // Get user profile to enhance session using raw SQL (consistent with registration/login)
@@ -155,16 +163,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           `
           
           const userWithProfile = users[0]
+          console.log("User profile lookup result:", userWithProfile ? { 
+            id: userWithProfile.id, 
+            hasProfile: !!userWithProfile.profile 
+          } : null)
+          
           if (userWithProfile?.profile) {
             session.user.position = userWithProfile.profile.position
             session.user.trainingLevel = userWithProfile.profile.trainingLevel
             session.user.completedOnboarding = userWithProfile.profile.onboardingCompleted
+            console.log("Enhanced session with profile data")
           }
         } catch (error) {
           console.error("Error getting user profile for session:", error)
           // Don't fail the session if profile lookup fails
         }
       }
+      
+      console.log("Final session:", session ? {
+        user: session.user ? { id: session.user.id, name: session.user.name, email: session.user.email } : null
+      } : null)
+      
       return session
     },
     async authorized({ auth, request: { nextUrl } }) {
@@ -187,12 +206,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return true
     },
     async signIn({ user, account, profile }) {
+      console.log("SignIn callback triggered:", { 
+        user: user ? { id: user.id, name: user.name, email: user.email } : null,
+        account: account ? { provider: account.provider } : null,
+        profile: profile ? { email: profile.email } : null
+      })
+      
       // Allow OAuth sign-ins
       if (account?.provider === "google") {
+        console.log("Google OAuth sign-in allowed")
         return true
       }
 
-      // For credentials (if we add email/password later)
+      // For credentials
+      if (account?.provider === "credentials") {
+        console.log("Credentials sign-in allowed for user:", user.email)
+        return true
+      }
+
+      // Default allow
+      console.log("Default sign-in allowed")
       return true
     },
     async redirect({ url, baseUrl }) {
