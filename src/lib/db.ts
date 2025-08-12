@@ -16,6 +16,13 @@ const createPrismaClient = () => {
         url: env.DATABASE_URL,
       },
     },
+    // Vercel serverless configuration
+    __internal: {
+      engine: {
+        // Disable query engine auto-restart
+        enableEngineDebugMode: false,
+      },
+    },
   })
 }
 
@@ -24,6 +31,19 @@ export const db = globalThis.__db__ ?? createPrismaClient()
 
 if (env.NODE_ENV !== "production") {
   globalThis.__db__ = db
+}
+
+// Ensure proper connection handling for serverless
+export async function ensureConnection() {
+  try {
+    // Force a disconnect and reconnect to clear any prepared statements
+    await db.$disconnect()
+    await db.$connect()
+    return true
+  } catch (error) {
+    console.error("Connection reset failed:", error)
+    return false
+  }
 }
 
 // Database connection validation

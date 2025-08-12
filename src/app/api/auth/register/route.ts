@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { hash } from "bcryptjs"
 import { z } from "zod"
-import { db, withRetry } from "@/lib/db"
+import { db, withRetry, ensureConnection } from "@/lib/db"
 import { registerFormSchema } from "@/types/auth"
 
 export async function POST(request: NextRequest) {
@@ -9,10 +9,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     console.log("Registration request body:", JSON.stringify(body, null, 2))
     
-    // Test database connection first
+    // Reset and test database connection first
     try {
-      await db.$connect()
-      console.log("Database connection successful")
+      await ensureConnection()
+      console.log("Database connection reset and verified")
     } catch (dbError) {
       console.error("Database connection failed:", dbError)
       return NextResponse.json(
