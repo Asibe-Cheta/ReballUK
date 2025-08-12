@@ -9,26 +9,33 @@ export async function GET() {
     await db.$connect()
     console.log("Database connected successfully")
     
-    // Test a simple query
-    const userCount = await db.user.count()
-    console.log("Current user count:", userCount)
+    // Get all tables in the database
+    const allTables = await db.$queryRaw`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = 'public'
+      ORDER BY table_name
+    `
     
-    // Test if tables exist by checking schema
-    const tableInfo = await db.$queryRaw`
+    console.log("All tables in database:", allTables)
+    
+    // Test specific auth tables
+    const authTables = await db.$queryRaw`
       SELECT table_name 
       FROM information_schema.tables 
       WHERE table_schema = 'public' 
-      AND table_name IN ('users', 'profiles')
+      AND table_name LIKE '%user%' OR table_name LIKE '%profile%' OR table_name LIKE '%auth%'
     `
     
-    console.log("Database tables found:", tableInfo)
+    console.log("Auth tables found:", authTables)
     
     return NextResponse.json({
       success: true,
       database: {
         connected: true,
-        userCount,
-        tables: tableInfo,
+        allTables,
+        authTables,
+        message: "Database connected - check tables above",
         timestamp: new Date().toISOString()
       }
     })

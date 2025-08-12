@@ -16,6 +16,7 @@
     
     <div>
         <button onclick="testDbConnection()">Test Database Connection</button>
+        <button onclick="analyzeDatabase()" style="background-color: #17a2b8; color: white;">Analyze Database</button>
         <button onclick="createTables()" style="background-color: #28a745; color: white;">Create Database Tables</button>
         <button onclick="testRegistration()">Test Registration API</button>
         <button onclick="testAuthStatus()">Test Auth Status</button>
@@ -70,6 +71,26 @@
                 }
             } catch (error) {
                 showResult('Registration Network Error', 'error', { error: error.message });
+            }
+        }
+
+        async function analyzeDatabase() {
+            showResult('Analyzing database structure...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/prisma-push', {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Database Analysis Complete', 'success', result);
+                } else {
+                    showResult('Database Analysis Failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Database Analysis Error', 'error', { error: error.message });
             }
         }
 
