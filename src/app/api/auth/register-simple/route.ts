@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import { hash } from "bcryptjs"
-import { db, ensureConnection } from "@/lib/db"
+import { db, resetDatabaseConnection } from "@/lib/db"
 
 export async function POST(request: NextRequest) {
   try {
     console.log("=== SIMPLE REGISTRATION API START ===")
     
-    // Ensure clean database connection
-    await ensureConnection()
+    // Perform aggressive database connection reset
+    await resetDatabaseConnection()
     
     const body = await request.json()
     console.log("Received body:", body)

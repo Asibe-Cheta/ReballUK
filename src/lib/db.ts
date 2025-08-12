@@ -36,16 +36,29 @@ if (env.NODE_ENV !== "production") {
 // Ensure proper connection handling for serverless
 export async function ensureConnection() {
   try {
+    console.log("🔄 Resetting database connection...")
+    
     // Force a disconnect and reconnect to clear any prepared statements
     await db.$disconnect()
     
     // Wait a moment to ensure clean disconnection
-    await new Promise(resolve => setTimeout(resolve, 100))
+    await new Promise(resolve => setTimeout(resolve, 200))
     
-    await db.$connect()
+    // Clear any cached connections
+    if (globalThis.__db__) {
+      try {
+        await globalThis.__db__.$disconnect()
+      } catch (e) {
+        // Ignore disconnect errors
+      }
+    }
+    
+    // Create a completely new client instance
+    globalThis.__db__ = createPrismaClient()
+    await globalThis.__db__.$connect()
     
     // Test the connection with a simple query
-    await db.$queryRaw`SELECT 1`
+    await globalThis.__db__.$queryRaw`SELECT 1`
     
     console.log("✅ Database connection reset successfully")
     return true
@@ -65,6 +78,45 @@ export async function ensureConnection() {
       console.error("❌ Failed to create new database client:", retryError)
       return false
     }
+  }
+}
+
+// More aggressive connection reset for critical operations
+export async function resetDatabaseConnection() {
+  try {
+    console.log("🔄 Performing aggressive database connection reset...")
+    
+    // Disconnect all possible connections
+    try {
+      await db.$disconnect()
+    } catch (e) {
+      // Ignore disconnect errors
+    }
+    
+    if (globalThis.__db__) {
+      try {
+        await globalThis.__db__.$disconnect()
+      } catch (e) {
+        // Ignore disconnect errors
+      }
+    }
+    
+    // Wait longer for connections to fully close
+    await new Promise(resolve => setTimeout(resolve, 500))
+    
+    // Create fresh client
+    globalThis.__db__ = createPrismaClient()
+    await globalThis.__db__.$connect()
+    
+    // Test with multiple queries to ensure stability
+    await globalThis.__db__.$queryRaw`SELECT 1`
+    await globalThis.__db__.$queryRaw`SELECT 2`
+    
+    console.log("✅ Aggressive database reset completed successfully")
+    return true
+  } catch (error) {
+    console.error("❌ Aggressive database reset failed:", error)
+    return false
   }
 }
 

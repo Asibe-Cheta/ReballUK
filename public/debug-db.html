@@ -24,6 +24,7 @@
         <button onclick="testGoogleOAuth()" style="background-color: #dc3545; color: white;">Test Google OAuth</button>
         <button onclick="testLogin()" style="background-color: #6f42c1; color: white;">Test Login</button>
                  <button onclick="testPreparedStatements()" style="background-color: #fd7e14; color: white;">Test Prepared Statements</button>
+         <button onclick="resetDatabaseConnection()" style="background-color: #6c757d; color: white;">Reset DB Connection</button>
          <button onclick="createSessionsTable()" style="background-color: #e83e8c; color: white;">Create Sessions Table</button>
          <button onclick="testSession()" style="background-color: #20c997; color: white;">Test Session</button>
          <button onclick="testAuthStatus()">Test Auth Status</button>
@@ -229,31 +230,50 @@
             }
         }
 
-        async function testPreparedStatements() {
-            showResult('Testing prepared statements fix...', 'info');
-            
-            try {
-                const response = await fetch('/api/debug/test-prepared-statements', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: 'test@example.com'
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok) {
-                    showResult('Prepared Statements Test Success', 'success', result);
-                } else {
-                    showResult('Prepared Statements Test Failed', 'error', result);
-                }
-            } catch (error) {
-                showResult('Prepared Statements Test Error', 'error', { error: error.message });
-            }
-        }
+                 async function testPreparedStatements() {
+             showResult('Testing prepared statements fix...', 'info');
+             
+             try {
+                 const response = await fetch('/api/debug/test-prepared-statements', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json',
+                     },
+                     body: JSON.stringify({
+                         email: 'test@example.com'
+                     })
+                 });
+                 
+                 const result = await response.json();
+                 
+                 if (response.ok) {
+                     showResult('Prepared Statements Test Success', 'success', result);
+                 } else {
+                     showResult('Prepared Statements Test Failed', 'error', result);
+                 }
+             } catch (error) {
+                 showResult('Prepared Statements Test Error', 'error', { error: error.message });
+             }
+         }
+
+         async function resetDatabaseConnection() {
+             showResult('Resetting database connection...', 'info');
+             
+             try {
+                 const response = await fetch('/api/debug/reset-db-connection', {
+                     method: 'POST'
+                 });
+                 const result = await response.json();
+                 
+                 if (response.ok) {
+                     showResult('Database Connection Reset Success', 'success', result);
+                 } else {
+                     showResult('Database Connection Reset Failed', 'error', result);
+                 }
+             } catch (error) {
+                 showResult('Database Connection Reset Error', 'error', { error: error.message });
+             }
+         }
 
                  async function createSessionsTable() {
              showResult('Creating sessions table...', 'info');

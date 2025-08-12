@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth-server"
-import { db } from "@/lib/db"
+import { db, resetDatabaseConnection } from "@/lib/db"
 
 export async function GET(request: NextRequest) {
   try {
     console.log("=== TESTING SESSION ===")
+    
+    // Reset database connection first
+    await resetDatabaseConnection()
     
     // Test session retrieval
     const session = await auth()
