@@ -11,7 +11,16 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDark, setIsDark] = useState(false);
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
+
+  // Debug logging
+  useEffect(() => {
+    console.log("Navbar Auth State:", { 
+      isAuthenticated, 
+      isLoading, 
+      user: user ? { id: user.id, name: user.name, email: user.email } : null 
+    });
+  }, [isAuthenticated, isLoading, user]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -109,6 +118,10 @@ export default function Navbar() {
             
             {isAuthenticated ? (
               <div className="hidden md:flex items-center gap-4">
+                {/* Debug indicator */}
+                <div className="text-xs bg-green-500 text-white px-2 py-1 rounded">
+                  Logged In
+                </div>
                 <div className="relative group">
                   <Button variant="ghost" className="flex items-center gap-2">
                     {user?.image ? (
@@ -122,7 +135,7 @@ export default function Navbar() {
                     ) : (
                       <User className="w-4 h-4" />
                     )}
-                    <span className="hidden sm:inline">{user?.name}</span>
+                    <span className="hidden sm:inline">{user?.name || user?.email}</span>
                     <ChevronDown className="w-4 h-4" />
                   </Button>
                   <div className="absolute top-full right-0 mt-2 w-48 glass rounded-2xl p-2 transform -translate-y-2 opacity-0 invisible group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
@@ -147,6 +160,10 @@ export default function Navbar() {
               </div>
             ) : (
               <>
+                {/* Debug indicator */}
+                <div className="text-xs bg-red-500 text-white px-2 py-1 rounded">
+                  Not Logged In
+                </div>
                 <Link href="/login-simple" className={`hidden md:inline font-medium transition-all duration-300 hover:opacity-70 ${isScrolled ? 'text-dark-text dark:text-pure-white' : 'text-pure-white'}`}>
                   Sign In
                 </Link>
