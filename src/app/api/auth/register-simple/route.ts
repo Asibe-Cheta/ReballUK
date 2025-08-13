@@ -37,13 +37,18 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Check if user already exists using withRetry
+    // Check if user already exists using raw SQL to avoid prepared statement conflicts
     console.log("Checking if user exists...")
-    const existingUser = await withRetry(async () => {
-      return await db.user.findUnique({
-        where: { email }
-      })
-    })
+    let existingUser = null
+    try {
+      const result = await db.$queryRaw`
+        SELECT id, email FROM users WHERE email = ${email} LIMIT 1
+      `
+      existingUser = Array.isArray(result) && result.length > 0 ? result[0] : null
+    } catch (error) {
+      console.error("Error checking existing user:", error)
+      // Continue with registration attempt
+    }
     
     if (existingUser) {
       console.log("User already exists")

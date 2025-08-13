@@ -32,7 +32,6 @@ export async function POST(request: NextRequest) {
     
     for (const column of userColumnsToAdd) {
       try {
-        // Check if column exists using a simple query
         const columnExists = await withRetry(async () => {
           const result = await db.$queryRaw`
             SELECT column_name 
@@ -44,7 +43,6 @@ export async function POST(request: NextRequest) {
         })
         
         if (!columnExists) {
-          // Add the column
           await withRetry(async () => {
             await db.$executeRaw`ALTER TABLE users ADD COLUMN ${db.$raw(column.name)} ${db.$raw(column.type)}`
           })
@@ -80,7 +78,6 @@ export async function POST(request: NextRequest) {
     
     for (const column of profileColumnsToAdd) {
       try {
-        // Check if column exists
         const columnExists = await withRetry(async () => {
           const result = await db.$queryRaw`
             SELECT column_name 
@@ -92,7 +89,6 @@ export async function POST(request: NextRequest) {
         })
         
         if (!columnExists) {
-          // Add the column
           await withRetry(async () => {
             await db.$executeRaw`ALTER TABLE profiles ADD COLUMN ${db.$raw(column.name)} ${db.$raw(column.type)}`
           })
@@ -105,7 +101,84 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // Step 4: Verify all required tables exist
+    // Step 4: Create missing NextAuth tables
+    try {
+      // Create accounts table
+      await withRetry(async () => {
+        await db.$executeRaw`
+          CREATE TABLE IF NOT EXISTS "accounts" (
+            "id" TEXT NOT NULL,
+            "user_id" TEXT NOT NULL,
+            "type" TEXT NOT NULL,
+            "provider" TEXT NOT NULL,
+            "provider_account_id" TEXT NOT NULL,
+            "refresh_token" TEXT,
+            "access_token" TEXT,
+            "expires_at" INTEGER,
+            "token_type" TEXT,
+            "scope" TEXT,
+            "id_token" TEXT,
+            "session_state" TEXT,
+            PRIMARY KEY ("id")
+          )
+        `
+      })
+      results.push("✅ Created accounts table")
+      
+      // Create unique index for accounts
+      await withRetry(async () => {
+        await db.$executeRaw`
+          CREATE UNIQUE INDEX IF NOT EXISTS "accounts_provider_provider_account_id_key" 
+          ON "accounts"("provider", "provider_account_id")
+        `
+      })
+      results.push("✅ Created accounts unique index")
+      
+      // Add foreign key constraint for accounts
+      try {
+        await withRetry(async () => {
+          await db.$executeRaw`
+            ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_fkey" 
+            FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE
+          `
+        })
+        results.push("✅ Added accounts foreign key constraint")
+      } catch (error) {
+        results.push(`ℹ️ Accounts foreign key constraint already exists or failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+      
+    } catch (error) {
+      results.push(`❌ Failed to create accounts table: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+    
+    try {
+      // Create verificationtokens table
+      await withRetry(async () => {
+        await db.$executeRaw`
+          CREATE TABLE IF NOT EXISTS "verificationtokens" (
+            "identifier" TEXT NOT NULL,
+            "token" TEXT NOT NULL,
+            "expires" TIMESTAMP(3) NOT NULL,
+            PRIMARY KEY ("token")
+          )
+        `
+      })
+      results.push("✅ Created verificationtokens table")
+      
+      // Create unique index for verificationtokens
+      await withRetry(async () => {
+        await db.$executeRaw`
+          CREATE UNIQUE INDEX IF NOT EXISTS "verificationtokens_identifier_token_key" 
+          ON "verificationtokens"("identifier", "token")
+        `
+      })
+      results.push("✅ Created verificationtokens unique index")
+      
+    } catch (error) {
+      results.push(`❌ Failed to create verificationtokens table: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+    
+    // Step 5: Verify all required tables exist
     const requiredTables = ['users', 'profiles', 'sessions', 'accounts', 'verificationtokens']
     const tableStatus = {}
     
@@ -130,7 +203,7 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // Step 5: Test user creation with the fixed schema
+    // Step 6: Test user creation with the fixed schema
     try {
       const testUser = await withRetry(async () => {
         return await db.user.create({
