@@ -1,15 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import { hash } from "bcryptjs"
-import { db } from "@/lib/db"
+import { db, withRetry } from "@/lib/db"
+import { PlayerPosition } from "@prisma/client"
 
 export async function POST(request: NextRequest) {
   try {
     console.log("=== SIMPLE REGISTRATION API START ===")
-    
-    // Reset database connection to avoid prepared statement conflicts
-    await db.$disconnect()
-    await new Promise(resolve => setTimeout(resolve, 100))
-    await db.$connect()
     
     const body = await request.json()
     console.log("Received body:", body)
@@ -41,17 +37,19 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Check if user already exists using Prisma ORM
+    // Check if user already exists using withRetry
     console.log("Checking if user exists...")
-    const existingUser = await db.user.findUnique({
-      where: { email }
+    const existingUser = await withRetry(async () => {
+      return await db.user.findUnique({
+        where: { email }
+      })
     })
     
     if (existingUser) {
       console.log("User already exists")
       return NextResponse.json(
         { success: false, error: "Email already registered" },
-        { status: 409 } // Conflict status for duplicate
+        { status: 409 }
       )
     }
     
@@ -61,35 +59,38 @@ export async function POST(request: NextRequest) {
     
     console.log("Creating user with Prisma ORM...")
     
-    const result = await db.$transaction(async (tx) => {
-      // Create user with only essential fields that exist in the schema
-      const user = await tx.user.create({
-        data: {
-          name,
-          email,
-          password: hashedPassword, // Now we can include the password
-          emailVerified: new Date(),
-          // createdAt and updatedAt will be handled by Prisma defaults
-        }
+    // Use withRetry for the entire transaction
+    const result = await withRetry(async () => {
+      return await db.$transaction(async (tx) => {
+        // Create user with only essential fields that exist in the schema
+        const user = await tx.user.create({
+          data: {
+            name,
+            email,
+            password: hashedPassword,
+            emailVerified: new Date(),
+            // createdAt and updatedAt will be handled by Prisma defaults
+          }
+        })
+        
+        console.log("User created, now creating profile...")
+        
+        // Create profile with only essential fields that exist in the schema
+        const profile = await tx.profile.create({
+          data: {
+            userId: user.id,
+            firstName: name.split(' ')[0] || name,
+            lastName: name.split(' ').slice(1).join(' ') || '',
+            position: position as PlayerPosition, // Type assertion for enum
+            trainingLevel: 'BEGINNER',
+            completedOnboarding: false,
+            isActive: true,
+            // Other fields will use defaults or be nullable
+          }
+        })
+        
+        return { user, profile }
       })
-      
-      console.log("User created, now creating profile...")
-      
-      // Create profile with only essential fields that exist in the schema
-      const profile = await tx.profile.create({
-        data: {
-          userId: user.id,
-          firstName: name.split(' ')[0] || name,
-          lastName: name.split(' ').slice(1).join(' ') || '',
-          position: position as any, // Type assertion for enum
-          trainingLevel: 'BEGINNER',
-          completedOnboarding: false,
-          isActive: true,
-          // Other fields will use defaults or be nullable
-        }
-      })
-      
-      return { user, profile }
     })
     
     console.log("Profile created successfully!")
@@ -121,6 +122,9 @@ export async function POST(request: NextRequest) {
         statusCode = 409
       } else if (error.message.includes("prepared statement")) {
         errorMessage = "Database connection issue. Please try again."
+        statusCode = 500
+      } else if (error.message.includes("column") && error.message.includes("does not exist")) {
+        errorMessage = "Database schema issue. Please contact support."
         statusCode = 500
       }
     }

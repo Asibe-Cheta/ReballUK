@@ -28,6 +28,7 @@
          <button onclick="createSessionsTable()" style="background-color: #e83e8c; color: white;">Create Sessions Table</button>
                    <button onclick="fixDatabaseSchema()" style="background-color: #ffc107; color: black;">Fix Database Schema</button>
           <button onclick="addMissingColumns()" style="background-color: #17a2b8; color: white;">Add Missing Columns</button>
+          <button onclick="comprehensiveDatabaseFix()" style="background-color: #dc3545; color: white;">🔧 Comprehensive DB Fix</button>
           <button onclick="addPasswordColumn()" style="background-color: #28a745; color: white;">Add Password Column</button>
          <button onclick="generatePrismaSchema()" style="background-color: #17a2b8; color: white;">Analyze DB Schema</button>
          <button onclick="testSession()" style="background-color: #20c997; color: white;">Test Session</button>
@@ -384,6 +385,27 @@
                  }
              } catch (error) {
                  showResult('Add Missing Columns Network Error', 'error', { error: error.message });
+             }
+         }
+
+                   async function comprehensiveDatabaseFix() {
+             showResult('Running comprehensive database fix...', 'info');
+             
+             try {
+                 const response = await fetch('/api/debug/fix-database-comprehensive', {
+                     method: 'POST',
+                     headers: { 'Content-Type': 'application/json' }
+                 });
+                 
+                 const result = await response.json();
+                 
+                 if (response.ok) {
+                     showResult('Comprehensive Database Fix Completed!', 'success', result);
+                 } else {
+                     showResult('Comprehensive Database Fix Failed', 'error', result);
+                 }
+             } catch (error) {
+                 showResult('Comprehensive Database Fix Network Error', 'error', { error: error.message });
              }
          }
 

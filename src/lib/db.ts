@@ -1,335 +1,113 @@
-import { PrismaClient } from "@prisma/client"
-import { env } from "@/lib/env-validation"
+import { PrismaClient } from '@prisma/client'
 
+// Global variable to store the Prisma client instance
 declare global {
-  // eslint-disable-next-line no-var
-  var __db__: PrismaClient | undefined
+  var __prisma: PrismaClient | undefined
 }
 
-// Database connection configuration
+// Create a new Prisma client with proper configuration
 const createPrismaClient = () => {
   return new PrismaClient({
-    log: env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-    errorFormat: "pretty",
     datasources: {
       db: {
-        url: env.DATABASE_URL,
+        url: process.env.DATABASE_URL,
       },
     },
-    // Serverless configuration to prevent connection issues
-    __internal: {
-      engine: {
-        // Disable query engine auto-restart
-        enableEngineDebugMode: false,
-      },
-    },
+    // Connection pooling configuration for Supabase
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   })
 }
 
-// Singleton instance for connection pooling
-export const db = globalThis.__db__ ?? createPrismaClient()
+// Export the Prisma client instance
+export const db = globalThis.__prisma ?? createPrismaClient()
 
-if (env.NODE_ENV !== "production") {
-  globalThis.__db__ = db
+// In development, store the instance globally to prevent multiple instances
+if (process.env.NODE_ENV !== 'production') {
+  globalThis.__prisma = db
 }
 
-// Ensure proper connection handling for serverless
-export async function ensureConnection() {
-  try {
-    console.log("🔄 Resetting database connection...")
-    
-    // Force a disconnect and reconnect to clear any prepared statements
-    await db.$disconnect()
-    
-    // Wait a moment to ensure clean disconnection
-    await new Promise(resolve => setTimeout(resolve, 200))
-    
-    // Clear any cached connections
-    if (globalThis.__db__) {
-      try {
-        await globalThis.__db__.$disconnect()
-      } catch (e) {
-        // Ignore disconnect errors
-      }
-    }
-    
-    // Create a completely new client instance
-    globalThis.__db__ = createPrismaClient()
-    await globalThis.__db__.$connect()
-    
-    // Test the connection with a simple query
-    await globalThis.__db__.$queryRaw`SELECT 1`
-    
-    console.log("✅ Database connection reset successfully")
-    return true
-  } catch (error) {
-    console.error("❌ Connection reset failed:", error)
-    
-    // Try to create a new client instance if connection fails
-    try {
-      if (globalThis.__db__) {
-        await globalThis.__db__.$disconnect()
-      }
-      globalThis.__db__ = createPrismaClient()
-      await globalThis.__db__.$connect()
-      console.log("✅ New database client created successfully")
-      return true
-    } catch (retryError) {
-      console.error("❌ Failed to create new database client:", retryError)
-      return false
-    }
-  }
-}
+// Graceful shutdown
+process.on('beforeExit', async () => {
+  await db.$disconnect()
+})
 
-// More aggressive connection reset for critical operations
-export async function resetDatabaseConnection() {
-  try {
-    console.log("🔄 Performing aggressive database connection reset...")
-    
-    // Disconnect all possible connections
-    try {
-      await db.$disconnect()
-    } catch (e) {
-      // Ignore disconnect errors
-    }
-    
-    if (globalThis.__db__) {
-      try {
-        await globalThis.__db__.$disconnect()
-      } catch (e) {
-        // Ignore disconnect errors
-      }
-    }
-    
-    // Wait longer for connections to fully close
-    await new Promise(resolve => setTimeout(resolve, 500))
-    
-    // Create fresh client
-    globalThis.__db__ = createPrismaClient()
-    await globalThis.__db__.$connect()
-    
-    // Test with multiple queries to ensure stability
-    await globalThis.__db__.$queryRaw`SELECT 1`
-    await globalThis.__db__.$queryRaw`SELECT 2`
-    
-    console.log("✅ Aggressive database reset completed successfully")
-    return true
-  } catch (error) {
-    console.error("❌ Aggressive database reset failed:", error)
-    return false
-  }
-}
+// Handle uncaught exceptions
+process.on('uncaughtException', async (error) => {
+  console.error('Uncaught Exception:', error)
+  await db.$disconnect()
+  process.exit(1)
+})
 
-// Database connection validation
-export async function validateDatabaseConnection(): Promise<{
-  isConnected: boolean
-  error?: string
-  latency?: number
-}> {
-  try {
-    const start = Date.now()
-    await db.$queryRaw`SELECT 1`
-    const latency = Date.now() - start
-    
-    console.log(`✅ Database connected successfully (${latency}ms)`)
-    return {
-      isConnected: true,
-      latency,
-    }
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown database error"
-    console.error("❌ Database connection failed:", errorMessage)
-    return {
-      isConnected: false,
-      error: errorMessage,
-    }
-  }
-}
+// Handle unhandled promise rejections
+process.on('unhandledRejection', async (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason)
+  await db.$disconnect()
+  process.exit(1)
+})
 
-// Retry logic for database operations
-export async function withRetry<T>(
+// Database utility functions
+export const withRetry = async <T>(
   operation: () => Promise<T>,
-  maxRetries = 3,
-  baseDelay = 1000
-): Promise<T> {
+  maxRetries: number = 3,
+  delay: number = 1000
+): Promise<T> => {
   let lastError: Error
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       return await operation()
     } catch (error) {
-      lastError = error instanceof Error ? error : new Error("Unknown error")
+      lastError = error as Error
+      console.error(`Database operation failed (attempt ${attempt}/${maxRetries}):`, error)
       
-      if (attempt === maxRetries) {
-        console.error(`❌ Operation failed after ${maxRetries} attempts:`, lastError.message)
-        throw lastError
+      if (attempt < maxRetries) {
+        // Wait before retrying
+        await new Promise(resolve => setTimeout(resolve, delay * attempt))
+        
+        // Reset connection on error
+        try {
+          await db.$disconnect()
+          await new Promise(resolve => setTimeout(resolve, 500))
+          await db.$connect()
+        } catch (connectionError) {
+          console.error('Failed to reset connection:', connectionError)
+        }
       }
-      
-      const delay = baseDelay * Math.pow(2, attempt - 1) // Exponential backoff
-      console.warn(`⚠️ Attempt ${attempt} failed, retrying in ${delay}ms...`, lastError.message)
-      await new Promise(resolve => setTimeout(resolve, delay))
     }
   }
   
   throw lastError!
 }
 
-// Database health check
-export async function healthCheck(): Promise<{
-  database: boolean
-  timestamp: string
-  version?: string
-  uptime?: string
-}> {
+// Validate database connection
+export const validateDatabaseConnection = async (): Promise<boolean> => {
   try {
-    const start = Date.now()
-    
-    // Check basic connectivity
     await db.$queryRaw`SELECT 1`
-    
-    // Get database version
-    const versionResult = await db.$queryRaw<{ version: string }[]>`SELECT version()`
-    const version = versionResult[0]?.version
-    
-    // Calculate response time
-    const responseTime = Date.now() - start
-    
-    return {
-      database: true,
-      timestamp: new Date().toISOString(),
-      version: version || "Unknown",
-      uptime: `${responseTime}ms`,
-    }
+    return true
   } catch (error) {
-    console.error("Database health check failed:", error)
-    return {
-      database: false,
-      timestamp: new Date().toISOString(),
-    }
+    console.error('Database connection validation failed:', error)
+    return false
   }
 }
 
-// Graceful shutdown
-export async function disconnectDatabase(): Promise<void> {
+// Ensure database connection is active
+export const ensureConnection = async (): Promise<void> => {
+  try {
+    await db.$connect()
+  } catch (error) {
+    console.error('Failed to ensure database connection:', error)
+    throw error
+  }
+}
+
+// Reset database connection (use sparingly)
+export const resetDatabaseConnection = async (): Promise<void> => {
   try {
     await db.$disconnect()
-    console.log("✅ Database disconnected successfully")
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    await db.$connect()
   } catch (error) {
-    console.error("❌ Error disconnecting from database:", error)
+    console.error('Failed to reset database connection:', error)
+    throw error
   }
 }
-
-// Database utility functions for common operations
-export const dbUtils = {
-  // Check if a record exists
-  async exists<T>(
-    model: any,
-    where: any
-  ): Promise<boolean> {
-    const count = await model.count({ where })
-    return count > 0
-  },
-
-  // Get paginated results
-  async paginate<T>(
-    model: any,
-    {
-      page = 1,
-      limit = 10,
-      where = {},
-      orderBy = {},
-      include = {},
-    }: {
-      page?: number
-      limit?: number
-      where?: any
-      orderBy?: any
-      include?: any
-    }
-  ): Promise<{
-    data: T[]
-    pagination: {
-      page: number
-      limit: number
-      total: number
-      totalPages: number
-      hasNext: boolean
-      hasPrev: boolean
-    }
-  }> {
-    const skip = (page - 1) * limit
-    
-    const [data, total] = await Promise.all([
-      model.findMany({
-        where,
-        orderBy,
-        include,
-        skip,
-        take: limit,
-      }),
-      model.count({ where }),
-    ])
-
-    const totalPages = Math.ceil(total / limit)
-
-    return {
-      data,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages,
-        hasNext: page < totalPages,
-        hasPrev: page > 1,
-      },
-    }
-  },
-
-  // Upsert with better error handling
-  async safeUpsert<T>(
-    model: any,
-    {
-      where,
-      update,
-      create,
-    }: {
-      where: any
-      update: any
-      create: any
-    }
-  ): Promise<{ success: boolean; data?: T; error?: string }> {
-    try {
-      const data = await model.upsert({
-        where,
-        update,
-        create,
-      })
-      return { success: true, data }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error"
-      console.error("Upsert operation failed:", errorMessage)
-      return { success: false, error: errorMessage }
-    }
-  },
-
-  // Soft delete (mark as inactive instead of deleting)
-  async softDelete(
-    model: any,
-    where: any
-  ): Promise<{ success: boolean; error?: string }> {
-    try {
-      await model.update({
-        where,
-        data: { isActive: false },
-      })
-      return { success: true }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error"
-      console.error("Soft delete failed:", errorMessage)
-      return { success: false, error: errorMessage }
-    }
-  },
-}
-
-// Export the client as default for compatibility
-export default db
