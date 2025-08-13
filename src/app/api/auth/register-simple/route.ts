@@ -36,30 +36,10 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Check if user already exists using raw SQL
-    console.log("Checking if user exists for email:", email)
-    let existingUser = null
-    try {
-      const result = await db.$queryRaw`
-        SELECT id, email FROM users WHERE email = ${email} LIMIT 1
-      `
-      console.log("Database query result:", result)
-      existingUser = Array.isArray(result) && result.length > 0 ? result[0] : null
-      console.log("Existing user found:", existingUser)
-    } catch (error) {
-      console.error("Error checking existing user:", error)
-      // Continue with registration attempt if query fails
-    }
-    
-    if (existingUser) {
-      console.log("User already exists with email:", existingUser.email)
-      return NextResponse.json(
-        { success: false, error: "Email already registered" },
-        { status: 409 }
-      )
-    }
-    
-    console.log("No existing user found, proceeding with registration...")
+    // Skip the email check for now to avoid prepared statement conflicts
+    // We'll let the database handle duplicate detection during INSERT
+    console.log("Skipping email existence check to avoid prepared statement conflicts")
+    console.log("Registration will proceed and let database handle duplicate detection")
     
     // Hash password
     console.log("Hashing password...")
@@ -123,7 +103,11 @@ export async function POST(request: NextRequest) {
       
       // Check for specific SQL errors
       if (sqlError instanceof Error) {
-        if (sqlError.message.includes('duplicate key') || sqlError.message.includes('already exists')) {
+        if (sqlError.message.includes('duplicate key') || 
+            sqlError.message.includes('already exists') ||
+            sqlError.message.includes('unique constraint') ||
+            sqlError.message.includes('violates unique constraint')) {
+          console.log("Duplicate email detected during INSERT")
           return NextResponse.json(
             { success: false, error: "Email already registered" },
             { status: 409 }
