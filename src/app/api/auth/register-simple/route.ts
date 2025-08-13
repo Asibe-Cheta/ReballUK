@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
     // Use withRetry for the entire transaction
     const result = await withRetry(async () => {
       return await db.$transaction(async (tx) => {
-        // Create user with only essential fields that exist in the schema
+        // Create user with correct field names (camelCase for users table)
         const user = await tx.user.create({
           data: {
             name,
@@ -75,17 +75,17 @@ export async function POST(request: NextRequest) {
         
         console.log("User created, now creating profile...")
         
-        // Create profile with only essential fields that exist in the schema
+        // Create profile with correct field names (snake_case mapping for profiles table)
         const profile = await tx.profile.create({
           data: {
             userId: user.id,
             firstName: name.split(' ')[0] || name,
             lastName: name.split(' ').slice(1).join(' ') || '',
-            position: position as PlayerPosition, // Type assertion for enum
+            position: position as PlayerPosition,
             trainingLevel: 'BEGINNER',
             completedOnboarding: false,
             isActive: true,
-            // Other fields will use defaults or be nullable
+            // createdAt and updatedAt will be handled by Prisma defaults with correct mapping
           }
         })
         

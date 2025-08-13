@@ -22,10 +22,10 @@ export async function POST(request: NextRequest) {
       }, { status: 500 })
     }
     
-    // Step 2: Check and add missing columns to users table
+    // Step 2: Check and add missing columns to users table (camelCase)
     const userColumnsToAdd = [
-      { name: 'created_at', type: 'TIMESTAMP(3) DEFAULT NOW()' },
-      { name: 'updated_at', type: 'TIMESTAMP(3) DEFAULT NOW()' },
+      { name: 'createdAt', type: 'TIMESTAMP(3) DEFAULT NOW()' },
+      { name: 'updatedAt', type: 'TIMESTAMP(3) DEFAULT NOW()' },
       { name: 'email_verified', type: 'TIMESTAMP(3)' },
       { name: 'password', type: 'TEXT' }
     ]
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // Step 3: Check and add missing columns to profiles table
+    // Step 3: Check and add missing columns to profiles table (snake_case)
     const profileColumnsToAdd = [
       { name: 'first_name', type: 'TEXT' },
       { name: 'last_name', type: 'TEXT' },
@@ -139,6 +139,7 @@ export async function POST(request: NextRequest) {
             email: `test-${Date.now()}@example.com`,
             password: 'testpassword',
             emailVerified: new Date(),
+            // createdAt and updatedAt will be handled by Prisma defaults
           }
         })
       })

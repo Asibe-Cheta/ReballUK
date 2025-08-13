@@ -51,7 +51,7 @@ model VerificationToken {
   @@map("verificationtokens")
 }
 
-// Core User model - mapping to existing users table
+// Core User model - mapping to existing users table (camelCase columns)
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -59,8 +59,9 @@ model User {
   password      String?   // Added for credentials authentication
   emailVerified DateTime? @map("email_verified")
   image         String?
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
+  // Users table uses camelCase - no mapping needed
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   // NextAuth relationships
   accounts Account[]
@@ -75,7 +76,7 @@ model User {
   @@map("users")
 }
 
-// Player profiles - mapping to existing profiles table
+// Player profiles - mapping to existing profiles table (snake_case columns)
 model Profile {
   id            String   @id @default(cuid())
   userId        String   @unique @map("user_id")
@@ -95,6 +96,7 @@ model Profile {
   medicalInfo   String? @map("medical_info")
   isActive      Boolean @default(true) @map("is_active")
   completedOnboarding Boolean @default(false) @map("completed_onboarding")
+  // Profiles table uses snake_case - needs mapping
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
