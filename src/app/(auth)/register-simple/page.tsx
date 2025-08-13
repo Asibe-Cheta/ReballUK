@@ -1,225 +1,291 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { toast } from "sonner"
-import Link from "next/link"
+import { Checkbox } from "@/components/ui/checkbox"
 
-export default function SimpleRegisterPage() {
-  const [isLoading, setIsLoading] = useState(false)
+const PLAYER_POSITIONS = [
+  { value: "STRIKER", label: "Striker" },
+  { value: "WINGER", label: "Winger" },
+  { value: "CAM", label: "CAM (Central Attacking Midfielder)" },
+  { value: "FULLBACK", label: "Fullback" },
+  { value: "GOALKEEPER", label: "Goalkeeper" },
+  { value: "DEFENDER", label: "Defender" },
+  { value: "MIDFIELDER", label: "Midfielder" },
+  { value: "OTHER", label: "Other" },
+]
+
+export default function RegisterSimplePage() {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
     position: "",
-    agreeToTerms: false,
-    agreeToPrivacy: false
   })
+  const [agreeToTerms, setAgreeToTerms] = useState(false)
+  const [agreeToPrivacy, setAgreeToPrivacy] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
 
-  const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+    // Clear error when user starts typing
+    if (error) setError("")
+  }
+
+  const validateForm = () => {
+    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword || !formData.position) {
+      setError("All fields are required")
+      return false
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match")
+      return false
+    }
+    
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long")
+      return false
+    }
+    
+    if (!agreeToTerms || !agreeToPrivacy) {
+      setError("Please agree to Terms and Privacy Policy")
+      return false
+    }
+    
+    return true
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!formData.agreeToTerms || !formData.agreeToPrivacy) {
-      toast.error("Please agree to Terms of Service and Privacy Policy")
-      return
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match")
-      return
-    }
-
+    if (!validateForm()) return
+    
     setIsLoading(true)
-
+    setError("")
+    setSuccess("")
+    
     try {
       const response = await fetch("/api/auth/register-simple", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          agreeToTerms,
+          agreeToPrivacy,
+        }),
       })
-
-      const result = await response.json()
-
-      if (response.ok && result.success) {
-        toast.success("Account created successfully!")
-        // Redirect to login or dashboard
-        window.location.href = "/login-simple"
+      
+      const data = await response.json()
+      
+      if (response.ok && data.success) {
+        setSuccess("Account created successfully! Redirecting to login...")
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          position: "",
+        })
+        setAgreeToTerms(false)
+        setAgreeToPrivacy(false)
+        
+        // Redirect to login after 2 seconds
+        setTimeout(() => {
+          router.push("/login-simple")
+        }, 2000)
       } else {
-        toast.error(result.error || "Registration failed")
+        setError(data.error || "Registration failed. Please try again.")
       }
     } catch (error) {
       console.error("Registration error:", error)
-      toast.error("Registration failed. Please try again.")
+      setError("Network error. Please check your connection and try again.")
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4">
-      <Card className="w-full max-w-md glass-strong">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-white">Create Account</CardTitle>
-          <CardDescription className="text-gray-300">
-            Join REBALL and start your football training journey
+          <CardTitle className="text-2xl font-bold text-gray-900">
+            Join REBALL
+          </CardTitle>
+          <CardDescription>
+            Start your football training journey today
           </CardDescription>
         </CardHeader>
         
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name */}
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-white">Full Name</Label>
+            {/* Error Message */}
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
+            )}
+            
+            {/* Success Message */}
+            {success && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded-md">
+                <p className="text-sm text-green-600">{success}</p>
+              </div>
+            )}
+            
+            {/* Full Name */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                Full Name
+              </label>
               <Input
                 id="name"
+                name="name"
                 type="text"
                 value={formData.name}
-                onChange={(e) => handleInputChange("name", e.target.value)}
-                required
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                onChange={handleInputChange}
                 placeholder="Enter your full name"
+                disabled={isLoading}
+                required
               />
             </div>
-
+            
             {/* Email */}
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-white">Email</Label>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email
+              </label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 value={formData.email}
-                onChange={(e) => handleInputChange("email", e.target.value)}
-                required
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                onChange={handleInputChange}
                 placeholder="Enter your email"
+                disabled={isLoading}
+                required
               />
             </div>
-
+            
             {/* Position */}
-            <div className="space-y-2">
-              <Label htmlFor="position" className="text-white">Position</Label>
-              <Select value={formData.position} onValueChange={(value) => handleInputChange("position", value)}>
-                <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                  <SelectValue placeholder="Select your position" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="STRIKER">Striker</SelectItem>
-                  <SelectItem value="WINGER">Winger</SelectItem>
-                  <SelectItem value="CAM">CAM</SelectItem>
-                  <SelectItem value="DEFENDER">Defender</SelectItem>
-                  <SelectItem value="FULLBACK">Full Back</SelectItem>
-                </SelectContent>
-              </Select>
+            <div>
+              <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
+                Position
+              </label>
+              <select
+                id="position"
+                name="position"
+                value={formData.position}
+                onChange={handleInputChange}
+                disabled={isLoading}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">Select your position</option>
+                {PLAYER_POSITIONS.map((position) => (
+                  <option key={position.value} value={position.value}>
+                    {position.label}
+                  </option>
+                ))}
+              </select>
             </div>
-
+            
             {/* Password */}
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-white">Password</Label>
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
               <Input
                 id="password"
+                name="password"
                 type="password"
                 value={formData.password}
-                onChange={(e) => handleInputChange("password", e.target.value)}
+                onChange={handleInputChange}
+                placeholder="Enter your password"
+                disabled={isLoading}
                 required
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                placeholder="Create a password"
               />
             </div>
-
+            
             {/* Confirm Password */}
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-white">Confirm Password</Label>
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                Confirm Password
+              </label>
               <Input
                 id="confirmPassword"
+                name="confirmPassword"
                 type="password"
                 value={formData.confirmPassword}
-                onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                required
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                onChange={handleInputChange}
                 placeholder="Confirm your password"
+                disabled={isLoading}
+                required
               />
             </div>
-
-            {/* Checkboxes */}
-            <div className="space-y-3">
+            
+            {/* Terms and Privacy */}
+            <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="terms"
-                  checked={formData.agreeToTerms}
-                  onCheckedChange={(checked) => handleInputChange("agreeToTerms", checked as boolean)}
+                  checked={agreeToTerms}
+                  onCheckedChange={(checked) => setAgreeToTerms(checked as boolean)}
+                  disabled={isLoading}
                 />
-                <Label htmlFor="terms" className="text-sm text-gray-300">
+                <label htmlFor="terms" className="text-sm text-gray-700">
                   I agree to the{" "}
-                  <Link href="/terms" className="text-blue-400 hover:underline">
+                  <Link href="/terms" className="text-blue-600 hover:underline">
                     Terms of Service
                   </Link>
-                </Label>
+                </label>
               </div>
               
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="privacy"
-                  checked={formData.agreeToPrivacy}
-                  onCheckedChange={(checked) => handleInputChange("agreeToPrivacy", checked as boolean)}
+                  checked={agreeToPrivacy}
+                  onCheckedChange={(checked) => setAgreeToPrivacy(checked as boolean)}
+                  disabled={isLoading}
                 />
-                <Label htmlFor="privacy" className="text-sm text-gray-300">
+                <label htmlFor="privacy" className="text-sm text-gray-700">
                   I agree to the{" "}
-                  <Link href="/privacy" className="text-blue-400 hover:underline">
+                  <Link href="/privacy" className="text-blue-600 hover:underline">
                     Privacy Policy
                   </Link>
-                </Label>
+                </label>
               </div>
             </div>
-
+            
             {/* Submit Button */}
             <Button
               type="submit"
+              className="w-full"
               disabled={isLoading}
-              className="w-full bg-white text-black hover:bg-gray-100 disabled:opacity-50"
             >
               {isLoading ? "Creating Account..." : "Create Account"}
             </Button>
-
-            {/* Google OAuth */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-white/20" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-gray-900 px-2 text-gray-400">Or continue with</span>
-              </div>
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full border-white/20 text-white hover:bg-white/10"
-              onClick={() => {
-                // Simple Google OAuth redirect
-                window.location.href = "/api/auth/signin/google"
-              }}
-            >
-              Continue with Google
-            </Button>
-
+            
             {/* Login Link */}
-            <div className="text-center text-sm text-gray-400">
-              Already have an account?{" "}
-              <Link href="/login-simple" className="text-blue-400 hover:underline">
-                Sign in
-              </Link>
+            <div className="text-center">
+              <p className="text-sm text-gray-600">
+                Already have an account?{" "}
+                <Link href="/login-simple" className="text-blue-600 hover:underline">
+                  Sign in
+                </Link>
+              </p>
             </div>
           </form>
         </CardContent>

@@ -1,51 +1,46 @@
 import { PrismaClient } from '@prisma/client'
 
-// Global variable to store the Prisma client instance
 declare global {
   var __prisma: PrismaClient | undefined
 }
 
-// Create a new Prisma client with proper configuration
+// Create a new Prisma client with proper connection management for Supabase
 const createPrismaClient = () => {
   return new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
     datasources: {
       db: {
         url: process.env.DATABASE_URL,
       },
     },
-    // Connection pooling configuration for Supabase
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   })
 }
 
-// Export the Prisma client instance
+// Use a singleton pattern but with better connection management
 export const db = globalThis.__prisma ?? createPrismaClient()
 
-// In development, store the instance globally to prevent multiple instances
 if (process.env.NODE_ENV !== 'production') {
   globalThis.__prisma = db
 }
 
-// Graceful shutdown
+// Graceful shutdown handlers
 process.on('beforeExit', async () => {
   await db.$disconnect()
 })
 
-// Handle uncaught exceptions
 process.on('uncaughtException', async (error) => {
   console.error('Uncaught Exception:', error)
   await db.$disconnect()
   process.exit(1)
 })
 
-// Handle unhandled promise rejections
 process.on('unhandledRejection', async (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason)
   await db.$disconnect()
   process.exit(1)
 })
 
-// Database utility functions
+// Enhanced retry function with connection reset
 export const withRetry = async <T>(
   operation: () => Promise<T>,
   maxRetries: number = 3,
@@ -59,19 +54,22 @@ export const withRetry = async <T>(
     } catch (error) {
       lastError = error as Error
       console.error(`Database operation failed (attempt ${attempt}/${maxRetries}):`, error)
-      
-      if (attempt < maxRetries) {
-        // Wait before retrying
-        await new Promise(resolve => setTimeout(resolve, delay * attempt))
-        
-        // Reset connection on error
+
+      // If it's a prepared statement error, reset the connection
+      if (error instanceof Error && error.message.includes('prepared statement')) {
+        console.log(`Prepared statement error detected, resetting connection...`)
         try {
           await db.$disconnect()
           await new Promise(resolve => setTimeout(resolve, 500))
           await db.$connect()
+          console.log(`Connection reset successful`)
         } catch (connectionError) {
           console.error('Failed to reset connection:', connectionError)
         }
+      }
+
+      if (attempt < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, delay * attempt))
       }
     }
   }
@@ -79,7 +77,7 @@ export const withRetry = async <T>(
   throw lastError!
 }
 
-// Validate database connection
+// Database utility functions
 export const validateDatabaseConnection = async (): Promise<boolean> => {
   try {
     await db.$queryRaw`SELECT 1`
@@ -90,7 +88,6 @@ export const validateDatabaseConnection = async (): Promise<boolean> => {
   }
 }
 
-// Ensure database connection is active
 export const ensureConnection = async (): Promise<void> => {
   try {
     await db.$connect()
@@ -100,7 +97,6 @@ export const ensureConnection = async (): Promise<void> => {
   }
 }
 
-// Reset database connection (use sparingly)
 export const resetDatabaseConnection = async (): Promise<void> => {
   try {
     await db.$disconnect()

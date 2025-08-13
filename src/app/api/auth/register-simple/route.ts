@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Check if user already exists using raw SQL to avoid prepared statement conflicts
+    // Check if user already exists using raw SQL
     console.log("Checking if user exists...")
     let existingUser = null
     try {
@@ -62,54 +62,74 @@ export async function POST(request: NextRequest) {
     console.log("Hashing password...")
     const hashedPassword = await hash(password, 12)
     
-    console.log("Creating user with Prisma ORM...")
+    console.log("Creating user and profile with raw SQL...")
     
-    // Use withRetry for the entire transaction
-    const result = await withRetry(async () => {
-      return await db.$transaction(async (tx) => {
-        // Create user with correct field names (camelCase for users table)
-        const user = await tx.user.create({
-          data: {
-            name,
-            email,
-            password: hashedPassword,
-            emailVerified: new Date(),
-            // createdAt and updatedAt will be handled by Prisma defaults
-          }
-        })
-        
-        console.log("User created, now creating profile...")
-        
-        // Create profile with correct field names (snake_case mapping for profiles table)
-        const profile = await tx.profile.create({
-          data: {
-            userId: user.id,
-            firstName: name.split(' ')[0] || name,
-            lastName: name.split(' ').slice(1).join(' ') || '',
-            position: position as PlayerPosition,
-            trainingLevel: 'BEGINNER',
-            completedOnboarding: false,
-            isActive: true,
-            // createdAt and updatedAt will be handled by Prisma defaults with correct mapping
-          }
-        })
-        
-        return { user, profile }
-      })
-    })
-    
-    console.log("Profile created successfully!")
-    console.log("=== SIMPLE REGISTRATION API SUCCESS ===")
-    
-    return NextResponse.json({
-      success: true,
-      message: "Account created successfully",
-      user: {
-        id: result.user.id,
-        name: result.user.name,
-        email: result.user.email
+    // Use raw SQL for all operations to avoid prepared statement conflicts
+    try {
+      // Create user with raw SQL
+      const userResult = await db.$queryRaw`
+        INSERT INTO users (id, name, email, password, "emailVerified", "createdAt", "updatedAt")
+        VALUES (gen_random_uuid()::text, ${name}, ${email}, ${hashedPassword}, NOW(), NOW(), NOW())
+        RETURNING id, name, email
+      `
+      
+      if (!Array.isArray(userResult) || userResult.length === 0) {
+        throw new Error("Failed to create user")
       }
-    })
+      
+      const user = userResult[0]
+      console.log("User created:", user.email)
+      
+      // Create profile with raw SQL
+      const profileResult = await db.$queryRaw`
+        INSERT INTO profiles (id, "userId", "firstName", "lastName", position, "trainingLevel", "completedOnboarding", "isActive", "created_at", "updated_at")
+        VALUES (
+          gen_random_uuid()::text, 
+          ${user.id}, 
+          ${name.split(' ')[0] || name}, 
+          ${name.split(' ').slice(1).join(' ') || ''}, 
+          ${position}::text, 
+          'BEGINNER', 
+          false, 
+          true, 
+          NOW(), 
+          NOW()
+        )
+        RETURNING id, "userId"
+      `
+      
+      if (!Array.isArray(profileResult) || profileResult.length === 0) {
+        throw new Error("Failed to create profile")
+      }
+      
+      console.log("Profile created successfully!")
+      console.log("=== SIMPLE REGISTRATION API SUCCESS ===")
+      
+      return NextResponse.json({
+        success: true,
+        message: "Account created successfully",
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email
+        }
+      })
+      
+    } catch (sqlError) {
+      console.error("SQL operation failed:", sqlError)
+      
+      // Check for specific SQL errors
+      if (sqlError instanceof Error) {
+        if (sqlError.message.includes('duplicate key') || sqlError.message.includes('already exists')) {
+          return NextResponse.json(
+            { success: false, error: "Email already registered" },
+            { status: 409 }
+          )
+        }
+      }
+      
+      throw sqlError
+    }
     
   } catch (error) {
     console.error("=== SIMPLE REGISTRATION API ERROR ===")
@@ -122,13 +142,13 @@ export async function POST(request: NextRequest) {
     let statusCode = 500
     
     if (error instanceof Error) {
-      if (error.message.includes("Unique constraint") || error.message.includes("already exists")) {
+      if (error.message.includes('duplicate key') || error.message.includes('already exists')) {
         errorMessage = "Email already registered"
         statusCode = 409
-      } else if (error.message.includes("prepared statement")) {
+      } else if (error.message.includes('prepared statement')) {
         errorMessage = "Database connection issue. Please try again."
         statusCode = 500
-      } else if (error.message.includes("column") && error.message.includes("does not exist")) {
+      } else if (error.message.includes('column') && error.message.includes('does not exist')) {
         errorMessage = "Database schema issue. Please contact support."
         statusCode = 500
       }
