@@ -4,7 +4,7 @@ declare global {
   var __prisma: PrismaClient | undefined
 }
 
-// Create a new Prisma client with proper connection management for Supabase
+// Create a new Prisma client with aggressive connection management for Supabase
 const createPrismaClient = () => {
   return new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
@@ -16,12 +16,24 @@ const createPrismaClient = () => {
   })
 }
 
-// Use a singleton pattern but with better connection management
-export const db = globalThis.__prisma ?? createPrismaClient()
+// For development, always create a fresh client to avoid prepared statement conflicts
+let db: PrismaClient
 
-if (process.env.NODE_ENV !== 'production') {
-  globalThis.__prisma = db
+if (process.env.NODE_ENV === 'production') {
+  // In production, use singleton pattern
+  db = globalThis.__prisma ?? createPrismaClient()
+  if (!globalThis.__prisma) {
+    globalThis.__prisma = db
+  }
+} else {
+  // In development, create fresh client each time to avoid prepared statement conflicts
+  if (!globalThis.__prisma) {
+    globalThis.__prisma = createPrismaClient()
+  }
+  db = globalThis.__prisma
 }
+
+export { db }
 
 // Graceful shutdown handlers
 process.on('beforeExit', async () => {
@@ -99,11 +111,26 @@ export const ensureConnection = async (): Promise<void> => {
 
 export const resetDatabaseConnection = async (): Promise<void> => {
   try {
+    console.log('Resetting database connection...')
     await db.$disconnect()
     await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    // Clear the global prisma instance to force recreation
+    if (process.env.NODE_ENV !== 'production') {
+      globalThis.__prisma = undefined
+      globalThis.__prisma = createPrismaClient()
+    }
+    
     await db.$connect()
+    console.log('Database connection reset successfully')
   } catch (error) {
     console.error('Failed to reset database connection:', error)
     throw error
   }
+}
+
+// Create a fresh database client for critical operations
+export const getFreshDbClient = (): PrismaClient => {
+  console.log('Creating fresh database client...')
+  return createPrismaClient()
 }

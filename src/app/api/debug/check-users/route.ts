@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server"
-import { db } from "@/lib/db"
+import { getFreshDbClient } from "@/lib/db"
 
 export async function GET(request: NextRequest) {
+  const freshDb = getFreshDbClient()
+  
   try {
     console.log("=== CHECKING USERS TABLE ===")
     
     // Get all users in the database
-    const allUsers = await db.$queryRaw`
+    const allUsers = await freshDb.$queryRaw`
       SELECT id, name, email, "createdAt", "updatedAt" 
       FROM users 
       ORDER BY "createdAt" DESC 
@@ -16,7 +18,7 @@ export async function GET(request: NextRequest) {
     console.log("All users in database:", allUsers)
     
     // Get count of users
-    const userCount = await db.$queryRaw`
+    const userCount = await freshDb.$queryRaw`
       SELECT COUNT(*) as count FROM users
     `
     
@@ -35,7 +37,7 @@ export async function GET(request: NextRequest) {
     
     for (const email of testEmails) {
       try {
-        const result = await db.$queryRaw`
+        const result = await freshDb.$queryRaw`
           SELECT id, email FROM users WHERE email = ${email}
         `
         emailChecks[email] = {
@@ -50,6 +52,9 @@ export async function GET(request: NextRequest) {
       }
     }
     
+    // Clean up fresh client
+    await freshDb.$disconnect()
+    
     return NextResponse.json({
       success: true,
       allUsers,
@@ -59,6 +64,12 @@ export async function GET(request: NextRequest) {
     })
     
   } catch (error) {
+    // Clean up fresh client on error
+    try {
+      await freshDb.$disconnect()
+    } catch (disconnectError) {
+      console.error("Failed to disconnect fresh client:", disconnectError)
+    }
     console.error("Error checking users:", error)
     return NextResponse.json({
       success: false,

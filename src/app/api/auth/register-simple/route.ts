@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { hash } from "bcryptjs"
-import { db } from "@/lib/db"
+import { getFreshDbClient } from "@/lib/db"
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,27 +37,25 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Skip the email check for now to avoid prepared statement conflicts
-    // We'll let the database handle duplicate detection during INSERT
-    console.log("Skipping email existence check to avoid prepared statement conflicts")
-    console.log("Registration will proceed and let database handle duplicate detection")
+    // Use a fresh database client to avoid prepared statement conflicts
+    console.log("Creating fresh database client to avoid prepared statement conflicts")
+    const freshDb = getFreshDbClient()
     
-    // Hash password
-    console.log("Hashing password...")
-    const hashedPassword = await hash(password, 12)
-    
-    console.log("Creating user and profile with raw SQL...")
-    
-    // Use raw SQL for all operations to avoid prepared statement conflicts
     try {
+      // Hash password
+      console.log("Hashing password...")
+      const hashedPassword = await hash(password, 12)
+      
+      console.log("Creating user and profile with fresh database client...")
+      
       console.log("=== ATTEMPTING USER CREATION ===")
       console.log("Email to insert:", email)
       console.log("Name to insert:", name)
       console.log("Position to insert:", position)
       
-      // Create user with raw SQL
+      // Create user with raw SQL using fresh client
       console.log("Executing user INSERT query...")
-      const userResult = await db.$queryRaw`
+      const userResult = await freshDb.$queryRaw`
         INSERT INTO users (id, name, email, password, "emailVerified", "createdAt", "updatedAt")
         VALUES (gen_random_uuid()::text, ${name}, ${email}, ${hashedPassword}, NOW(), NOW(), NOW())
         RETURNING id, name, email
@@ -71,9 +69,9 @@ export async function POST(request: NextRequest) {
       const user = userResult[0]
       console.log("User created:", user.email)
       
-      // Create profile with raw SQL - using only columns that exist
+      // Create profile with raw SQL using fresh client - using only columns that exist
       // Based on the error, we know these columns exist: id, userId, firstName, lastName, position, trainingLevel, isActive, created_at, updated_at
-      const profileResult = await db.$queryRaw`
+      const profileResult = await freshDb.$queryRaw`
         INSERT INTO profiles (id, "userId", "firstName", "lastName", position, "trainingLevel", "isActive", "created_at", "updated_at")
         VALUES (
           gen_random_uuid()::text, 
@@ -95,6 +93,9 @@ export async function POST(request: NextRequest) {
       
       console.log("Profile created successfully!")
       console.log("=== SIMPLE REGISTRATION API SUCCESS ===")
+      
+      // Clean up fresh database client
+      await freshDb.$disconnect()
       
       return NextResponse.json({
         success: true,
@@ -134,6 +135,13 @@ export async function POST(request: NextRequest) {
             { status: 500 }
           )
         }
+      }
+      
+      // Clean up fresh database client on error
+      try {
+        await freshDb.$disconnect()
+      } catch (disconnectError) {
+        console.error("Failed to disconnect fresh client:", disconnectError)
       }
       
       throw sqlError
