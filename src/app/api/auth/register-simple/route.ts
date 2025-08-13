@@ -59,23 +59,15 @@ export async function POST(request: NextRequest) {
     console.log("Hashing password...")
     const hashedPassword = await hash(password, 12)
     
-    // Generate IDs
-    const userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    const profileId = `profile_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
-    console.log("Creating user with ID:", userId)
-    
-    // Create user and profile using Prisma ORM with minimal required fields
     console.log("Creating user with Prisma ORM...")
     
     const result = await db.$transaction(async (tx) => {
-      // Create user with only essential fields
+      // Create user with only essential fields that exist in the schema
       const user = await tx.user.create({
         data: {
-          id: userId,
           name,
           email,
-          password: hashedPassword,
+          password: hashedPassword, // Now we can include the password
           emailVerified: new Date(),
           // createdAt and updatedAt will be handled by Prisma defaults
         }
@@ -83,16 +75,15 @@ export async function POST(request: NextRequest) {
       
       console.log("User created, now creating profile...")
       
-      // Create profile with only essential fields
+      // Create profile with only essential fields that exist in the schema
       const profile = await tx.profile.create({
         data: {
-          id: profileId,
-          userId: userId,
+          userId: user.id,
           firstName: name.split(' ')[0] || name,
           lastName: name.split(' ').slice(1).join(' ') || '',
           position: position as any, // Type assertion for enum
           trainingLevel: 'BEGINNER',
-          onboardingCompleted: false,
+          completedOnboarding: false,
           isActive: true,
           // Other fields will use defaults or be nullable
         }

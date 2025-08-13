@@ -27,6 +27,7 @@
          <button onclick="resetDatabaseConnection()" style="background-color: #6c757d; color: white;">Reset DB Connection</button>
          <button onclick="createSessionsTable()" style="background-color: #e83e8c; color: white;">Create Sessions Table</button>
          <button onclick="fixDatabaseSchema()" style="background-color: #ffc107; color: black;">Fix Database Schema</button>
+         <button onclick="addPasswordColumn()" style="background-color: #28a745; color: white;">Add Password Column</button>
          <button onclick="generatePrismaSchema()" style="background-color: #17a2b8; color: white;">Analyze DB Schema</button>
          <button onclick="testSession()" style="background-color: #20c997; color: white;">Test Session</button>
          <button onclick="testAuthStatus()">Test Auth Status</button>
@@ -361,6 +362,27 @@
                 showResult('Auth Status', response.ok ? 'success' : 'error', result);
             } catch (error) {
                 showResult('Auth Status Error', 'error', { error: error.message });
+            }
+        }
+
+        async function addPasswordColumn() {
+            showResult('Adding password column to users table...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/add-password-column', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Password Column Added Successfully!', 'success', result);
+                } else {
+                    showResult('Failed to Add Password Column', 'error', result);
+                }
+            } catch (error) {
+                showResult('Add Password Column Network Error', 'error', { error: error.message });
             }
         }
 
