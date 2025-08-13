@@ -59,10 +59,6 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    const schemaAnalysis = {}
-    
-
-    
     console.log("Database schema analysis completed")
     
     return NextResponse.json({
