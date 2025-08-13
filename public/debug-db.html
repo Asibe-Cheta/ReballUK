@@ -74,6 +74,7 @@
         <button onclick="addMissingColumns()" style="background-color: #17a2b8; color: white;">Add Missing Columns</button>
         
         <button onclick="checkProfilesSchema()" style="background-color: #fd7e14; color: white;">🔍 Check Profiles Schema</button>
+        <button onclick="testEmailCheck()" style="background-color: #e83e8c; color: white;">📧 Test Email Check</button>
     </div>
     
     <div id="result" class="result-box"></div>
@@ -456,6 +457,31 @@
                 }
             } catch (error) {
                 showResult('Profiles schema check error', 'error', { error: error.message });
+            }
+        }
+
+        async function testEmailCheck() {
+            const email = prompt('Enter email to test:', 'johngray@gmail.com');
+            if (!email) return;
+            
+            showResult(`Testing email check for: ${email}`, 'info');
+            
+            try {
+                const response = await fetch('/api/debug/test-email-check', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Email check test completed!', 'success', result);
+                } else {
+                    showResult('Email check test failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Email check test error', 'error', { error: error.message });
             }
         }
     </script>

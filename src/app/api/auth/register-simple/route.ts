@@ -37,25 +37,29 @@ export async function POST(request: NextRequest) {
     }
     
     // Check if user already exists using raw SQL
-    console.log("Checking if user exists...")
+    console.log("Checking if user exists for email:", email)
     let existingUser = null
     try {
       const result = await db.$queryRaw`
         SELECT id, email FROM users WHERE email = ${email} LIMIT 1
       `
+      console.log("Database query result:", result)
       existingUser = Array.isArray(result) && result.length > 0 ? result[0] : null
+      console.log("Existing user found:", existingUser)
     } catch (error) {
       console.error("Error checking existing user:", error)
-      // Continue with registration attempt
+      // Continue with registration attempt if query fails
     }
     
     if (existingUser) {
-      console.log("User already exists")
+      console.log("User already exists with email:", existingUser.email)
       return NextResponse.json(
         { success: false, error: "Email already registered" },
         { status: 409 }
       )
     }
+    
+    console.log("No existing user found, proceeding with registration...")
     
     // Hash password
     console.log("Hashing password...")
