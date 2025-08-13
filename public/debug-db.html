@@ -75,6 +75,7 @@
         
         <button onclick="checkProfilesSchema()" style="background-color: #fd7e14; color: white;">🔍 Check Profiles Schema</button>
         <button onclick="testEmailCheck()" style="background-color: #e83e8c; color: white;">📧 Test Email Check</button>
+        <button onclick="checkUsers()" style="background-color: #28a745; color: white;">👥 Check Users</button>
     </div>
     
     <div id="result" class="result-box"></div>
@@ -482,6 +483,23 @@
                 }
             } catch (error) {
                 showResult('Email check test error', 'error', { error: error.message });
+            }
+        }
+
+        async function checkUsers() {
+            showResult('Checking users in database...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/check-users');
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Users check completed!', 'success', result);
+                } else {
+                    showResult('Users check failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Users check error', 'error', { error: error.message });
             }
         }
     </script>

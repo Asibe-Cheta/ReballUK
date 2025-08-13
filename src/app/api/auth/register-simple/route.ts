@@ -5,9 +5,10 @@ import { db } from "@/lib/db"
 export async function POST(request: NextRequest) {
   try {
     console.log("=== SIMPLE REGISTRATION API START ===")
+    console.log("Timestamp:", new Date().toISOString())
     
     const body = await request.json()
-    console.log("Received body:", body)
+    console.log("Received body:", JSON.stringify(body, null, 2))
     
     const { name, email, password, confirmPassword, position, agreeToTerms, agreeToPrivacy } = body
     
@@ -49,12 +50,19 @@ export async function POST(request: NextRequest) {
     
     // Use raw SQL for all operations to avoid prepared statement conflicts
     try {
+      console.log("=== ATTEMPTING USER CREATION ===")
+      console.log("Email to insert:", email)
+      console.log("Name to insert:", name)
+      console.log("Position to insert:", position)
+      
       // Create user with raw SQL
+      console.log("Executing user INSERT query...")
       const userResult = await db.$queryRaw`
         INSERT INTO users (id, name, email, password, "emailVerified", "createdAt", "updatedAt")
         VALUES (gen_random_uuid()::text, ${name}, ${email}, ${hashedPassword}, NOW(), NOW(), NOW())
         RETURNING id, name, email
       `
+      console.log("User INSERT successful, result:", userResult)
       
       if (!Array.isArray(userResult) || userResult.length === 0) {
         throw new Error("Failed to create user")
@@ -99,7 +107,10 @@ export async function POST(request: NextRequest) {
       })
       
     } catch (sqlError) {
-      console.error("SQL operation failed:", sqlError)
+      console.error("=== SQL OPERATION FAILED ===")
+      console.error("SQL Error:", sqlError)
+      console.error("SQL Error message:", sqlError instanceof Error ? sqlError.message : "Unknown error")
+      console.error("SQL Error stack:", sqlError instanceof Error ? sqlError.stack : "No stack")
       
       // Check for specific SQL errors
       if (sqlError instanceof Error) {
@@ -107,7 +118,8 @@ export async function POST(request: NextRequest) {
             sqlError.message.includes('already exists') ||
             sqlError.message.includes('unique constraint') ||
             sqlError.message.includes('violates unique constraint')) {
-          console.log("Duplicate email detected during INSERT")
+          console.log("=== DUPLICATE EMAIL DETECTED DURING INSERT ===")
+          console.log("Duplicate email:", email)
           return NextResponse.json(
             { success: false, error: "Email already registered" },
             { status: 409 }

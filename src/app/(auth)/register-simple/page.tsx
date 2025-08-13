@@ -74,22 +74,33 @@ export default function RegisterSimplePage() {
     setError("")
     setSuccess("")
     
+    const requestData = {
+      ...formData,
+      agreeToTerms,
+      agreeToPrivacy,
+    }
+    
+    console.log("=== REGISTRATION FORM SUBMIT ===")
+    console.log("Request data:", JSON.stringify(requestData, null, 2))
+    
     try {
+      console.log("Sending registration request...")
       const response = await fetch("/api/auth/register-simple", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...formData,
-          agreeToTerms,
-          agreeToPrivacy,
-        }),
+        body: JSON.stringify(requestData),
       })
       
+      console.log("Response status:", response.status)
+      console.log("Response headers:", response.headers)
+      
       const data = await response.json()
+      console.log("Response data:", JSON.stringify(data, null, 2))
       
       if (response.ok && data.success) {
+        console.log("Registration successful!")
         setSuccess("Account created successfully! Redirecting to login...")
         // Reset form
         setFormData({
@@ -107,10 +118,11 @@ export default function RegisterSimplePage() {
           router.push("/login-simple")
         }, 2000)
       } else {
+        console.error("Registration failed:", data)
         setError(data.error || "Registration failed. Please try again.")
       }
     } catch (error) {
-      console.error("Registration error:", error)
+      console.error("Registration network error:", error)
       setError("Network error. Please check your connection and try again.")
     } finally {
       setIsLoading(false)
