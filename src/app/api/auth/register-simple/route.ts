@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { hash } from "bcryptjs"
-import { db, withRetry } from "@/lib/db"
-import { PlayerPosition } from "@prisma/client"
+import { db } from "@/lib/db"
 
 export async function POST(request: NextRequest) {
   try {
@@ -80,9 +79,10 @@ export async function POST(request: NextRequest) {
       const user = userResult[0]
       console.log("User created:", user.email)
       
-      // Create profile with raw SQL
+      // Create profile with raw SQL - using only columns that exist
+      // Based on the error, we know these columns exist: id, userId, firstName, lastName, position, trainingLevel, isActive, created_at, updated_at
       const profileResult = await db.$queryRaw`
-        INSERT INTO profiles (id, "userId", "firstName", "lastName", position, "trainingLevel", "completedOnboarding", "isActive", "created_at", "updated_at")
+        INSERT INTO profiles (id, "userId", "firstName", "lastName", position, "trainingLevel", "isActive", "created_at", "updated_at")
         VALUES (
           gen_random_uuid()::text, 
           ${user.id}, 
@@ -90,7 +90,6 @@ export async function POST(request: NextRequest) {
           ${name.split(' ').slice(1).join(' ') || ''}, 
           ${position}::text, 
           'BEGINNER', 
-          false, 
           true, 
           NOW(), 
           NOW()
@@ -124,6 +123,15 @@ export async function POST(request: NextRequest) {
           return NextResponse.json(
             { success: false, error: "Email already registered" },
             { status: 409 }
+          )
+        }
+        
+        // Check for missing column errors
+        if (sqlError.message.includes('column') && sqlError.message.includes('does not exist')) {
+          console.error("Schema mismatch detected:", sqlError.message)
+          return NextResponse.json(
+            { success: false, error: "Database schema issue. Please contact support." },
+            { status: 500 }
           )
         }
       }

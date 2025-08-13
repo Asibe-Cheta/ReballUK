@@ -1,358 +1,159 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>REBALL Database Debug</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .result { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
-        .success { background-color: #d4edda; border-color: #c3e6cb; }
-        .error { background-color: #f8d7da; border-color: #f5c6cb; }
-        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; white-space: pre-wrap; }
-        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .result-box {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { border-color: #28a745; background-color: #d4edda; }
+        .error { border-color: #dc3545; background-color: #f8d7da; }
+        .info { border-color: #17a2b8; background-color: #d1ecf1; }
     </style>
 </head>
 <body>
     <h1>REBALL Database Debug</h1>
     
-    <div>
-        <button onclick="testDbConnection()">Test Database Connection</button>
-        <button onclick="analyzeDatabase()" style="background-color: #17a2b8; color: white;">Analyze Database</button>
-        <button onclick="createTables()" style="background-color: #28a745; color: white;">Create Database Tables</button>
-        <button onclick="testSimpleRegistration()" style="background-color: #fd7e14; color: white;">Test Simple Registration</button>
+    <div class="button-grid">
+        <button onclick="testDatabaseConnection()" style="background-color: #6c757d; color: white;">Test Database Connection</button>
+        <button onclick="testRegistrationAPI()" style="background-color: #6c757d; color: white;">Test Registration API</button>
+        <button onclick="resetDBConnection()" style="background-color: #6c757d; color: white;">Reset DB Connection</button>
+        <button onclick="testAuthStatus()" style="background-color: #6c757d; color: white;">Test Auth Status</button>
+        
+        <button onclick="analyzeDatabase()" style="background-color: #20c997; color: white;">Analyze Database</button>
         <button onclick="testSimpleRegistrationAPI()" style="background-color: #20c997; color: white;">Test Simple Registration API</button>
-        <button onclick="testRegistration()">Test Registration API</button>
+        <button onclick="analyzeDBSchema()" style="background-color: #20c997; color: white;">Analyze DB Schema</button>
+        <button onclick="testSession()" style="background-color: #20c997; color: white;">Test Session</button>
+        
+        <button onclick="createDatabaseTables()" style="background-color: #28a745; color: white;">Create Database Tables</button>
+        <button onclick="addPasswordColumn()" style="background-color: #28a745; color: white;">Add Password Column</button>
+        
+        <button onclick="testSimpleRegistration()" style="background-color: #ffc107; color: black;">Test Simple Registration</button>
+        <button onclick="testPreparedStatements()" style="background-color: #ffc107; color: black;">Test Prepared Statements</button>
+        
         <button onclick="testGoogleOAuth()" style="background-color: #dc3545; color: white;">Test Google OAuth</button>
+        <button onclick="comprehensiveDatabaseFix()" style="background-color: #dc3545; color: white;">🔧 Comprehensive DB Fix</button>
+        
         <button onclick="testLogin()" style="background-color: #6f42c1; color: white;">Test Login</button>
-                 <button onclick="testPreparedStatements()" style="background-color: #fd7e14; color: white;">Test Prepared Statements</button>
-         <button onclick="resetDatabaseConnection()" style="background-color: #6c757d; color: white;">Reset DB Connection</button>
-         <button onclick="createSessionsTable()" style="background-color: #e83e8c; color: white;">Create Sessions Table</button>
-                   <button onclick="fixDatabaseSchema()" style="background-color: #ffc107; color: black;">Fix Database Schema</button>
-          <button onclick="addMissingColumns()" style="background-color: #17a2b8; color: white;">Add Missing Columns</button>
-          <button onclick="comprehensiveDatabaseFix()" style="background-color: #dc3545; color: white;">🔧 Comprehensive DB Fix</button>
-          <button onclick="addPasswordColumn()" style="background-color: #28a745; color: white;">Add Password Column</button>
-         <button onclick="generatePrismaSchema()" style="background-color: #17a2b8; color: white;">Analyze DB Schema</button>
-         <button onclick="testSession()" style="background-color: #20c997; color: white;">Test Session</button>
-         <button onclick="testAuthStatus()">Test Auth Status</button>
+        
+        <button onclick="createSessionsTable()" style="background-color: #e83e8c; color: white;">Create Sessions Table</button>
+        
+        <button onclick="fixDatabaseSchema()" style="background-color: #ffc107; color: black;">Fix Database Schema</button>
+        <button onclick="addMissingColumns()" style="background-color: #17a2b8; color: white;">Add Missing Columns</button>
+        
+        <button onclick="checkProfilesSchema()" style="background-color: #fd7e14; color: white;">🔍 Check Profiles Schema</button>
     </div>
-
-    <div id="results"></div>
+    
+    <div id="result" class="result-box"></div>
 
     <script>
-        async function testDbConnection() {
+        function showResult(message, type = 'info', data = null) {
+            const resultDiv = document.getElementById('result');
+            let content = message;
+            
+            if (data) {
+                content += '\n\n' + JSON.stringify(data, null, 2);
+            }
+            
+            resultDiv.textContent = content;
+            resultDiv.className = `result-box ${type}`;
+        }
+
+        async function testDatabaseConnection() {
             showResult('Testing database connection...', 'info');
             
             try {
-                const response = await fetch('/api/debug/db-test');
+                const response = await fetch('/api/health');
                 const result = await response.json();
                 
                 if (response.ok) {
-                    showResult('Database Connection Success!', 'success', result);
+                    showResult('Database connection successful!', 'success', result);
                 } else {
-                    showResult('Database Connection Failed', 'error', result);
+                    showResult('Database connection failed', 'error', result);
                 }
             } catch (error) {
-                showResult('Network Error', 'error', { error: error.message });
+                showResult('Database connection error', 'error', { error: error.message });
             }
         }
 
-        async function testSimpleRegistration() {
-            showResult('Testing simple registration (raw SQL)...', 'info');
-            
-            const testData = {
-                name: "Simple Test User",
-                email: "simple@test.com",
-                password: "SimplePass123!",
-                confirmPassword: "SimplePass123!",
-                position: "STRIKER",
-                agreeToTerms: true,
-                agreeToPrivacy: true
-            };
-            
-            try {
-                const response = await fetch('/api/debug/simple-registration', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(testData)
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok) {
-                    showResult('Simple Registration Success!', 'success', result);
-                } else {
-                    showResult(`Simple Registration Failed (${response.status})`, 'error', result);
-                }
-            } catch (error) {
-                showResult('Simple Registration Network Error', 'error', { error: error.message });
-            }
-        }
-
-        async function testSimpleRegistrationAPI() {
-            showResult('Testing Simple Registration API...', 'info');
+        async function testRegistrationAPI() {
+            showResult('Testing registration API...', 'info');
             
             try {
                 const response = await fetch('/api/auth/register-simple', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                                         body: JSON.stringify({
-                         name: 'Test User Simple',
-                         email: 'test-simple-' + Date.now() + '@example.com',
-                         password: 'TestPassword123!',
-                         confirmPassword: 'TestPassword123!',
-                         position: 'STRIKER',
-                         agreeToTerms: true,
-                         agreeToPrivacy: true
-                     })
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok) {
-                    showResult('Simple Registration API Success', 'success', result);
-                } else {
-                    showResult('Simple Registration API Failed', 'error', result);
-                }
-            } catch (error) {
-                showResult('Simple Registration API Error', 'error', { error: error.message });
-            }
-        }
-
-        async function testRegistration() {
-            showResult('Testing registration API...', 'info');
-            
-            const testData = {
-                name: "Debug User",
-                email: "debug@test.com",
-                password: "DebugPass123!",
-                confirmPassword: "DebugPass123!",
-                position: "STRIKER",
-                agreeToTerms: true,
-                agreeToPrivacy: true
-            };
-            
-            try {
-                const response = await fetch('/api/auth/register', {
-                    method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(testData)
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok) {
-                    showResult('Registration Success!', 'success', result);
-                } else {
-                    showResult(`Registration Failed (${response.status})`, 'error', result);
-                }
-            } catch (error) {
-                showResult('Registration Network Error', 'error', { error: error.message });
-            }
-        }
-
-        async function analyzeDatabase() {
-            showResult('Analyzing database structure...', 'info');
-            
-            try {
-                const response = await fetch('/api/debug/prisma-push', {
-                    method: 'POST'
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok) {
-                    showResult('Database Analysis Complete', 'success', result);
-                } else {
-                    showResult('Database Analysis Failed', 'error', result);
-                }
-            } catch (error) {
-                showResult('Database Analysis Error', 'error', { error: error.message });
-            }
-        }
-
-        async function createTables() {
-            showResult('Creating database tables...', 'info');
-            
-            try {
-                const response = await fetch('/api/debug/create-tables', {
-                    method: 'POST'
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok) {
-                    showResult('Tables Created Successfully!', 'success', result);
-                } else {
-                    showResult('Table Creation Failed', 'error', result);
-                }
-            } catch (error) {
-                showResult('Table Creation Error', 'error', { error: error.message });
-            }
-        }
-
-        async function testGoogleOAuth() {
-            showResult('Testing Google OAuth configuration...', 'info');
-            
-            try {
-                const response = await fetch('/api/debug/test-google-oauth');
-                const result = await response.json();
-                
-                if (response.ok) {
-                    showResult('Google OAuth Configuration', 'success', result);
-                } else {
-                    showResult('Google OAuth Configuration Failed', 'error', result);
-                }
-            } catch (error) {
-                showResult('Google OAuth Test Error', 'error', { error: error.message });
-            }
-        }
-
-        async function testLogin() {
-            showResult('Testing login functionality...', 'info');
-            
-            try {
-                const response = await fetch('/api/debug/test-login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
                     body: JSON.stringify({
-                        email: 'bervicdigital@gmail.com',
-                        password: 'Openitnow@112c'
+                        name: 'Test User',
+                        email: `test-${Date.now()}@example.com`,
+                        password: 'testpass123',
+                        confirmPassword: 'testpass123',
+                        position: 'STRIKER',
+                        agreeToTerms: true,
+                        agreeToPrivacy: true
                     })
                 });
                 
                 const result = await response.json();
                 
                 if (response.ok) {
-                    showResult('Login Test Success', 'success', result);
+                    showResult('Registration API test successful!', 'success', result);
                 } else {
-                    showResult('Login Test Failed', 'error', result);
+                    showResult('Registration API test failed', 'error', result);
                 }
             } catch (error) {
-                showResult('Login Test Error', 'error', { error: error.message });
+                showResult('Registration API error', 'error', { error: error.message });
             }
         }
 
-                 async function testPreparedStatements() {
-             showResult('Testing prepared statements fix...', 'info');
-             
-             try {
-                 const response = await fetch('/api/debug/test-prepared-statements', {
-                     method: 'POST',
-                     headers: {
-                         'Content-Type': 'application/json',
-                     },
-                     body: JSON.stringify({
-                         email: 'test@example.com'
-                     })
-                 });
-                 
-                 const result = await response.json();
-                 
-                 if (response.ok) {
-                     showResult('Prepared Statements Test Success', 'success', result);
-                 } else {
-                     showResult('Prepared Statements Test Failed', 'error', result);
-                 }
-             } catch (error) {
-                 showResult('Prepared Statements Test Error', 'error', { error: error.message });
-             }
-         }
-
-         async function resetDatabaseConnection() {
-             showResult('Resetting database connection...', 'info');
-             
-             try {
-                 const response = await fetch('/api/debug/reset-db-connection', {
-                     method: 'POST'
-                 });
-                 const result = await response.json();
-                 
-                 if (response.ok) {
-                     showResult('Database Connection Reset Success', 'success', result);
-                 } else {
-                     showResult('Database Connection Reset Failed', 'error', result);
-                 }
-             } catch (error) {
-                 showResult('Database Connection Reset Error', 'error', { error: error.message });
-             }
-         }
-
-                 async function createSessionsTable() {
-             showResult('Creating sessions table...', 'info');
-             
-             try {
-                 const response = await fetch('/api/debug/create-sessions-table', {
-                     method: 'POST'
-                 });
-                 const result = await response.json();
-                 
-                 if (response.ok) {
-                     showResult('Sessions Table Created Successfully', 'success', result);
-                 } else {
-                     showResult('Sessions Table Creation Failed', 'error', result);
-                 }
-             } catch (error) {
-                 showResult('Sessions Table Creation Error', 'error', { error: error.message });
-             }
-         }
-
-         async function fixDatabaseSchema() {
-             showResult('Fixing database schema...', 'info');
-             
-             try {
-                 const response = await fetch('/api/debug/fix-database-schema', {
-                     method: 'POST'
-                 });
-                 const result = await response.json();
-                 
-                 if (response.ok) {
-                     showResult('Database Schema Fixed Successfully', 'success', result);
-                 } else {
-                     showResult('Database Schema Fix Failed', 'error', result);
-                 }
-             } catch (error) {
-                 showResult('Database Schema Fix Error', 'error', { error: error.message });
-             }
-         }
-
-         async function generatePrismaSchema() {
-             showResult('Analyzing database schema...', 'info');
-             
-             try {
-                 const response = await fetch('/api/debug/generate-prisma-schema', {
-                     method: 'POST'
-                 });
-                 const result = await response.json();
-                 
-                 if (response.ok) {
-                     showResult('Database Schema Analysis Complete', 'success', result);
-                 } else {
-                     showResult('Database Schema Analysis Failed', 'error', result);
-                 }
-             } catch (error) {
-                 showResult('Database Schema Analysis Error', 'error', { error: error.message });
-             }
-         }
-
-         async function testSession() {
-             showResult('Testing session creation...', 'info');
-             
-             try {
-                 const response = await fetch('/api/debug/test-session');
-                 const result = await response.json();
-                 
-                 if (response.ok) {
-                     showResult('Session Test Success', 'success', result);
-                 } else {
-                     showResult('Session Test Failed', 'error', result);
-                 }
-             } catch (error) {
-                 showResult('Session Test Error', 'error', { error: error.message });
-             }
-         }
+        async function resetDBConnection() {
+            showResult('Resetting database connection...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/reset-db-connection', { method: 'POST' });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Database connection reset successful!', 'success', result);
+                } else {
+                    showResult('Database connection reset failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Database connection reset error', 'error', { error: error.message });
+            }
+        }
 
         async function testAuthStatus() {
             showResult('Testing auth status...', 'info');
@@ -361,90 +162,301 @@
                 const response = await fetch('/api/auth/status');
                 const result = await response.json();
                 
-                showResult('Auth Status', response.ok ? 'success' : 'error', result);
+                if (response.ok) {
+                    showResult('Auth status check successful!', 'success', result);
+                } else {
+                    showResult('Auth status check failed', 'error', result);
+                }
             } catch (error) {
-                showResult('Auth Status Error', 'error', { error: error.message });
+                showResult('Auth status check error', 'error', { error: error.message });
             }
         }
 
-                  async function addMissingColumns() {
-             showResult('Adding missing columns to users table...', 'info');
-             
-             try {
-                 const response = await fetch('/api/debug/add-missing-columns', {
-                     method: 'POST',
-                     headers: { 'Content-Type': 'application/json' }
-                 });
-                 
-                 const result = await response.json();
-                 
-                 if (response.ok) {
-                     showResult('Missing Columns Added Successfully!', 'success', result);
-                 } else {
-                     showResult('Failed to Add Missing Columns', 'error', result);
-                 }
-             } catch (error) {
-                 showResult('Add Missing Columns Network Error', 'error', { error: error.message });
-             }
-         }
-
-                   async function comprehensiveDatabaseFix() {
-             showResult('Running comprehensive database fix...', 'info');
-             
-             try {
-                 const response = await fetch('/api/debug/fix-database-comprehensive', {
-                     method: 'POST',
-                     headers: { 'Content-Type': 'application/json' }
-                 });
-                 
-                 const result = await response.json();
-                 
-                 if (response.ok) {
-                     showResult('Comprehensive Database Fix Completed!', 'success', result);
-                 } else {
-                     showResult('Comprehensive Database Fix Failed', 'error', result);
-                 }
-             } catch (error) {
-                 showResult('Comprehensive Database Fix Network Error', 'error', { error: error.message });
-             }
-         }
-
-         async function addPasswordColumn() {
-             showResult('Adding password column to users table...', 'info');
-             
-             try {
-                 const response = await fetch('/api/debug/add-password-column', {
-                     method: 'POST',
-                     headers: { 'Content-Type': 'application/json' }
-                 });
-                 
-                 const result = await response.json();
-                 
-                 if (response.ok) {
-                     showResult('Password Column Added Successfully!', 'success', result);
-                 } else {
-                     showResult('Failed to Add Password Column', 'error', result);
-                 }
-             } catch (error) {
-                 showResult('Add Password Column Network Error', 'error', { error: error.message });
-             }
-         }
-
-        function showResult(title, type, data = null) {
-            const resultsDiv = document.getElementById('results');
-            const resultDiv = document.createElement('div');
-            resultDiv.className = `result ${type}`;
+        async function analyzeDatabase() {
+            showResult('Analyzing database...', 'info');
             
-            let content = `<h3>${title}</h3>`;
-            if (data) {
-                content += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            try {
+                const response = await fetch('/api/debug/analyze-database');
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Database analysis completed!', 'success', result);
+                } else {
+                    showResult('Database analysis failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Database analysis error', 'error', { error: error.message });
             }
+        }
+
+        async function testSimpleRegistrationAPI() {
+            showResult('Testing simple registration API...', 'info');
             
-            resultDiv.innerHTML = content;
-            resultsDiv.appendChild(resultDiv);
+            try {
+                const response = await fetch('/api/auth/register-simple', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: 'API Test User',
+                        email: `api-test-${Date.now()}@example.com`,
+                        password: 'testpass123',
+                        confirmPassword: 'testpass123',
+                        position: 'MIDFIELDER',
+                        agreeToTerms: true,
+                        agreeToPrivacy: true
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Simple registration API test successful!', 'success', result);
+                } else {
+                    showResult('Simple registration API test failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Simple registration API error', 'error', { error: error.message });
+            }
+        }
+
+        async function analyzeDBSchema() {
+            showResult('Analyzing database schema...', 'info');
             
-            // Scroll to bottom
-            resultDiv.scrollIntoView({ behavior: 'smooth' });
+            try {
+                const response = await fetch('/api/debug/generate-prisma-schema');
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Database schema analysis completed!', 'success', result);
+                } else {
+                    showResult('Database schema analysis failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Database schema analysis error', 'error', { error: error.message });
+            }
+        }
+
+        async function testSession() {
+            showResult('Testing session...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/test-session');
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Session test successful!', 'success', result);
+                } else {
+                    showResult('Session test failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Session test error', 'error', { error: error.message });
+            }
+        }
+
+        async function createDatabaseTables() {
+            showResult('Creating database tables...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/create-database-tables', { method: 'POST' });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Database tables created successfully!', 'success', result);
+                } else {
+                    showResult('Database tables creation failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Database tables creation error', 'error', { error: error.message });
+            }
+        }
+
+        async function addPasswordColumn() {
+            showResult('Adding password column...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/add-password-column', { method: 'POST' });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Password column added successfully!', 'success', result);
+                } else {
+                    showResult('Password column addition failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Password column addition error', 'error', { error: error.message });
+            }
+        }
+
+        async function testSimpleRegistration() {
+            showResult('Testing simple registration...', 'info');
+            
+            try {
+                const response = await fetch('/api/auth/register-simple', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: 'Simple Test User',
+                        email: `simple-test-${Date.now()}@example.com`,
+                        password: 'testpass123',
+                        confirmPassword: 'testpass123',
+                        position: 'DEFENDER',
+                        agreeToTerms: true,
+                        agreeToPrivacy: true
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Simple registration test successful!', 'success', result);
+                } else {
+                    showResult('Simple registration test failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Simple registration error', 'error', { error: error.message });
+            }
+        }
+
+        async function testPreparedStatements() {
+            showResult('Testing prepared statements...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/test-prepared-statements');
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Prepared statements test successful!', 'success', result);
+                } else {
+                    showResult('Prepared statements test failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Prepared statements test error', 'error', { error: error.message });
+            }
+        }
+
+        async function testGoogleOAuth() {
+            showResult('Testing Google OAuth...', 'info');
+            
+            try {
+                const response = await fetch('/api/auth/signin/google');
+                showResult('Google OAuth redirect initiated', 'info', { redirectUrl: response.url });
+            } catch (error) {
+                showResult('Google OAuth error', 'error', { error: error.message });
+            }
+        }
+
+        async function comprehensiveDatabaseFix() {
+            showResult('Running comprehensive database fix...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/fix-database-comprehensive', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Comprehensive Database Fix Completed!', 'success', result);
+                } else {
+                    showResult('Comprehensive Database Fix Failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Comprehensive Database Fix Network Error', 'error', { error: error.message });
+            }
+        }
+
+        async function testLogin() {
+            showResult('Testing login...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/test-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'test@example.com',
+                        password: 'testpass123'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Login test successful!', 'success', result);
+                } else {
+                    showResult('Login test failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Login test error', 'error', { error: error.message });
+            }
+        }
+
+        async function createSessionsTable() {
+            showResult('Creating sessions table...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/create-sessions-table', { method: 'POST' });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Sessions table created successfully!', 'success', result);
+                } else {
+                    showResult('Sessions table creation failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Sessions table creation error', 'error', { error: error.message });
+            }
+        }
+
+        async function fixDatabaseSchema() {
+            showResult('Fixing database schema...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/fix-database-schema', { method: 'POST' });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Database schema fix completed!', 'success', result);
+                } else {
+                    showResult('Database schema fix failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Database schema fix error', 'error', { error: error.message });
+            }
+        }
+
+        async function addMissingColumns() {
+            showResult('Adding missing columns...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/add-missing-columns', { method: 'POST' });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Missing columns added successfully!', 'success', result);
+                } else {
+                    showResult('Missing columns addition failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Missing columns addition error', 'error', { error: error.message });
+            }
+        }
+
+        async function checkProfilesSchema() {
+            showResult('Checking profiles table schema...', 'info');
+            
+            try {
+                const response = await fetch('/api/debug/check-profiles-schema');
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Profiles schema check completed!', 'success', result);
+                } else {
+                    showResult('Profiles schema check failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Profiles schema check error', 'error', { error: error.message });
+            }
         }
     </script>
 </body>

@@ -77,25 +77,15 @@ model User {
 }
 
 // Player profiles - mapping to existing profiles table (snake_case columns)
+// Updated to match actual database schema - removed non-existent columns
 model Profile {
   id            String   @id @default(cuid())
   userId        String   @unique @map("user_id")
   firstName     String?  @map("first_name")
   lastName      String?  @map("last_name")
-  dateOfBirth   DateTime? @map("date_of_birth")
   position      PlayerPosition?
   trainingLevel TrainingLevel? @map("training_level")
-  confidenceRating Int? @map("confidence_rating") // 1-10 scale
-  preferredFoot String? @map("preferred_foot") // left, right, both
-  height        Int? // in cm
-  weight        Int? // in kg
-  bio           String?
-  goals         String? // Training goals
-  phoneNumber   String? @map("phone_number")
-  emergencyContact String? @map("emergency_contact")
-  medicalInfo   String? @map("medical_info")
   isActive      Boolean @default(true) @map("is_active")
-  completedOnboarding Boolean @default(false) @map("completed_onboarding")
   // Profiles table uses snake_case - needs mapping
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
