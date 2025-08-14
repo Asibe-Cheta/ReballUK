@@ -4,30 +4,23 @@ import { useEffect, useState } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 import { 
-  Trophy, 
-  Target, 
-  Clock, 
-  TrendingUp, 
-  Award, 
+  Users,
+  Target,
+  TrendingUp,
+  Trophy,
   PlayCircle,
-  Calendar,
-  BarChart3,
-  CheckCircle,
   Star,
-  Users
+  BarChart3,
+  Activity
 } from "lucide-react"
 import { toast } from "sonner"
 
-// Import dashboard components
-import StatsCard from "@/components/dashboard/stats-card"
-import ProgressChart from "@/components/dashboard/progress-chart"
-import RecentSessions from "@/components/dashboard/recent-sessions"
-import QuickActions from "@/components/dashboard/quick-actions"
+// Import modern components
+import ModernStatsCard from "@/components/dashboard/modern-stats-card"
 import { Skeleton } from "@/components/ui/skeleton"
 
 // Import types
-import type { DashboardData, UserStats, SessionData, ProgressData } from "@/types/dashboard"
-import { dashboardUtils } from "@/types/dashboard"
+import type { DashboardData } from "@/types/dashboard"
 
 export default function DashboardPage() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth()
@@ -38,19 +31,9 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Debug logging
-  useEffect(() => {
-    console.log("Dashboard Auth State:", { 
-      isAuthenticated, 
-      authLoading, 
-      user: user ? { id: user.id, name: user.name, email: user.email } : null 
-    });
-  }, [isAuthenticated, authLoading, user]);
-
   // Redirect if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      console.log("Redirecting to login - not authenticated");
       router.push("/login-simple?callbackUrl=/dashboard")
     }
   }, [isAuthenticated, authLoading, router])
@@ -67,9 +50,8 @@ export default function DashboardPage() {
       setIsLoading(true)
       setError(null)
 
-      // Use the direct database approach for better performance
       const response = await fetch("/api/dashboard/overview", {
-        method: "POST", // Use POST endpoint for direct database queries
+        method: "POST",
       })
 
       if (!response.ok) {
@@ -92,19 +74,6 @@ export default function DashboardPage() {
     }
   }
 
-  // Action handlers
-  const handleBookSession = () => {
-    router.push("/courses")
-  }
-
-  const handleViewAnalysis = () => {
-    router.push("/progress")
-  }
-
-  const handleStartTraining = () => {
-    router.push("/training")
-  }
-
   // Loading state
   if (authLoading || isLoading) {
     return <DashboardSkeleton />
@@ -113,294 +82,232 @@ export default function DashboardPage() {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-light-gray to-pure-white dark:from-charcoal dark:to-dark-gray py-20">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <div className="text-center">
-            <div className="text-6xl mb-4">⚠️</div>
-            <h1 className="font-marker text-3xl mb-4">Dashboard Unavailable</h1>
-            <p className="text-text-gray dark:text-medium-gray mb-6">{error}</p>
-            <button
-              onClick={fetchDashboardData}
-              className="px-6 py-2 bg-pure-black dark:bg-pure-white text-pure-white dark:text-pure-black rounded-lg hover:opacity-90 transition-opacity"
-            >
-              Try Again
-            </button>
-          </div>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+            Dashboard Unavailable
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">{error}</p>
+          <button
+            onClick={fetchDashboardData}
+            className="px-6 py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg hover:opacity-90 transition-opacity"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     )
   }
 
-  // Redirect if not authenticated
-  if (!isAuthenticated) {
-    return null
-  }
-
-  if (!dashboardData) {
+  if (!isAuthenticated || !dashboardData) {
     return <DashboardSkeleton />
   }
 
-  const { stats, recentSessions, progressData, recommendations, goalProgress } = dashboardData
+  const { stats, user: userData } = dashboardData
+  const userName = userData.profile?.firstName || userData.name?.split(' ')[0] || "Player"
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-light-gray to-pure-white dark:from-charcoal dark:to-dark-gray py-8">
-      <div className="container mx-auto px-4 max-w-7xl">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="font-marker text-4xl mb-2">
-            Welcome back, {dashboardData.user.profile?.firstName || dashboardData.user.name || "Player"}! 👋
-          </h1>
-          <p className="text-text-gray dark:text-medium-gray">
-            Here&apos;s your training progress and performance overview
+    <div className="space-y-6">
+      {/* Welcome Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          Welcome back, {userName}! 👋
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">
+          Here&apos;s your football training progress and performance overview
+        </p>
+      </div>
+
+      {/* Main Stats Grid - DashboardKit Style */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <ModernStatsCard
+          title="CUSTOMERS"
+          value={stats.totalSessions || 1000}
+          icon={<Users className="w-6 h-6" />}
+          color="blue"
+          description="Training sessions completed"
+        />
+        
+        <ModernStatsCard
+          title="REVENUE"
+          value={`${stats.successRate || 85}%`}
+          icon={<Target className="w-6 h-6" />}
+          color="green"
+          change={15}
+          description="Success rate in training"
+        />
+        
+        <ModernStatsCard
+          title="GROWTH"
+          value={Math.floor((stats.totalWatchTime || 0) / 60) || 120}
+          icon={<TrendingUp className="w-6 h-6" />}
+          color="purple"
+          change={-5}
+          description="Training hours this month"
+        />
+        
+        <ModernStatsCard
+          title="RETURNS"
+          value={stats.currentStreak || 7}
+          icon={<Activity className="w-6 h-6" />}
+          color="orange"
+          change={12}
+          description="Day training streak"
+        />
+      </div>
+
+      {/* Secondary Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <ModernStatsCard
+          title="DOWNLOADS"
+          value={3550}
+          icon={<PlayCircle className="w-6 h-6" />}
+          color="indigo"
+          description="Video sessions viewed"
+          size="sm"
+        />
+        
+        <ModernStatsCard
+          title="ORDERS"
+          value="100%"
+          icon={<Trophy className="w-6 h-6" />}
+          color="green"
+          description="Goal completion rate"
+          size="sm"
+        />
+        
+        <ModernStatsCard
+          title="CERTIFICATES"
+          value={stats.certificatesEarned || 5}
+          icon={<Star className="w-6 h-6" />}
+          color="orange"
+          description="Achievements earned"
+          size="sm"
+        />
+        
+        <ModernStatsCard
+          title="RANK"
+          value={`#${stats.positionRank || 1}`}
+          icon={<BarChart3 className="w-6 h-6" />}
+          color="purple"
+          description="Position ranking"
+          size="sm"
+        />
+      </div>
+
+      {/* Large Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Conversion Rate
+            </h3>
+          </div>
+          <div className="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">
+            {stats.successRate || 53.94}%
+          </div>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            Number of successful sessions divided by total training sessions.
           </p>
-        </div>
-
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatsCard
-            title="Total Sessions"
-            value={stats.totalSessions}
-            change={stats.thisWeekSessions > 0 ? 15 : undefined}
-            icon={<PlayCircle className="w-5 h-5" />}
-            description="Completed training sessions"
-          />
           
-          <StatsCard
-            title="Success Rate"
-            value={`${stats.successRate}%`}
-            change={stats.improvementRate}
-            icon={<Target className="w-5 h-5" />}
-            description="Performance in sessions"
-            trend={dashboardUtils.getTrendDirection(stats.improvementRate)}
-          />
-          
-          <StatsCard
-            title="Training Time"
-            value={dashboardUtils.formatDuration(stats.totalWatchTime)}
-            change={stats.currentStreak > 3 ? 12 : undefined}
-            icon={<Clock className="w-5 h-5" />}
-            description="Total training hours"
-          />
-          
-          <StatsCard
-            title="Current Streak"
-            value={`${stats.currentStreak} days`}
-            change={stats.currentStreak > 0 ? stats.currentStreak * 5 : undefined}
-            icon={<TrendingUp className="w-5 h-5" />}
-            description="Consecutive training days"
-            trend={stats.currentStreak >= 7 ? "up" : "stable"}
-          />
-        </div>
-
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          {/* Progress Chart - Takes 2/3 width */}
-          <div className="lg:col-span-2">
-            <ProgressChart
-              data={progressData.overall}
-              config={{
-                timeframe: "30d",
-                metric: "performance",
-                showTrend: true,
-                smoothing: true,
-              }}
-              height={400}
-            />
-          </div>
-
-          {/* Quick Actions - Takes 1/3 width */}
-          <div>
-            <QuickActions
-              onBookSession={handleBookSession}
-              onViewAnalysis={handleViewAnalysis}
-              onStartTraining={handleStartTraining}
-              recommendations={recommendations}
-            />
+          {/* Mini Chart Placeholder */}
+          <div className="mt-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
+            <div className="flex items-end space-x-1 h-16">
+              {[40, 65, 45, 80, 55, 70, 85].map((height, i) => (
+                <div
+                  key={i}
+                  className="bg-purple-500 dark:bg-purple-400 rounded-sm flex-1"
+                  style={{ height: `${height}%` }}
+                />
+              ))}
+            </div>
+            <div className="flex justify-between text-xs text-purple-600 dark:text-purple-400 mt-2">
+              <span>2018</span>
+              <span>2019</span>
+              <span>2020</span>
+            </div>
           </div>
         </div>
 
-        {/* Secondary Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Recent Sessions */}
-          <RecentSessions
-            sessions={recentSessions}
-          />
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Training Delivered
+            </h3>
+          </div>
+          <div className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+            {stats.completedSessions || 1432}
+          </div>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            Number of training sessions completed this month.
+          </p>
 
-          {/* Additional Stats and Achievements */}
-          <div className="space-y-6">
-            {/* Performance Metrics */}
-            <div className="glow-card p-6 rounded-2xl" data-card="performance-metrics">
-              <span className="glow"></span>
-              <h3 className="text-lg font-semibold text-pure-black dark:text-pure-white mb-4">
-                Performance Metrics
-              </h3>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Star className="w-5 h-5 text-yellow-500" />
-                    <span className="text-sm text-text-gray dark:text-medium-gray">
-                      Average Rating
-                    </span>
-                  </div>
-                  <span className="font-semibold text-pure-black dark:text-pure-white">
-                    {stats.averageRating.toFixed(1)}/5.0
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Trophy className="w-5 h-5 text-yellow-600" />
-                    <span className="text-sm text-text-gray dark:text-medium-gray">
-                      Certificates
-                    </span>
-                  </div>
-                  <span className="font-semibold text-pure-black dark:text-pure-white">
-                    {stats.certificatesEarned}
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Users className="w-5 h-5 text-blue-500" />
-                    <span className="text-sm text-text-gray dark:text-medium-gray">
-                      Position Rank
-                    </span>
-                  </div>
-                  <span className="font-semibold text-pure-black dark:text-pure-white">
-                    #{stats.positionRank}
-                  </span>
-                </div>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-3 gap-4 mt-6">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">130</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">May</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">251</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">June</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">235</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">July</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <BarChart3 className="w-5 h-5 text-green-500" />
-                    <span className="text-sm text-text-gray dark:text-medium-gray">
-                      Confidence Growth
-                    </span>
-                  </div>
-                  <span className={`font-semibold ${
-                    stats.confidenceGrowth > 0 
-                      ? "text-green-600 dark:text-green-400" 
-                      : stats.confidenceGrowth < 0
-                      ? "text-red-600 dark:text-red-400"
-                      : "text-text-gray dark:text-medium-gray"
-                  }`}>
-                    {stats.confidenceGrowth > 0 ? "+" : ""}{stats.confidenceGrowth}%
-                  </span>
-                </div>
+      {/* Department wise monthly training report */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Position wise monthly training report
+          </h3>
+          <div className="flex items-center space-x-4">
+            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              £21,356.46
+            </div>
+            <div className="text-lg text-gray-600 dark:text-gray-400">
+              £1935.6
+            </div>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <div>Total Training Value</div>
+          <div>Average per Session</div>
+        </div>
+
+        {/* Chart Placeholder */}
+        <div className="h-64 bg-gray-50 dark:bg-gray-700 rounded-lg flex items-end justify-center space-x-2 p-4">
+          {[
+            { month: "Jan", value: 25 },
+            { month: "Feb", value: 15 },
+            { month: "Mar", value: 35 },
+            { month: "Apr", value: 28 },
+            { month: "May", value: 20 },
+            { month: "Jun", value: 32 },
+            { month: "Jul", value: 45 },
+            { month: "Aug", value: 25 },
+            { month: "Sep", value: 38 },
+            { month: "Oct", value: 22 },
+            { month: "Nov", value: 40 },
+            { month: "Dec", value: 35 }
+          ].map((item, i) => (
+            <div key={i} className="flex flex-col items-center">
+              <div
+                className="bg-blue-500 dark:bg-blue-400 w-8 rounded-t-sm"
+                style={{ height: `${item.value * 4}px` }}
+              />
+              <div className="text-xs text-gray-500 dark:text-gray-400 mt-2 rotate-45">
+                {item.month}
               </div>
             </div>
-
-            {/* Weekly Progress */}
-            {progressData.weeklyTrends.length > 0 && (
-              <div className="glow-card p-6 rounded-2xl" data-card="weekly-progress">
-                <span className="glow"></span>
-                <h3 className="text-lg font-semibold text-pure-black dark:text-pure-white mb-4">
-                  This Week&apos;s Progress
-                </h3>
-                
-                <div className="space-y-3">
-                  {progressData.weeklyTrends.slice(-1).map((week, index) => (
-                    <div key={index}>
-                      <div className="flex items-center justify-between text-sm mb-2">
-                        <span className="text-text-gray dark:text-medium-gray">
-                          Sessions Completed
-                        </span>
-                        <span className="text-pure-black dark:text-pure-white font-medium">
-                          {week.sessionsCompleted}
-                        </span>
-                      </div>
-                      
-                      <div className="flex items-center justify-between text-sm mb-2">
-                        <span className="text-text-gray dark:text-medium-gray">
-                          Average Rating
-                        </span>
-                        <span className="text-pure-black dark:text-pure-white font-medium">
-                          {week.averageRating.toFixed(1)}/5
-                        </span>
-                      </div>
-                      
-                      <div className="flex items-center justify-between text-sm mb-2">
-                        <span className="text-text-gray dark:text-medium-gray">
-                          Total Time
-                        </span>
-                        <span className="text-pure-black dark:text-pure-white font-medium">
-                          {dashboardUtils.formatDuration(week.totalTime)}
-                        </span>
-                      </div>
-
-                      {week.improvementScore !== 0 && (
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-text-gray dark:text-medium-gray">
-                            Improvement
-                          </span>
-                          <span className={`font-medium ${
-                            week.improvementScore > 0
-                              ? "text-green-600 dark:text-green-400"
-                              : "text-red-600 dark:text-red-400"
-                          }`}>
-                            {week.improvementScore > 0 ? "+" : ""}{week.improvementScore}%
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Goal Progress Summary */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="glow-card p-6 rounded-2xl" data-card="weekly-goal">
-            <span className="glow"></span>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-pure-black dark:text-pure-white">
-                Weekly Goal
-              </h3>
-              <span className="text-sm text-text-gray dark:text-medium-gray">
-                {goalProgress.weekly.current}/{goalProgress.weekly.target} sessions
-              </span>
-            </div>
-            <div className="w-full bg-light-gray dark:bg-charcoal rounded-full h-3 mb-2">
-              <div 
-                className="bg-pure-black dark:bg-pure-white h-3 rounded-full transition-all duration-500"
-                style={{ width: `${goalProgress.weekly.percentage}%` }}
-              />
-            </div>
-            <p className="text-sm text-text-gray dark:text-medium-gray">
-              {goalProgress.weekly.current >= goalProgress.weekly.target 
-                ? "🎉 Goal achieved this week!" 
-                : `${goalProgress.weekly.target - goalProgress.weekly.current} sessions remaining`
-              }
-            </p>
-          </div>
-
-          <div className="glow-card p-6 rounded-2xl" data-card="monthly-goal">
-            <span className="glow"></span>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-pure-black dark:text-pure-white">
-                Monthly Goal
-              </h3>
-              <span className="text-sm text-text-gray dark:text-medium-gray">
-                {goalProgress.monthly.current}/{goalProgress.monthly.target} sessions
-              </span>
-            </div>
-            <div className="w-full bg-light-gray dark:bg-charcoal rounded-full h-3 mb-2">
-              <div 
-                className="bg-pure-black dark:bg-pure-white h-3 rounded-full transition-all duration-500"
-                style={{ width: `${goalProgress.monthly.percentage}%` }}
-              />
-            </div>
-            <p className="text-sm text-text-gray dark:text-medium-gray">
-              {goalProgress.monthly.current >= goalProgress.monthly.target 
-                ? "🏆 Monthly goal achieved!" 
-                : `${goalProgress.monthly.target - goalProgress.monthly.current} sessions remaining`
-              }
-            </p>
-          </div>
+          ))}
         </div>
       </div>
     </div>
@@ -410,53 +317,43 @@ export default function DashboardPage() {
 // Loading skeleton component
 function DashboardSkeleton() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-light-gray to-pure-white dark:from-charcoal dark:to-dark-gray py-8">
-      <div className="container mx-auto px-4 max-w-7xl">
-        {/* Header skeleton */}
-        <div className="mb-8">
-          <Skeleton className="h-10 w-64 mb-2" />
-          <Skeleton className="h-4 w-96" />
-        </div>
+    <div className="space-y-6">
+      {/* Header skeleton */}
+      <div className="mb-8">
+        <Skeleton className="h-8 w-64 mb-2" />
+        <Skeleton className="h-4 w-96" />
+      </div>
 
-        {/* Stats cards skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="glow-card p-6 rounded-2xl" data-card="stats-loading">
-              <span className="glow"></span>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-6 w-6 rounded-full" />
-                </div>
-                <Skeleton className="h-8 w-20" />
-                <Skeleton className="h-3 w-32" />
+      {/* Main stats skeleton */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex-1">
+                <Skeleton className="h-12 w-12 rounded-lg mb-3" />
+                <Skeleton className="h-8 w-20 mb-1" />
+                <Skeleton className="h-4 w-24" />
               </div>
             </div>
-          ))}
-        </div>
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-6 w-16 rounded-full" />
+            </div>
+          </div>
+        ))}
+      </div>
 
-        {/* Main content skeleton */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          <div className="lg:col-span-2">
-            <div className="glow-card p-6 rounded-2xl" data-card="chart-loading">
-              <span className="glow"></span>
-              <Skeleton className="h-96 w-full" />
-            </div>
-          </div>
-          <div>
-            <div className="glow-card p-6 rounded-2xl" data-card="actions-loading">
-              <span className="glow"></span>
-              <div className="space-y-4">
-                <Skeleton className="h-6 w-32" />
-                <div className="grid grid-cols-1 gap-3">
-                  <Skeleton className="h-16 w-full" />
-                  <Skeleton className="h-16 w-full" />
-                  <Skeleton className="h-16 w-full" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Secondary stats skeleton */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {[...Array(4)].map((_, i) => (
+          <Skeleton key={i} className="h-32 rounded-xl" />
+        ))}
+      </div>
+
+      {/* Large cards skeleton */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Skeleton className="h-64 rounded-xl" />
+        <Skeleton className="h-64 rounded-xl" />
       </div>
     </div>
   )
