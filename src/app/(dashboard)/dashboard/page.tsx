@@ -11,7 +11,9 @@ import {
   PlayCircle,
   Star,
   BarChart3,
-  Activity
+  Activity,
+  Award,
+  UserRound
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -112,18 +114,18 @@ export default function DashboardPage() {
       {/* Welcome Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-          Welcome back, {userName}! 👋
+          Welcome back, {userName}!
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
           Here&apos;s your football training progress and performance overview
         </p>
       </div>
 
-      {/* Main Stats Grid - DashboardKit Style */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+      {/* Main Stats Grid - DashboardKit Style (2x2 Layout) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <ModernStatsCard
           title="SESSIONS"
-          value={stats.totalSessions || 42}
+          value={stats.totalSessions || 0}
           icon={<PlayCircle className="w-6 h-6" />}
           color="blue"
           description="Training sessions completed"
@@ -131,37 +133,34 @@ export default function DashboardPage() {
         
         <ModernStatsCard
           title="SUCCESS RATE"
-          value={`${stats.successRate || 85}%`}
+          value={`${stats.successRate || 0}%`}
           icon={<Target className="w-6 h-6" />}
           color="green"
-          change={15}
           description="Performance in training"
         />
         
         <ModernStatsCard
           title="TRAINING HOURS"
-          value={Math.floor((stats.totalWatchTime || 0) / 60) || 28}
+          value={Math.floor((stats.totalWatchTime || 0) / 60) || 0}
           icon={<TrendingUp className="w-6 h-6" />}
           color="purple"
-          change={8}
           description="Hours trained this month"
         />
         
         <ModernStatsCard
           title="STREAK"
-          value={`${stats.currentStreak || 7} days`}
+          value={`${stats.currentStreak || 0} days`}
           icon={<Activity className="w-6 h-6" />}
           color="orange"
-          change={12}
           description="Consecutive training days"
         />
       </div>
 
-      {/* Secondary Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+      {/* Secondary Stats Grid (3x2 Layout like DashboardKit) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <ModernStatsCard
           title="VIDEO SESSIONS"
-          value={stats.completedSessions || 24}
+          value={stats.completedSessions || 0}
           icon={<PlayCircle className="w-6 h-6" />}
           color="indigo"
           description="Video analysis sessions"
@@ -170,7 +169,7 @@ export default function DashboardPage() {
         
         <ModernStatsCard
           title="GOAL COMPLETION"
-          value={`${Math.round(((stats.completedSessions || 24) / (stats.totalSessions || 42)) * 100)}%`}
+          value={`${stats.totalSessions > 0 ? Math.round(((stats.completedSessions || 0) / stats.totalSessions) * 100) : 0}%`}
           icon={<Trophy className="w-6 h-6" />}
           color="green"
           description="Training goal completion"
@@ -179,7 +178,7 @@ export default function DashboardPage() {
         
         <ModernStatsCard
           title="ACHIEVEMENTS"
-          value={stats.certificatesEarned || 8}
+          value={stats.certificatesEarned || 0}
           icon={<Star className="w-6 h-6" />}
           color="orange"
           description="Badges and certificates"
@@ -188,10 +187,28 @@ export default function DashboardPage() {
         
         <ModernStatsCard
           title="POSITION RANK"
-          value={`#${stats.positionRank || 3}`}
+          value={`#${stats.positionRank || 0}`}
           icon={<BarChart3 className="w-6 h-6" />}
           color="purple"
           description="Among position players"
+          size="sm"
+        />
+        
+        <ModernStatsCard
+          title="TRAINING LEVEL"
+          value={userData.profile?.trainingLevel || "BEGINNER"}
+          icon={<Award className="w-6 h-6" />}
+          color="blue"
+          description="Current skill level"
+          size="sm"
+        />
+        
+        <ModernStatsCard
+          title="POSITION"
+          value={userData.profile?.position || "GENERAL"}
+          icon={<UserRound className="w-6 h-6" />}
+          color="red"
+          description="Playing position"
           size="sm"
         />
       </div>
@@ -205,7 +222,7 @@ export default function DashboardPage() {
             </h3>
           </div>
           <div className="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">
-            {stats.successRate || 85}%
+            {stats.successRate || 0}%
           </div>
           <p className="text-gray-600 dark:text-gray-400 text-sm">
             Number of successful training sessions divided by total sessions completed.
@@ -237,7 +254,7 @@ export default function DashboardPage() {
             </h3>
           </div>
           <div className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
-            {stats.completedSessions || 28}
+            {stats.completedSessions || 0}
           </div>
           <p className="text-gray-600 dark:text-gray-400 text-sm">
             Training sessions completed this month across all categories.
@@ -246,15 +263,15 @@ export default function DashboardPage() {
           {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-4 mt-6">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">8</div>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">0</div>
               <div className="text-sm text-gray-500 dark:text-gray-400">Technical</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">12</div>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">0</div>
               <div className="text-sm text-gray-500 dark:text-gray-400">Physical</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">8</div>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">0</div>
               <div className="text-sm text-gray-500 dark:text-gray-400">Tactical</div>
             </div>
           </div>
