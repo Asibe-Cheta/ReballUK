@@ -10,7 +10,7 @@ import {
   MapPin, 
   User, 
   Target, 
-  DollarSign,
+  PoundSterling,
   CheckCircle,
   AlertCircle,
   Info
@@ -119,7 +119,7 @@ export default function BookingSummary({
                 </p>
               </div>
             </div>
-            <Badge variant="secondary">${sessionDetails.price}</Badge>
+            <Badge variant="secondary">£{sessionDetails.price}</Badge>
           </div>
 
           {/* Position */}
@@ -169,7 +169,7 @@ export default function BookingSummary({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <DollarSign className="h-5 w-5" />
+            <PoundSterling className="h-5 w-5" />
             Pricing Breakdown
           </CardTitle>
         </CardHeader>
@@ -177,7 +177,7 @@ export default function BookingSummary({
           <div className="space-y-3">
             <div className="flex justify-between">
               <span>Session Fee</span>
-              <span>${sessionDetails.price}</span>
+              <span>£{sessionDetails.price}</span>
             </div>
             <div className="flex justify-between">
               <span>Duration</span>
@@ -186,7 +186,7 @@ export default function BookingSummary({
             <Separator />
             <div className="flex justify-between font-semibold">
               <span>Total</span>
-              <span>${sessionDetails.price}</span>
+              <span>£{sessionDetails.price}</span>
             </div>
           </div>
         </CardContent>

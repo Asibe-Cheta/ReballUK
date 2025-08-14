@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Users, User, Crown, Clock, DollarSign } from "lucide-react"
+import { Users, User, Crown, Clock, PoundSterling } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export type SessionType = "group" | "1v1"
@@ -112,8 +112,8 @@ export default function SessionTypeSelector({
                   <span>{type.duration} minutes</span>
                 </div>
                 <div className="flex items-center gap-2 font-semibold">
-                  <DollarSign className="h-4 w-4" />
-                  <span>${type.price}</span>
+                  <PoundSterling className="h-4 w-4" />
+                  <span>£{type.price}</span>
                 </div>
               </div>
               
