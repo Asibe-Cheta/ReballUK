@@ -280,7 +280,7 @@ export async function GET(request: NextRequest) {
 }
 
 // Helper function to calculate streak
-function calculateStreak(progressData: any[]): number {
+function calculateStreak(progressData: Record<string, any>[]): number {
   if (progressData.length === 0) return 0
 
   const sortedData = progressData
@@ -288,7 +288,7 @@ function calculateStreak(progressData: any[]): number {
     .sort((a, b) => b.getTime() - a.getTime())
 
   let streak = 0
-  let currentDate = new Date()
+      const currentDate = new Date()
   currentDate.setHours(0, 0, 0, 0)
 
   for (const sessionDate of sortedData) {

@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     const prisma = getFreshDbClient()
 
     // Build where clause
-    const where: any = {
+    const where: Record<string, any> = {
       userId: session.user.id
     }
 
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Build order by clause
-    const orderBy: any = {}
+    const orderBy: Record<string, string> = {}
     orderBy[sortBy] = sortOrder
 
     // Fetch videos with pagination

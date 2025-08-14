@@ -149,7 +149,7 @@ export default function SimpleLoginPage() {
             {/* Register Link */}
             <div className="text-center">
               <p className="text-sm text-gray-600">
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <Link href="/register-simple" className="text-blue-600 hover:underline underline-offset-4">
                   Sign up
                 </Link>

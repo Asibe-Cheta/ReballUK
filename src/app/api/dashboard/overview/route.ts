@@ -88,9 +88,9 @@ export async function GET(request: NextRequest) {
     })()
 
       // For now, use empty arrays to avoid schema issues - we'll populate with real data later
-      const upcomingBookingsData: any[] = []
-      const certificatesData: any[] = []
-      const recentProgressData: any[] = []
+      const upcomingBookingsData: Record<string, any>[] = []
+      const certificatesData: Record<string, any>[] = []
+      const recentProgressData: Record<string, any>[] = []
 
       // Transform upcoming bookings (empty for now)
       const upcomingBookings: UpcomingBooking[] = []

@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
           title: `${position} Training - ${sessionType === '1v1' ? 'Personal' : 'Group'}`,
           description: `${position} training session for ${sessionType === '1v1' ? 'individual' : 'group'} training`,
           level: "BEGINNER",
-          position: position as any,
+          position: position as string,
           duration: 60,
           price: sessionType === '1v1' ? 75 : 25,
           isActive: true,

@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get('offset') || '0')
 
     // Build where clause
-    const whereClause: any = {
+    const whereClause: Record<string, any> = {
       userId: session.user.id
     }
 

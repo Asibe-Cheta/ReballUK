@@ -306,8 +306,8 @@ export default function RegisterSimplePage() {
             
             {/* Login Link */}
             <div className="text-center">
-              <p className="text-sm text-gray-600">
-                Already have account?{" "}
+                          <p className="text-sm text-gray-600">
+              Already have an account?{" "}
                 <Link href="/login-simple" className="text-blue-600 hover:underline underline-offset-4">
                   Sign in
                 </Link>
