@@ -10,7 +10,17 @@ import { Loader2, Mail, CheckCircle, XCircle } from "lucide-react"
 export default function TestEmailVerificationPage() {
   const [email, setEmail] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [result, setResult] = useState<any>(null)
+  const [result, setResult] = useState<{
+    success: boolean
+    message: string
+    user: {
+      id: string
+      name: string
+      email: string
+      emailVerified: boolean
+    }
+    verificationUrl?: string
+  } | null>(null)
   const [error, setError] = useState("")
 
   const handleTestVerification = async () => {
@@ -122,9 +132,9 @@ export default function TestEmailVerificationPage() {
             <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <h3 className="font-semibold mb-2">How to Test:</h3>
               <ol className="list-decimal list-inside space-y-1 text-sm">
-                <li>Enter an existing user's email address</li>
-                <li>Click "Test Email Verification"</li>
-                <li>Check the user's email for the verification link</li>
+                <li>Enter an existing user&apos;s email address</li>
+                <li>Click &quot;Test Email Verification&quot;</li>
+                <li>Check the user&apos;s email for the verification link</li>
                 <li>Click the verification link to verify the email</li>
                 <li>Try logging in with the verified account</li>
               </ol>
@@ -133,7 +143,7 @@ export default function TestEmailVerificationPage() {
             <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
               <h3 className="font-semibold mb-2">Note:</h3>
               <p className="text-sm">
-                This test will send a real verification email. Make sure you have access to the email address you're testing with.
+                This test will send a real verification email. Make sure you have access to the email address you&apos;re testing with.
               </p>
             </div>
           </CardContent>

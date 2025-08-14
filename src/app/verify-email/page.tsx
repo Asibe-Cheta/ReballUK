@@ -149,7 +149,7 @@ export default function VerifyEmailPage() {
             <Alert className="mb-6">
               <Mail className="h-4 w-4" />
               <AlertDescription>
-                Don't see the verification email? Check your spam folder or request a new one.
+                Don&apos;t see the verification email? Check your spam folder or request a new one.
               </AlertDescription>
             </Alert>
             
@@ -178,7 +178,7 @@ export default function VerifyEmailPage() {
             <Mail className="h-12 w-12 text-blue-500 mx-auto mb-4" />
             <h2 className="text-xl font-semibold mb-2">Request Verification Email</h2>
             <p className="text-muted-foreground mb-6">
-              Enter your email address and we'll send you a new verification link.
+              Enter your email address and we&apos;ll send you a new verification link.
             </p>
             
             <div className="space-y-4">

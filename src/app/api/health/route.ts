@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { validateDatabaseConnection, healthCheck } from "@/lib/db"
+import { validateDatabaseConnection, db } from "@/lib/db"
 import { env } from "@/lib/env-validation"
 
 // GET /api/health - Database health check
@@ -19,8 +19,9 @@ export async function GET(request: NextRequest) {
     // Database connection check
     const dbConnection = await validateDatabaseConnection()
     
-    // Full health check
-    const healthData = await healthCheck()
+    // Simple database version check
+    const versionResult = await db.$queryRaw`SELECT version() as version`
+    const healthData = { version: Array.isArray(versionResult) && versionResult[0] ? (versionResult[0] as any).version : 'Unknown' }
     
     const status = dbConnection.isConnected ? 200 : 503
     
