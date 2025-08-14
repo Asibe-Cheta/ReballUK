@@ -87,11 +87,11 @@ export default function DashboardPage() {
   }
 
   const handleBookSession = () => {
-    router.push("/training")
+    router.push("/bookings")
   }
 
   const handleViewProgress = () => {
-    router.push("/progress")
+    router.push("/bookings")
   }
 
   // Loading state
