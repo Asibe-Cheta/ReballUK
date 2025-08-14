@@ -157,7 +157,7 @@ export default function RegisterSimplePage() {
               <div className="w-3 h-3 bg-white rounded-sm"></div>
             </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Create an account</h1>
-            <p className="text-gray-600">Let's get started. Fill in the details below to create your account.</p>
+            <p className="text-gray-600">Let&apos;s get started. Fill in the details below to create your account.</p>
           </div>
 
           {/* Form */}
