@@ -5,9 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+
 import { CalendarIcon, Clock, Check, X, Loader2 } from "lucide-react"
-import { format, addDays, startOfDay, isSameDay, parseISO } from "date-fns"
+import { format, startOfDay } from "date-fns"
 import { cn } from "@/lib/utils"
 
 interface TimeSlot {

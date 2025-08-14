@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth-server"
 import { db, withRetry } from "@/lib/db"
 import { dashboardUtils } from "@/types/dashboard"
 import type { UserStats, DashboardStatsResponse } from "@/types/dashboard"
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await auth()
     if (!session?.user?.id) {
@@ -280,7 +280,7 @@ export async function GET(request: NextRequest) {
 }
 
 // Helper function to calculate streak
-function calculateStreak(progressData: Record<string, any>[]): number {
+function calculateStreak(progressData: Record<string, unknown>[]): number {
   if (progressData.length === 0) return 0
 
   const sortedData = progressData

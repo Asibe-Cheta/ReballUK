@@ -18,10 +18,10 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10')
     const offset = parseInt(searchParams.get('offset') || '0')
 
-    // Build where clause
-    const whereClause: Record<string, any> = {
-      userId: session.user.id
-    }
+                    // Build where clause
+                const whereClause: Record<string, unknown> = {
+                  userId: session.user.id
+                }
 
     if (status) {
       whereClause.status = status

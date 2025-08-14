@@ -10,7 +10,6 @@ import {
   Users, 
   Star, 
   ArrowRight,
-  Trophy,
   TrendingUp
 } from "lucide-react"
 import { cn } from "@/lib/utils"

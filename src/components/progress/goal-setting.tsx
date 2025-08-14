@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
@@ -37,9 +37,7 @@ interface Goal {
   completedAt?: string
 }
 
-interface GoalSettingProps {
-  className?: string
-}
+
 
 const goalCategories = [
   { value: "success_rate", label: "Success Rate", icon: <Target className="h-4 w-4" /> },
@@ -55,7 +53,7 @@ const goalUnits = {
   skills: "skills"
 }
 
-export default function GoalSetting({ className }: GoalSettingProps) {
+export default function GoalSetting() {
   const [goals, setGoals] = useState<Goal[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -222,7 +220,7 @@ export default function GoalSetting({ className }: GoalSettingProps) {
     }
   }
 
-  const getCategoryIcon = (category: string) => {
+
     const cat = goalCategories.find(c => c.value === category)
     return cat ? cat.icon : <Target className="h-4 w-4" />
   }

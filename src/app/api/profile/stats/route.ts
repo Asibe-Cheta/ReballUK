@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth-server"
 import { db, withRetry } from "@/lib/db"
 import type { PlayerStats } from "@/types/profile"
 
 // GET /api/profile/stats - Get user statistics
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Authenticate user
     const session = await auth()
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
         totalBookings,
         completedBookings,
         totalProgress,
-        completedProgress,
+
         certificates,
         profile,
         progressData,

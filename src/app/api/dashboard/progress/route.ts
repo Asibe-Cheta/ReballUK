@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
     const { rawProgress, profile, weeklyData } = progressData
 
     // Transform raw progress to progress points
-    const overall: ProgressPoint[] = rawProgress.map((p, index) => {
+    const overall: ProgressPoint[] = rawProgress.map((p) => {
       let value: number
       
       switch (metric) {

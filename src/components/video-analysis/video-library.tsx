@@ -25,7 +25,6 @@ import {
   Trash2,
   Edit,
   Star,
-  TrendingUp,
   Users
 } from "lucide-react"
 import { format } from "date-fns"

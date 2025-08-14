@@ -13,9 +13,9 @@ import {
   Shield, 
   Users, 
   Star,
-  TrendingUp,
   TrendingDown,
-  Minus
+  Minus,
+  TrendingUp
 } from "lucide-react"
 
 interface SkillData {

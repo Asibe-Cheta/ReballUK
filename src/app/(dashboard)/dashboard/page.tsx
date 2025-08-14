@@ -12,14 +12,12 @@ import {
   BarChart3,
   Activity,
   Award,
-  UserRound,
   Calendar,
   Clock,
   Plus,
   BookOpen,
   Zap,
   ArrowRight,
-  CheckCircle,
   AlertCircle,
   Video
 } from "lucide-react"
@@ -31,7 +29,6 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Separator } from "@/components/ui/separator"
 import { ErrorBoundary } from "@/components/ui/error-boundary"
 
 // Import types
@@ -101,9 +98,7 @@ function DashboardContent() {
     router.push("/bookings")
   }
 
-  const handleViewProgress = () => {
-    router.push("/progress")
-  }
+
 
   const handleVideoAnalysis = () => {
     router.push("/video-analysis")

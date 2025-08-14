@@ -5,18 +5,15 @@ import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Progress } from "@/components/ui/progress"
 import { Skeleton } from "@/components/ui/skeleton"
 import { 
-  TrendingUp, 
   Target, 
   Trophy, 
   Calendar,
   Clock,
-  Award,
   BarChart3,
   LineChart,
   Activity,
@@ -256,7 +253,7 @@ function ProgressContent() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ProgressChart timeRange={timeRange} />
+                <ProgressChart timeframe={timeRange as "week" | "month" | "all"} />
               </CardContent>
             </Card>
 

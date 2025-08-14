@@ -1,8 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
@@ -14,9 +13,9 @@ import {
   Shield, 
   Users, 
   Star, 
-  TrendingUp,
   Save,
-  RefreshCw
+  RefreshCw,
+  TrendingUp
 } from "lucide-react"
 
 interface ConfidenceRating {
@@ -29,9 +28,7 @@ interface ConfidenceRating {
   color: string
 }
 
-interface ConfidenceRatingProps {
-  className?: string
-}
+
 
 const scenarios: Omit<ConfidenceRating, 'rating' | 'previousRating'>[] = [
   {
@@ -78,7 +75,7 @@ const scenarios: Omit<ConfidenceRating, 'rating' | 'previousRating'>[] = [
   }
 ]
 
-export default function ConfidenceRating({ className }: ConfidenceRatingProps) {
+export default function ConfidenceRating() {
   const [ratings, setRatings] = useState<ConfidenceRating[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)

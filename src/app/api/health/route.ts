@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { validateDatabaseConnection, db } from "@/lib/db"
 import { env } from "@/lib/env-validation"
 
 // GET /api/health - Database health check
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Validate environment variables
     const envCheck = {

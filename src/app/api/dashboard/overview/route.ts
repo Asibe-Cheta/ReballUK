@@ -1,17 +1,12 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth-server"
-import { db, withRetry } from "@/lib/db"
-import { dashboardUtils } from "@/types/dashboard"
 import { Client } from "pg"
 import type { 
   DashboardData, 
-  DashboardOverviewResponse,
-  UpcomingBooking,
-  TrainingRecommendation,
-  RecentAchievement
+  DashboardOverviewResponse
 } from "@/types/dashboard"
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await auth()
     if (!session?.user?.id) {
@@ -87,53 +82,7 @@ export async function GET(request: NextRequest) {
       }
     })()
 
-      // For now, use empty arrays to avoid schema issues - we'll populate with real data later
-      const upcomingBookingsData: Record<string, any>[] = []
-      const certificatesData: Record<string, any>[] = []
-      const recentProgressData: Record<string, any>[] = []
-
-      // Transform upcoming bookings (empty for now)
-      const upcomingBookings: UpcomingBooking[] = []
-
-      // Generate basic stats with default values
-      const stats = {
-        totalSessions: 0,
-        completedSessions: 0,
-        totalWatchTime: 0,
-        averageRating: 0,
-        certificatesEarned: 0,
-        currentStreak: 0,
-        lastActive: new Date(),
-        improvementRate: 0,
-        successRate: 85, // Default success rate
-        confidenceGrowth: 0,
-        positionRank: 1,
-        positionProgress: 0,
-        thisWeekSessions: 0,
-        thisMonthSessions: 0,
-        weeklyGoal: 3,
-        monthlyGoal: 12,
-      }
-
-      // Generate training recommendations (simplified for now)
-      const recommendations: TrainingRecommendation[] = []
-
-      // Create recent achievements (empty for now)
-      const achievements: RecentAchievement[] = []
-
-      // Calculate goal progress
-      const goalProgress = {
-        weekly: {
-          target: 3,
-          current: 0,
-          percentage: 0,
-        },
-        monthly: {
-          target: 12,
-          current: 0,
-          percentage: 0,
-        },
-      }
+      
 
     const result: DashboardData = {
       user: dashboardData,
@@ -205,7 +154,7 @@ export async function GET(request: NextRequest) {
 }
 
 // Alternative approach: Direct database queries (more efficient)
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     const session = await auth()
     if (!session?.user?.id) {

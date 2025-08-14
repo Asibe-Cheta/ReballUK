@@ -21,9 +21,7 @@ import {
   Users,
   User,
   Settings,
-  X,
-  Play,
-  Pause
+  X
 } from "lucide-react"
 
 interface VideoUploadProps {

@@ -21,7 +21,7 @@ import {
 } from "lucide-react"
 import { signOut } from "next-auth/react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+
 import ReballLogo from "@/components/ui/reball-logo"
 
 interface DashboardLayoutProps {
@@ -43,7 +43,7 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const { theme, setTheme } = useTheme()
-  const router = useRouter()
+
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/" })

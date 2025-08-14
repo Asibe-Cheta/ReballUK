@@ -3,14 +3,12 @@
 import { useState } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { 
   ArrowLeft, 
   Calendar, 
-  Clock, 
   Target, 
   Users, 
   CheckCircle,
@@ -36,7 +34,7 @@ export default function BookingsPage() {
 }
 
 function BookingsContent() {
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth()
+  const { isAuthenticated, isLoading: authLoading } = useAuth()
   const router = useRouter()
   
   // Booking state

@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth-server"
 import { getFreshDbClient } from "@/lib/db"
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await auth()
     if (!session?.user?.id) {
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     const freshDb = getFreshDbClient()
 
     // Get skill data from progress table grouped by course tags
-    const skillData = await freshDb.$queryRaw`
+    await freshDb.$queryRaw`
       SELECT 
         c.tags,
         AVG(p.completion_percentage) as avg_completion,

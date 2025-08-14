@@ -4,38 +4,17 @@ import { useState, useEffect } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { 
   Video, 
   Upload, 
-  Play, 
-  Pause, 
-  RotateCcw, 
-  RotateCw, 
-  Volume2, 
-  VolumeX,
-  Settings,
-  Share2,
-  Download,
   Eye,
   Clock,
-  Calendar,
-  Target,
-  Award,
-  BarChart3,
-  Film,
-  Mic,
-  PenTool,
-  Users,
-  Star,
-  Zap,
   TrendingUp,
-  Filter,
-  Search
+  Film,
+  BarChart3
 } from "lucide-react"
 import SISWPlayer from "@/components/video-analysis/sisw-player"
 import TAVBreakdown from "@/components/video-analysis/tav-breakdown"
@@ -110,10 +89,10 @@ function VideoAnalysisContent() {
     setSelectedVideo(video)
   }
 
-  const handleVideoUpload = async (uploadData: Record<string, unknown>) => {
-    // Refresh video library after upload
-    await fetchUserVideos()
-  }
+        const handleVideoUpload = async () => {
+        // Refresh video library after upload
+        await fetchUserVideos()
+      }
 
   const filteredVideos = videos.filter(video => {
     const matchesType = filterType === "all" || video.analysisType === filterType

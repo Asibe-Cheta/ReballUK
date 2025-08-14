@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const videoId = searchParams.get("videoId")
-    const analysisType = searchParams.get("analysisType") || "SISW"
+
 
     if (!videoId) {
       return NextResponse.json(
@@ -180,7 +180,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const {
       videoId,
-      analysisType,
       performanceMarkers,
       voiceovers,
       tacticalOverlays,

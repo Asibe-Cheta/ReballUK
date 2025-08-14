@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
 }
 
 // GET /api/profile/onboarding - Check onboarding status
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Authenticate user
     const session = await auth()

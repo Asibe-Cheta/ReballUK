@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 
 // Simple test endpoint to verify registration API is working
-export async function GET(request: NextRequest) {
+export async function GET() {
   return NextResponse.json({
     success: true,
     message: "Registration API is available",
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
         timestamp: new Date().toISOString()
       }
     })
-  } catch (error) {
+  } catch {
     return NextResponse.json({
       success: false,
       error: "Invalid JSON data"

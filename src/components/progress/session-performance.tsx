@@ -1,10 +1,10 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
+
 import { 
   Calendar, 
   Clock, 
@@ -18,7 +18,7 @@ import {
 } from "lucide-react"
 import { format } from "date-fns"
 
-interface SessionResult {
+
   id: string
   date: string
   sessionType: string
@@ -29,12 +29,9 @@ interface SessionResult {
   notes: string
 }
 
-interface SessionPerformanceProps {
-  sessions: SessionResult[]
-  className?: string
-}
 
-export default function SessionPerformance({ sessions, className }: SessionPerformanceProps) {
+
+export default function SessionPerformance({ sessions }: { sessions: SessionData[] }) {
   if (!sessions || sessions.length === 0) {
     return (
       <div className="text-center py-8">

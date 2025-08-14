@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { v2 as cloudinary } from 'cloudinary'
 
 // Configure Cloudinary
@@ -8,7 +8,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET || '',
 })
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Check if environment variables are set
     const hasCloudName = !!process.env.CLOUDINARY_CLOUD_NAME

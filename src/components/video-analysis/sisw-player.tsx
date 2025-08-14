@@ -23,7 +23,6 @@ import {
   PenTool,
   Star,
   Zap,
-  TrendingUp,
   SkipBack,
   SkipForward,
   Maximize,

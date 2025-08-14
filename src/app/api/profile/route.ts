@@ -1,11 +1,10 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth-server"
 import { db, withRetry } from "@/lib/db"
 import { profileUpdateSchema } from "@/types/profile"
-import { z } from "zod"
 
 // GET /api/profile - Get user profile
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Authenticate user
     const session = await auth()
@@ -58,7 +57,7 @@ export async function GET(request: NextRequest) {
 }
 
 // PUT /api/profile - Update user profile
-export async function PUT(request: NextRequest) {
+export async function PUT() {
   try {
     // Authenticate user
     const session = await auth()
@@ -162,7 +161,7 @@ export async function PUT(request: NextRequest) {
 }
 
 // DELETE /api/profile - Soft delete user profile (mark as inactive)
-export async function DELETE(request: NextRequest) {
+export async function DELETE() {
   try {
     // Authenticate user
     const session = await auth()

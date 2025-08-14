@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth-server"
 import { db, withRetry } from "@/lib/db"
 import { z } from "zod"
@@ -55,7 +55,7 @@ const profileCreationSchema = z.object({
   completedOnboarding: z.boolean().default(true),
 })
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // Authenticate user
     const session = await auth()
@@ -275,7 +275,7 @@ export async function POST(request: NextRequest) {
 }
 
 // GET /api/profile/create - Check if user can create profile
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Authenticate user
     const session = await auth()

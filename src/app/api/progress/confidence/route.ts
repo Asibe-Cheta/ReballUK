@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth-server"
 import { getFreshDbClient } from "@/lib/db"
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await auth()
     if (!session?.user?.id) {
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     const freshDb = getFreshDbClient()
 
     // Get confidence ratings from progress table
-    const confidenceData = await freshDb.$queryRaw`
+    await freshDb.$queryRaw`
       SELECT 
         p.rating as current_rating,
         p.feedback,
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
 
     // Store confidence ratings in progress table
     // For now, we'll create a mock entry since we don't have a dedicated confidence table
-    const mockProgressEntry = await freshDb.progress.create({
+    await freshDb.progress.create({
       data: {
         userId: session.user.id,
         courseId: "mock-confidence-course", // You might want to create a dedicated course for confidence ratings

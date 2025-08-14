@@ -19,10 +19,10 @@ export async function GET(request: NextRequest) {
 
     const prisma = getFreshDbClient()
 
-    // Build where clause
-    const where: Record<string, any> = {
-      userId: session.user.id
-    }
+                    // Build where clause
+                const where: Record<string, unknown> = {
+                  userId: session.user.id
+                }
 
     if (analysisType) {
       where.analysisType = analysisType

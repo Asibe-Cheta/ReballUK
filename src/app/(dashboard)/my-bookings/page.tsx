@@ -11,7 +11,6 @@ import {
   Clock, 
   MapPin, 
   Target, 
-  Users, 
   ArrowLeft,
   Plus,
   X,

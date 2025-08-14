@@ -178,8 +178,8 @@ export const courseOperations = {
   ): Promise<CourseWithRelations[]> {
     const where: Prisma.CourseWhereInput = {
       isActive: true,
-      ...(filters?.position && { position: filters.position as any }),
-      ...(filters?.level && { level: filters.level as any }),
+      ...(filters?.position && { position: filters.position as string }),
+      ...(filters?.level && { level: filters.level as string }),
     }
 
     return withRetry(async () => {
@@ -310,7 +310,7 @@ export const progressOperations = {
       feedback?: string
       rating?: number
     }
-  ): Promise<{ success: boolean; progress?: any; error?: string }> {
+  ): Promise<{ success: boolean; progress?: Record<string, unknown>; error?: string }> {
     try {
       const progress = await withRetry(async () => {
         return await db.progress.upsert({
@@ -400,7 +400,7 @@ export const bookingOperations = {
       scheduledFor?: Date
       notes?: string
     }
-  ): Promise<{ success: boolean; booking?: any; error?: string }> {
+  ): Promise<{ success: boolean; booking?: Record<string, unknown>; error?: string }> {
     try {
       // Check if user already has an active booking for this course
       const existingBooking = await db.booking.findFirst({
@@ -457,7 +457,7 @@ export const bookingOperations = {
   ): Promise<BookingWithRelations[]> {
     const where: Prisma.BookingWhereInput = {
       userId,
-      ...(status && { status: status as any }),
+      ...(status && { status: status as string }),
     }
 
     return withRetry(async () => {
@@ -491,7 +491,7 @@ export const bookingOperations = {
     bookingId: string,
     status: string,
     userId: string
-  ): Promise<{ success: boolean; booking?: any; error?: string }> {
+  ): Promise<{ success: boolean; booking?: Record<string, unknown>; error?: string }> {
     try {
       const booking = await withRetry(async () => {
         return await db.booking.update({
@@ -500,7 +500,7 @@ export const bookingOperations = {
             userId, // Ensure user owns this booking
           },
           data: {
-            status: status as any,
+            status: status as string,
             updatedAt: new Date(),
             ...(status === 'COMPLETED' && { completedAt: new Date() }),
           },
