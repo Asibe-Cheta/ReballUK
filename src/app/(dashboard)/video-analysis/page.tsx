@@ -110,7 +110,7 @@ function VideoAnalysisContent() {
     setSelectedVideo(video)
   }
 
-  const handleVideoUpload = async (uploadData: any) => {
+  const handleVideoUpload = async (uploadData: Record<string, unknown>) => {
     // Refresh video library after upload
     await fetchUserVideos()
   }

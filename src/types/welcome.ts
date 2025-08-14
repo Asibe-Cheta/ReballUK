@@ -373,7 +373,7 @@ export const welcomeUtils = {
   },
 
   // Validate step data
-  validateStep: (step: OnboardingStep, data: any): { isValid: boolean; errors: string[] } => {
+  validateStep: (step: OnboardingStep, data: Record<string, unknown>): { isValid: boolean; errors: string[] } => {
     try {
       switch (step) {
         case "personal":

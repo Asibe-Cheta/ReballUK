@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     
     // Simple database version check
     const versionResult = await db.$queryRaw`SELECT version() as version`
-    const healthData = { version: Array.isArray(versionResult) && versionResult[0] ? (versionResult[0] as any).version : 'Unknown' }
+    const healthData = { version: Array.isArray(versionResult) && versionResult[0] ? (versionResult[0] as Record<string, unknown>).version : 'Unknown' }
     
     const status = dbConnection.isConnected ? 200 : 503
     

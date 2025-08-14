@@ -48,7 +48,7 @@ export default function ProgressChart({
   }))
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: Record<string, unknown>) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload
       return (
@@ -103,7 +103,7 @@ export default function ProgressChart({
                 key={option.value}
                 variant="ghost"
                 size="sm"
-                onClick={() => setActiveMetric(option.value as any)}
+                onClick={() => setActiveMetric(option.value as string)}
                 className={cn(
                   "text-xs px-3 py-1 h-auto",
                   activeMetric === option.value
@@ -123,7 +123,7 @@ export default function ProgressChart({
                 key={option.value}
                 variant="ghost"
                 size="sm"
-                onClick={() => setActiveTimeframe(option.value as any)}
+                onClick={() => setActiveTimeframe(option.value as string)}
                 className={cn(
                   "text-xs px-3 py-1 h-auto",
                   activeTimeframe === option.value

@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
         completionPercentage: 100,
         timeSpent: 0,
         isCompleted: true,
-        rating: ratings.reduce((sum: number, rating: any) => sum + rating.rating, 0) / ratings.length,
+        rating: ratings.reduce((sum: number, rating: Record<string, unknown>) => sum + (rating.rating as number), 0) / ratings.length,
         feedback: JSON.stringify(ratings)
       }
     })

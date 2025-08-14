@@ -17,7 +17,7 @@ import {
 } from "@/types/welcome"
 
 interface ConfidenceRatingProps {
-  form: any
+  form: Record<string, unknown>
   name: string
   label?: string
   description?: string

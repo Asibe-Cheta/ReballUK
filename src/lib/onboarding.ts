@@ -6,7 +6,7 @@ export const onboardingUtils = {
   async checkOnboardingStatus(userId: string): Promise<{
     needsOnboarding: boolean
     isComplete: boolean
-    profile: any | null
+    profile: Record<string, unknown> | null
   }> {
     try {
       const profile = await db.profile.findUnique({
@@ -97,7 +97,7 @@ export const onboardingUtils = {
 export interface OnboardingData {
   needsOnboarding: boolean
   isComplete: boolean
-  profile: any | null
+  profile: Record<string, unknown> | null
   isLoading: boolean
   error: string | null
 }

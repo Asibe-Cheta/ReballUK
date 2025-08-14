@@ -10,7 +10,7 @@ cloudinary.config({
 export default cloudinary
 
 // Utility functions for video upload and management
-export const generateUploadSignature = (params: any) => {
+export const generateUploadSignature = (params: Record<string, unknown>) => {
   const timestamp = Math.round(new Date().getTime() / 1000)
   const signature = cloudinary.utils.api_sign_request(
     {

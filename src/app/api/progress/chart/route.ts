@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
       
       // Find if we have real data for this date
       const realData = Array.isArray(progressData) 
-        ? progressData.find((item: any) => new Date(item.date).toDateString() === date.toDateString())
+        ? progressData.find((item: Record<string, unknown>) => new Date(item.date as string).toDateString() === date.toDateString())
         : null
 
       if (realData) {

@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     await freshDb.$disconnect()
 
     // Transform the data
-    const sessions = Array.isArray(sessionsData) ? sessionsData.map((session: any) => ({
+    const sessions = Array.isArray(sessionsData) ? sessionsData.map((session: Record<string, unknown>) => ({
       id: session.id,
       date: session.date,
       sessionType: session.session_type || "Training Session",

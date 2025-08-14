@@ -13,7 +13,7 @@ import {
 import { PLAYER_POSITION_LABELS } from "@/types/profile"
 
 interface PlayerPositionSelectorProps {
-  form: any
+  form: Record<string, unknown>
   name: string
   label?: string
   description?: string

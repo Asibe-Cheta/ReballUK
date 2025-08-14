@@ -60,7 +60,7 @@ export const userProfileOperations = {
   async updateUserProfile(
     userId: string, 
     profileData: ProfileUpdateInput
-  ): Promise<{ success: boolean; profile?: any; error?: string }> {
+  ): Promise<{ success: boolean; profile?: Record<string, unknown>; error?: string }> {
     try {
       const profile = await withRetry(async () => {
         return await db.profile.upsert({
@@ -100,7 +100,7 @@ export const userProfileOperations = {
   async completeOnboarding(
     userId: string, 
     onboardingData: OnboardingInput
-  ): Promise<{ success: boolean; profile?: any; error?: string }> {
+  ): Promise<{ success: boolean; profile?: Record<string, unknown>; error?: string }> {
     try {
       const profile = await withRetry(async () => {
         return await db.profile.upsert({

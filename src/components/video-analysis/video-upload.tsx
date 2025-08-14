@@ -27,7 +27,7 @@ import {
 } from "lucide-react"
 
 interface VideoUploadProps {
-  onUploadComplete: (uploadData: any) => void
+  onUploadComplete: (uploadData: Record<string, unknown>) => void
 }
 
 interface UploadProgress {
@@ -50,7 +50,7 @@ export default function VideoUpload({ onUploadComplete }: VideoUploadProps) {
   const [tags, setTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState("")
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
-  const [uploadedVideo, setUploadedVideo] = useState<any>(null)
+  const [uploadedVideo, setUploadedVideo] = useState<Record<string, unknown> | null>(null)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 

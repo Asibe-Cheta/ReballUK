@@ -12,7 +12,7 @@ import {
 import { TRAINING_LEVEL_LABELS } from "@/types/profile"
 
 interface ExperienceLevelProps {
-  form: any
+  form: Record<string, unknown>
   name: string
   label?: string
   description?: string

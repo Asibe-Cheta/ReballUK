@@ -86,7 +86,7 @@ export function useAuth() {
     }
   }
 
-  const updateSession = async (data: any) => {
+  const updateSession = async (data: Record<string, unknown>) => {
     try {
       await update(data)
       return { success: true }

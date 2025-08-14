@@ -13,7 +13,7 @@ import {
 import { TrainingGoal, TRAINING_GOAL_LABELS } from "@/types/welcome"
 
 interface TrainingGoalsProps {
-  form: any
+  form: Record<string, unknown>
   name: string
   label?: string
   description?: string
