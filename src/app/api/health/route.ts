@@ -5,8 +5,6 @@ import { env } from "@/lib/env-validation"
 // GET /api/health - Database health check
 export async function GET(request: NextRequest) {
   try {
-    console.log("🔍 Performing health check...")
-    
     // Validate environment variables
     const envCheck = {
       DATABASE_URL: !!env.DATABASE_URL,

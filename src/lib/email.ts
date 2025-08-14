@@ -46,7 +46,6 @@ export class EmailService {
       }
 
       await sgMail.send(msg)
-      console.log(`Email sent successfully to ${options.to}`)
       return true
     } catch (error) {
       console.error('Failed to send email:', error)

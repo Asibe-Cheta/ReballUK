@@ -20,10 +20,15 @@ export async function GET(request: NextRequest) {
     
     await freshDb.$disconnect()
     
+    // Convert BigInt to number for JSON serialization
+    const processedDataResult = Array.isArray(dataResult) && dataResult.length > 0 
+      ? [{ count: Number(dataResult[0].count) }] 
+      : dataResult
+    
     return NextResponse.json({
       success: true,
       schema: schemaResult,
-      dataCount: dataResult
+      dataCount: processedDataResult
     })
     
   } catch (error) {
