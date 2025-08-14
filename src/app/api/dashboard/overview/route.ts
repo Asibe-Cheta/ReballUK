@@ -174,20 +174,103 @@ export async function POST(request: NextRequest) {
 
     const userId = session.user.id
 
-    // Simplified approach - avoid transaction for now
-    console.log("POST method called - using simplified data")
+    // Simplified approach - return basic dashboard data directly
+    console.log("POST method called - returning basic data")
     
-    // For now, return the same data as GET method
-    const response = await fetch(`${request.url.replace('/api/dashboard/overview', '')}/api/dashboard/overview`, {
-      method: 'GET',
-      headers: request.headers,
-    })
-    
-    if (!response.ok) {
-      throw new Error("Failed to fetch dashboard data")
+    // Get user with profile using raw SQL (same as GET method)
+    const users = await db.$queryRaw<Array<{
+      id: string
+      name: string
+      email: string
+      profile_id: string | null
+      profile_firstName: string | null
+      profile_lastName: string | null
+      profile_position: string | null
+      profile_trainingLevel: string | null
+    }>>`
+      SELECT 
+        u.id, u.name, u.email,
+        p.id as profile_id,
+        p."firstName" as profile_firstName,
+        p."lastName" as profile_lastName,
+        p.position as profile_position,
+        p."trainingLevel" as profile_trainingLevel
+      FROM "users" u
+      LEFT JOIN "profiles" p ON u.id = p."userId"
+      WHERE u.id = ${userId}
+      LIMIT 1
+    `
+
+    const userWithProfile = users[0]
+
+    if (!userWithProfile) {
+      throw new Error("User not found")
     }
-    
-    return response
+
+    // Transform the raw SQL result to match expected format
+    const user = {
+      id: userWithProfile.id,
+      name: userWithProfile.name,
+      email: userWithProfile.email,
+      profile: userWithProfile.profile_id ? {
+        id: userWithProfile.profile_id,
+        firstName: userWithProfile.profile_firstName || '',
+        lastName: userWithProfile.profile_lastName || '',
+        position: userWithProfile.profile_position || 'GENERAL',
+        trainingLevel: userWithProfile.profile_trainingLevel || 'BEGINNER',
+        onboardingCompleted: false,
+      } : null
+    }
+
+    const dashboardData = {
+      user: user,
+      stats: {
+        totalSessions: 0,
+        completedSessions: 0,
+        totalWatchTime: 0,
+        averageRating: 0,
+        certificatesEarned: 0,
+        currentStreak: 0,
+        lastActive: new Date(),
+        improvementRate: 0,
+        successRate: 85,
+        confidenceGrowth: 0,
+        positionRank: 1,
+        positionProgress: 0,
+        thisWeekSessions: 0,
+        thisMonthSessions: 0,
+        weeklyGoal: 3,
+        monthlyGoal: 12,
+      },
+      recentSessions: [],
+      progressData: { 
+        overall: [], 
+        bySkill: {}, 
+        byPosition: [], 
+        confidence: [], 
+        weeklyTrends: [] 
+      },
+      upcomingBookings: [],
+      recommendations: [],
+      achievements: [],
+      goalProgress: {
+        weekly: {
+          target: 3,
+          current: 0,
+          percentage: 0,
+        },
+        monthly: {
+          target: 12,
+          current: 0,
+          percentage: 0,
+        },
+      },
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: dashboardData,
+    })
 
   } catch (error) {
     console.error("Error fetching dashboard overview (direct):", error)
