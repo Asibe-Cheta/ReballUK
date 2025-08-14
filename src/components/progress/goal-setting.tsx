@@ -220,7 +220,7 @@ export default function GoalSetting() {
     }
   }
 
-
+  const getCategoryIcon = (category: string) => {
     const cat = goalCategories.find(c => c.value === category)
     return cat ? cat.icon : <Target className="h-4 w-4" />
   }

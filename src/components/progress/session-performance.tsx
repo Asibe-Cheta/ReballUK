@@ -18,7 +18,7 @@ import {
 } from "lucide-react"
 import { format } from "date-fns"
 
-
+interface SessionData {
   id: string
   date: string
   sessionType: string
@@ -28,8 +28,6 @@ import { format } from "date-fns"
   duration: number
   notes: string
 }
-
-
 
 export default function SessionPerformance({ sessions }: { sessions: SessionData[] }) {
   if (!sessions || sessions.length === 0) {
