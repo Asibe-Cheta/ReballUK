@@ -2,6 +2,7 @@
 
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
+import Image from "next/image"
 
 interface ReballLogoProps {
   size?: "sm" | "md" | "lg"
@@ -20,20 +21,13 @@ export default function ReballLogo({ size = "md", className = "" }: ReballLogoPr
   if (!mounted) {
     return (
       <div className={`flex items-center space-x-2 ${className}`}>
-        <div className={`bg-black rounded-lg flex items-center justify-center ${
-          size === "sm" ? "w-6 h-6" : size === "lg" ? "w-10 h-10" : "w-8 h-8"
-        }`}>
-          <span className={`text-white font-bold ${
-            size === "sm" ? "text-xs" : size === "lg" ? "text-lg" : "text-sm"
-          }`}>
-            R
-          </span>
-        </div>
-        <span className={`font-bold text-black ${
-          size === "sm" ? "text-lg" : size === "lg" ? "text-2xl" : "text-xl"
-        }`}>
-          REBALL
-        </span>
+        <Image
+          src="/logos/logo-black.svg"
+          alt="REBALL"
+          width={size === "sm" ? 24 : size === "lg" ? 40 : 32}
+          height={size === "sm" ? 24 : size === "lg" ? 40 : 32}
+          className="transition-opacity duration-200"
+        />
       </div>
     )
   }
@@ -42,50 +36,22 @@ export default function ReballLogo({ size = "md", className = "" }: ReballLogoPr
   const isDark = currentTheme === "dark"
 
   const sizeClasses = {
-    sm: {
-      container: "w-6 h-6",
-      text: "text-xs",
-      brandText: "text-lg"
-    },
-    md: {
-      container: "w-8 h-8",
-      text: "text-sm",
-      brandText: "text-xl"
-    },
-    lg: {
-      container: "w-10 h-10",
-      text: "text-lg",
-      brandText: "text-2xl"
-    }
+    sm: { width: 24, height: 24 },
+    md: { width: 32, height: 32 },
+    lg: { width: 40, height: 40 }
   }
+
+  const { width, height } = sizeClasses[size]
 
   return (
     <div className={`flex items-center space-x-2 ${className}`}>
-      {/* Logo Icon */}
-      <div className={`
-        ${sizeClasses[size].container}
-        ${isDark ? "bg-white" : "bg-black"}
-        rounded-lg flex items-center justify-center
-        transition-colors duration-200
-      `}>
-        <span className={`
-          ${sizeClasses[size].text}
-          ${isDark ? "text-black" : "text-white"}
-          font-bold
-        `}>
-          R
-        </span>
-      </div>
-      
-      {/* Brand Text */}
-      <span className={`
-        ${sizeClasses[size].brandText}
-        ${isDark ? "text-white" : "text-black"}
-        font-bold
-        transition-colors duration-200
-      `}>
-        REBALL
-      </span>
+      <Image
+        src={isDark ? "/logos/logo-white.svg" : "/logos/logo-black.svg"}
+        alt="REBALL"
+        width={width}
+        height={height}
+        className="transition-opacity duration-200"
+      />
     </div>
   )
 }

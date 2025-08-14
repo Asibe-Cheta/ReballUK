@@ -284,14 +284,14 @@ export default function DashboardPage() {
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             Position-wise monthly training progress
           </h3>
-          <div className="flex items-center space-x-4">
-            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              {stats.totalWatchTime || 1680} min
-            </div>
-            <div className="text-lg text-gray-600 dark:text-gray-400">
-              {Math.round((stats.totalWatchTime || 1680) / (stats.totalSessions || 42))} min avg
-            </div>
-          </div>
+                     <div className="flex items-center space-x-4">
+             <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+               {stats.totalWatchTime || 0} min
+             </div>
+             <div className="text-lg text-gray-600 dark:text-gray-400">
+               {stats.totalSessions > 0 ? Math.round((stats.totalWatchTime || 0) / stats.totalSessions) : 0} min avg
+             </div>
+           </div>
         </div>
         
         <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -299,22 +299,22 @@ export default function DashboardPage() {
           <div>Average per Session</div>
         </div>
 
-        {/* Chart Placeholder */}
-        <div className="h-64 bg-gray-50 dark:bg-gray-700 rounded-lg flex items-end justify-center space-x-2 p-4">
-          {[
-            { month: "Jan", value: 25 },
-            { month: "Feb", value: 15 },
-            { month: "Mar", value: 35 },
-            { month: "Apr", value: 28 },
-            { month: "May", value: 20 },
-            { month: "Jun", value: 32 },
-            { month: "Jul", value: 45 },
-            { month: "Aug", value: 25 },
-            { month: "Sep", value: 38 },
-            { month: "Oct", value: 22 },
-            { month: "Nov", value: 40 },
-            { month: "Dec", value: 35 }
-          ].map((item, i) => (
+                 {/* Chart Placeholder */}
+         <div className="h-64 bg-gray-50 dark:bg-gray-700 rounded-lg flex items-end justify-center space-x-2 p-4">
+           {[
+             { month: "Jan", value: 0 },
+             { month: "Feb", value: 0 },
+             { month: "Mar", value: 0 },
+             { month: "Apr", value: 0 },
+             { month: "May", value: 0 },
+             { month: "Jun", value: 0 },
+             { month: "Jul", value: 0 },
+             { month: "Aug", value: 0 },
+             { month: "Sep", value: 0 },
+             { month: "Oct", value: 0 },
+             { month: "Nov", value: 0 },
+             { month: "Dec", value: 0 }
+           ].map((item, i) => (
             <div key={i} className="flex flex-col items-center">
               <div
                 className="bg-blue-500 dark:bg-blue-400 w-8 rounded-t-sm"
