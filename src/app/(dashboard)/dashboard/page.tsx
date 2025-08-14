@@ -120,78 +120,78 @@ export default function DashboardPage() {
       </div>
 
       {/* Main Stats Grid - DashboardKit Style */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
         <ModernStatsCard
-          title="CUSTOMERS"
-          value={stats.totalSessions || 1000}
-          icon={<Users className="w-6 h-6" />}
+          title="SESSIONS"
+          value={stats.totalSessions || 42}
+          icon={<PlayCircle className="w-6 h-6" />}
           color="blue"
           description="Training sessions completed"
         />
         
         <ModernStatsCard
-          title="REVENUE"
+          title="SUCCESS RATE"
           value={`${stats.successRate || 85}%`}
           icon={<Target className="w-6 h-6" />}
           color="green"
           change={15}
-          description="Success rate in training"
+          description="Performance in training"
         />
         
         <ModernStatsCard
-          title="GROWTH"
-          value={Math.floor((stats.totalWatchTime || 0) / 60) || 120}
+          title="TRAINING HOURS"
+          value={Math.floor((stats.totalWatchTime || 0) / 60) || 28}
           icon={<TrendingUp className="w-6 h-6" />}
           color="purple"
-          change={-5}
-          description="Training hours this month"
+          change={8}
+          description="Hours trained this month"
         />
         
         <ModernStatsCard
-          title="RETURNS"
-          value={stats.currentStreak || 7}
+          title="STREAK"
+          value={`${stats.currentStreak || 7} days`}
           icon={<Activity className="w-6 h-6" />}
           color="orange"
           change={12}
-          description="Day training streak"
+          description="Consecutive training days"
         />
       </div>
 
       {/* Secondary Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
         <ModernStatsCard
-          title="DOWNLOADS"
-          value={3550}
+          title="VIDEO SESSIONS"
+          value={stats.completedSessions || 24}
           icon={<PlayCircle className="w-6 h-6" />}
           color="indigo"
-          description="Video sessions viewed"
+          description="Video analysis sessions"
           size="sm"
         />
         
         <ModernStatsCard
-          title="ORDERS"
-          value="100%"
+          title="GOAL COMPLETION"
+          value={`${Math.round(((stats.completedSessions || 24) / (stats.totalSessions || 42)) * 100)}%`}
           icon={<Trophy className="w-6 h-6" />}
           color="green"
-          description="Goal completion rate"
+          description="Training goal completion"
           size="sm"
         />
         
         <ModernStatsCard
-          title="CERTIFICATES"
-          value={stats.certificatesEarned || 5}
+          title="ACHIEVEMENTS"
+          value={stats.certificatesEarned || 8}
           icon={<Star className="w-6 h-6" />}
           color="orange"
-          description="Achievements earned"
+          description="Badges and certificates"
           size="sm"
         />
         
         <ModernStatsCard
-          title="RANK"
-          value={`#${stats.positionRank || 1}`}
+          title="POSITION RANK"
+          value={`#${stats.positionRank || 3}`}
           icon={<BarChart3 className="w-6 h-6" />}
           color="purple"
-          description="Position ranking"
+          description="Among position players"
           size="sm"
         />
       </div>
@@ -201,20 +201,20 @@ export default function DashboardPage() {
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Conversion Rate
+              Training Success Rate
             </h3>
           </div>
           <div className="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">
-            {stats.successRate || 53.94}%
+            {stats.successRate || 85}%
           </div>
           <p className="text-gray-600 dark:text-gray-400 text-sm">
-            Number of successful sessions divided by total training sessions.
+            Number of successful training sessions divided by total sessions completed.
           </p>
           
           {/* Mini Chart Placeholder */}
           <div className="mt-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
             <div className="flex items-end space-x-1 h-16">
-              {[40, 65, 45, 80, 55, 70, 85].map((height, i) => (
+              {[65, 70, 68, 85, 75, 82, 88].map((height, i) => (
                 <div
                   key={i}
                   className="bg-purple-500 dark:bg-purple-400 rounded-sm flex-1"
@@ -223,9 +223,9 @@ export default function DashboardPage() {
               ))}
             </div>
             <div className="flex justify-between text-xs text-purple-600 dark:text-purple-400 mt-2">
-              <span>2018</span>
-              <span>2019</span>
-              <span>2020</span>
+              <span>Week 1</span>
+              <span>Week 2</span>
+              <span>Week 3</span>
             </div>
           </div>
         </div>
@@ -233,52 +233,52 @@ export default function DashboardPage() {
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Training Delivered
+              Monthly Training Progress
             </h3>
           </div>
           <div className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
-            {stats.completedSessions || 1432}
+            {stats.completedSessions || 28}
           </div>
           <p className="text-gray-600 dark:text-gray-400 text-sm">
-            Number of training sessions completed this month.
+            Training sessions completed this month across all categories.
           </p>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-4 mt-6">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">130</div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">May</div>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">8</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">Technical</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">251</div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">June</div>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">12</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">Physical</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">235</div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">July</div>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">8</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">Tactical</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Department wise monthly training report */}
+      {/* Position-wise monthly training report */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            Position wise monthly training report
+            Position-wise monthly training progress
           </h3>
           <div className="flex items-center space-x-4">
             <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              £21,356.46
+              {stats.totalWatchTime || 1680} min
             </div>
             <div className="text-lg text-gray-600 dark:text-gray-400">
-              £1935.6
+              {Math.round((stats.totalWatchTime || 1680) / (stats.totalSessions || 42))} min avg
             </div>
           </div>
         </div>
         
         <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
-          <div>Total Training Value</div>
+          <div>Total Training Time</div>
           <div>Average per Session</div>
         </div>
 

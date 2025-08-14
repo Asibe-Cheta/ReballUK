@@ -22,6 +22,7 @@ import {
 import { signOut } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import ReballLogo from "@/components/ui/reball-logo"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -71,21 +72,21 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
         {/* Sidebar Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
           {!sidebarCollapsed && (
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center">
-                <span className="text-white dark:text-black font-bold text-sm">R</span>
-              </div>
-              <span className="font-bold text-xl text-black dark:text-white">REBALL</span>
-            </div>
+            <ReballLogo size="md" />
           )}
-          <button
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-          >
-            <ChevronDown 
-              className={`w-5 h-5 text-gray-600 dark:text-gray-400 transition-transform ${sidebarCollapsed ? "rotate-90" : ""}`} 
-            />
-          </button>
+          {sidebarCollapsed && (
+            <ReballLogo size="sm" className="mx-auto" />
+          )}
+          {!sidebarCollapsed && (
+            <button
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            >
+              <ChevronDown 
+                className={`w-5 h-5 text-gray-600 dark:text-gray-400 transition-transform ${sidebarCollapsed ? "rotate-90" : ""}`} 
+              />
+            </button>
+          )}
         </div>
 
         {/* Navigation */}
