@@ -4,9 +4,9 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import Link from "next/link"
+import Image from "next/image"
 import { signIn } from "next-auth/react"
 
 export default function SimpleLoginPage() {
@@ -61,7 +61,6 @@ export default function SimpleLoginPage() {
   }
 
   const handleGoogleSignIn = () => {
-
     signIn("google", { 
       callbackUrl: "/dashboard",
       redirect: true 
@@ -69,42 +68,52 @@ export default function SimpleLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4">
-      <Card className="w-full max-w-md glass-strong">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-white">Welcome Back</CardTitle>
-          <CardDescription className="text-gray-300">
-            Sign in to your REBALL account
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Email */}
+    <div className="min-h-screen flex">
+      {/* Left Section - Form */}
+      <div className="flex-1 flex items-center justify-center p-8 bg-white">
+        <div className="w-full max-w-md space-y-8">
+          {/* Logo and Branding */}
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-6">
+              <div className="w-8 h-8 bg-black rounded-sm mr-3 flex items-center justify-center">
+                <div className="w-4 h-4 bg-white rounded-sm"></div>
+              </div>
+              <span className="text-xl font-semibold text-gray-900">REBALL</span>
+            </div>
+            <div className="w-6 h-6 bg-black rounded-sm mx-auto mb-4 flex items-center justify-center">
+              <div className="w-3 h-3 bg-white rounded-sm"></div>
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back</h1>
+            <p className="text-gray-600">Enter your credentials to access your account.</p>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Email Field */}
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-white">Email Address</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 required
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                placeholder="your.email@example.com"
+                placeholder="Email"
+                className="h-11"
               />
             </div>
 
-            {/* Password */}
+            {/* Password Field */}
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-white">Password</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
                 value={formData.password}
                 onChange={(e) => handleInputChange("password", e.target.value)}
                 required
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                placeholder="••••••••"
+                placeholder="Password"
+                className="h-11"
               />
             </div>
 
@@ -112,48 +121,66 @@ export default function SimpleLoginPage() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-white text-black hover:bg-gray-100 disabled:opacity-50"
+              className="w-full h-11 bg-black hover:bg-gray-800 text-white"
             >
-              {isLoading ? "Signing In..." : "Sign In"}
+              {isLoading ? "Signing In..." : "Sign in"}
             </Button>
 
-            {/* Google OAuth */}
+            {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-white/20" />
+                <span className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-gray-900 px-2 text-gray-400">Or continue with</span>
+                <span className="bg-white px-2 text-gray-500">Or continue with</span>
               </div>
             </div>
 
+            {/* Google OAuth */}
             <Button
               type="button"
               variant="outline"
-              className="w-full border-white/20 text-white hover:bg-white/10"
+              className="w-full h-11 border-gray-300 hover:bg-gray-50"
               onClick={handleGoogleSignIn}
             >
               Continue with Google
             </Button>
 
             {/* Register Link */}
-            <div className="text-center text-sm text-gray-400">
-              Don&apos;t have an account?{" "}
-              <Link href="/register-simple" className="text-blue-400 hover:underline">
-                Sign up
-              </Link>
+            <div className="text-center">
+              <p className="text-sm text-gray-600">
+                Don't have an account?{" "}
+                <Link href="/register-simple" className="text-blue-600 hover:underline underline-offset-4">
+                  Sign up
+                </Link>
+              </p>
             </div>
             
             {/* Verification Help */}
-            <div className="text-center text-sm text-gray-400">
-              Need to verify your email?{" "}
-              <Link href="/verify-email" className="text-blue-400 hover:underline">
-                Request verification email
-              </Link>
+            <div className="text-center">
+              <p className="text-sm text-gray-600">
+                Need to verify your email?{" "}
+                <Link href="/verify-email" className="text-blue-600 hover:underline underline-offset-4">
+                  Request verification email
+                </Link>
+              </p>
             </div>
           </form>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+
+      {/* Right Section - Image */}
+      <div className="hidden lg:flex flex-1 bg-gray-100 items-center justify-center">
+        <div className="relative w-full h-full">
+          <Image
+            src="/images/register/login-img.jpg"
+            alt="REBALL Training"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+      </div>
     </div>
   )
 }

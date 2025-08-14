@@ -3,10 +3,11 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 
 const PLAYER_POSITIONS = [
   { value: "STRIKER", label: "Striker" },
@@ -52,8 +53,8 @@ export default function RegisterSimplePage() {
       return false
     }
     
-    if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters long")
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long")
       return false
     }
     
@@ -140,19 +141,27 @@ export default function RegisterSimplePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-gray-900">
-            Join REBALL
-          </CardTitle>
-          <CardDescription>
-            Start your football training journey today
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="min-h-screen flex">
+      {/* Left Section - Form */}
+      <div className="flex-1 flex items-center justify-center p-8 bg-white">
+        <div className="w-full max-w-md space-y-8">
+          {/* Logo and Branding */}
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-6">
+              <div className="w-8 h-8 bg-black rounded-sm mr-3 flex items-center justify-center">
+                <div className="w-4 h-4 bg-white rounded-sm"></div>
+              </div>
+              <span className="text-xl font-semibold text-gray-900">REBALL</span>
+            </div>
+            <div className="w-6 h-6 bg-black rounded-sm mx-auto mb-4 flex items-center justify-center">
+              <div className="w-3 h-3 bg-white rounded-sm"></div>
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Create an account</h1>
+            <p className="text-gray-600">Let's get started. Fill in the details below to create your account.</p>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Error Message */}
             {error && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-md">
@@ -167,45 +176,41 @@ export default function RegisterSimplePage() {
               </div>
             )}
             
-            {/* Full Name */}
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name
-              </label>
+            {/* Name Field */}
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
               <Input
                 id="name"
                 name="name"
                 type="text"
                 value={formData.name}
                 onChange={handleInputChange}
-                placeholder="Enter your full name"
+                placeholder="Name"
                 disabled={isLoading}
                 required
+                className="h-11"
               />
             </div>
             
-            {/* Email */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
+            {/* Email Field */}
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                placeholder="Enter your email"
+                placeholder="Email"
                 disabled={isLoading}
                 required
+                className="h-11"
               />
             </div>
             
-            {/* Position */}
-            <div>
-              <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
-                Position
-              </label>
+            {/* Position Field */}
+            <div className="space-y-2">
+              <Label htmlFor="position">Position</Label>
               <select
                 id="position"
                 name="position"
@@ -213,7 +218,7 @@ export default function RegisterSimplePage() {
                 onChange={handleInputChange}
                 disabled={isLoading}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full h-11 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
               >
                 <option value="">Select your position</option>
                 {PLAYER_POSITIONS.map((position) => (
@@ -224,42 +229,41 @@ export default function RegisterSimplePage() {
               </select>
             </div>
             
-            {/* Password */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
+            {/* Password Field */}
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 name="password"
                 type="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                placeholder="Enter your password"
+                placeholder="Password"
                 disabled={isLoading}
                 required
+                className="h-11"
               />
+              <p className="text-sm text-gray-500">Minimum 8 characters.</p>
             </div>
             
-            {/* Confirm Password */}
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                Confirm Password
-              </label>
+            {/* Confirm Password Field */}
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
               <Input
                 id="confirmPassword"
                 name="confirmPassword"
                 type="password"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                placeholder="Confirm your password"
+                placeholder="Confirm Password"
                 disabled={isLoading}
                 required
+                className="h-11"
               />
             </div>
             
             {/* Terms and Privacy */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="terms"
@@ -267,12 +271,12 @@ export default function RegisterSimplePage() {
                   onCheckedChange={(checked) => setAgreeToTerms(checked as boolean)}
                   disabled={isLoading}
                 />
-                <label htmlFor="terms" className="text-sm text-gray-700">
+                <Label htmlFor="terms" className="text-sm font-normal">
                   I agree to the{" "}
-                  <Link href="/terms" className="text-blue-600 hover:underline">
-                    Terms of Service
+                  <Link href="/terms" className="text-blue-600 hover:underline underline-offset-4">
+                    Terms & Conditions
                   </Link>
-                </label>
+                </Label>
               </div>
               
               <div className="flex items-center space-x-2">
@@ -282,36 +286,49 @@ export default function RegisterSimplePage() {
                   onCheckedChange={(checked) => setAgreeToPrivacy(checked as boolean)}
                   disabled={isLoading}
                 />
-                <label htmlFor="privacy" className="text-sm text-gray-700">
+                <Label htmlFor="privacy" className="text-sm font-normal">
                   I agree to the{" "}
-                  <Link href="/privacy" className="text-blue-600 hover:underline">
+                  <Link href="/privacy" className="text-blue-600 hover:underline underline-offset-4">
                     Privacy Policy
                   </Link>
-                </label>
+                </Label>
               </div>
             </div>
             
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full"
+              className="w-full h-11 bg-black hover:bg-gray-800 text-white"
               disabled={isLoading}
             >
-              {isLoading ? "Creating Account..." : "Create Account"}
+              {isLoading ? "Creating Account..." : "Sign up"}
             </Button>
             
             {/* Login Link */}
             <div className="text-center">
               <p className="text-sm text-gray-600">
-                Already have an account?{" "}
-                <Link href="/login-simple" className="text-blue-600 hover:underline">
+                Already have account?{" "}
+                <Link href="/login-simple" className="text-blue-600 hover:underline underline-offset-4">
                   Sign in
                 </Link>
               </p>
             </div>
           </form>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+
+      {/* Right Section - Image */}
+      <div className="hidden lg:flex flex-1 bg-gray-100 items-center justify-center">
+        <div className="relative w-full h-full">
+          <Image
+            src="/images/register/login-img.jpg"
+            alt="REBALL Training"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+      </div>
     </div>
   )
 }
