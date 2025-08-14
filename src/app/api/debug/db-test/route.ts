@@ -1,56 +1,29 @@
 import { NextRequest, NextResponse } from "next/server"
-import { db } from "@/lib/db"
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Test basic database connection
+    const { db } = await import("@/lib/db")
+    
     console.log("Testing database connection...")
     
-    // Test basic connection
-    await db.$connect()
-    console.log("Database connected successfully")
+    // Simple query to test connection
+    const result = await db.$queryRaw`SELECT 1 as test`
     
-    // Get all tables in the database
-    const allTables = await db.$queryRaw`
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = 'public'
-      ORDER BY table_name
-    `
-    
-    console.log("All tables in database:", allTables)
-    
-    // Test specific auth tables
-    const authTables = await db.$queryRaw`
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = 'public' 
-      AND table_name LIKE '%user%' OR table_name LIKE '%profile%' OR table_name LIKE '%auth%'
-    `
-    
-    console.log("Auth tables found:", authTables)
+    console.log("Database connection successful:", result)
     
     return NextResponse.json({
       success: true,
-      database: {
-        connected: true,
-        allTables,
-        authTables,
-        message: "Database connected - check tables above",
-        timestamp: new Date().toISOString()
-      }
+      message: "Database connection working",
+      result: result
     })
-    
+
   } catch (error) {
-    console.error("Database test error:", error)
-    
-    return NextResponse.json({
+    console.error("Database connection test failed:", error)
+    return NextResponse.json({ 
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown database error',
-      details: {
-        type: error?.constructor?.name,
-        message: error instanceof Error ? error.message : 'No message',
-        timestamp: new Date().toISOString()
-      }
+      error: "Database connection failed",
+      details: error instanceof Error ? error.message : "Unknown error"
     }, { status: 500 })
   }
 }

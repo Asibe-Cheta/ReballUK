@@ -10,7 +10,7 @@ const createPrismaClient = () => {
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
     datasources: {
       db: {
-        url: process.env.DATABASE_URL,
+        url: process.env.DIRECT_URL || process.env.DATABASE_URL,
       },
     },
   })
@@ -132,5 +132,12 @@ export const resetDatabaseConnection = async (): Promise<void> => {
 // Create a fresh database client for critical operations
 export const getFreshDbClient = (): PrismaClient => {
   console.log('Creating fresh database client...')
-  return createPrismaClient()
+  return new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+    datasources: {
+      db: {
+        url: process.env.DIRECT_URL || process.env.DATABASE_URL,
+      },
+    },
+  })
 }
