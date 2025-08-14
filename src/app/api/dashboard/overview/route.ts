@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth-server"
 import { db, withRetry } from "@/lib/db"
 import { dashboardUtils } from "@/types/dashboard"
+import { Client } from "pg"
 import type { 
   DashboardData, 
   DashboardOverviewResponse,
@@ -22,19 +23,20 @@ export async function GET(request: NextRequest) {
 
     const userId = session.user.id
 
-    // Fetch comprehensive dashboard data
-    const dashboardData = await withRetry(async () => {
-              // First get user with profile using raw SQL (consistent with registration)
-        const users = await db.$queryRaw<Array<{
-          id: string
-          name: string
-          email: string
-          profile_id: string | null
-          profile_firstName: string | null
-          profile_lastName: string | null
-          profile_position: string | null
-          profile_trainingLevel: string | null
-        }>>`
+    // Use raw PostgreSQL client to avoid prepared statement conflicts
+    const pgClient = new Client({
+      connectionString: process.env.DIRECT_URL || process.env.DATABASE_URL,
+    })
+
+    const dashboardData = await (async () => {
+      console.log("=== DASHBOARD GET METHOD WITH RAW POSTGRES ===")
+      
+      try {
+        await pgClient.connect()
+        console.log("Connected to database successfully")
+
+        // Get user with profile using raw PostgreSQL
+        const userResult = await pgClient.query(`
           SELECT 
             u.id, u.name, u.email,
             p.id as profile_id,
@@ -44,30 +46,46 @@ export async function GET(request: NextRequest) {
             p."trainingLevel" as profile_trainingLevel
           FROM "users" u
           LEFT JOIN "profiles" p ON u.id = p."userId"
-          WHERE u.id = ${userId}
+          WHERE u.id = $1
           LIMIT 1
-        `
+        `, [userId])
 
-      const userWithProfile = users[0]
+        const userWithProfile = userResult.rows.length > 0 ? userResult.rows[0] : null
 
-      if (!userWithProfile) {
-        throw new Error("User not found")
+        if (!userWithProfile) {
+          throw new Error("User not found")
+        }
+
+        // Transform the raw SQL result to match expected format
+        const user = {
+          id: userWithProfile.id,
+          name: userWithProfile.name,
+          email: userWithProfile.email,
+          profile: userWithProfile.profile_id ? {
+            id: userWithProfile.profile_id,
+            firstName: userWithProfile.profile_firstName || '',
+            lastName: userWithProfile.profile_lastName || '',
+            position: userWithProfile.profile_position || 'GENERAL',
+            trainingLevel: userWithProfile.profile_trainingLevel || 'BEGINNER',
+            onboardingCompleted: false, // Default to false since we removed this field
+          } : null
+        }
+
+        // Close the PostgreSQL connection
+        await pgClient.end()
+        console.log("PostgreSQL connection closed successfully")
+
+        return user
+      } catch (error) {
+        console.error("Dashboard GET error:", error)
+        try {
+          await pgClient.end()
+        } catch (disconnectError) {
+          console.error("Failed to close PostgreSQL connection:", disconnectError)
+        }
+        throw error
       }
-
-      // Transform the raw SQL result to match expected format
-      const user = {
-        id: userWithProfile.id,
-        name: userWithProfile.name,
-        email: userWithProfile.email,
-        profile: userWithProfile.profile_id ? {
-          id: userWithProfile.profile_id,
-          firstName: userWithProfile.profile_firstName || '',
-          lastName: userWithProfile.profile_lastName || '',
-          position: userWithProfile.profile_position || 'GENERAL',
-          trainingLevel: userWithProfile.profile_trainingLevel || 'BEGINNER',
-          onboardingCompleted: false, // Default to false since we removed this field
-        } : null
-      }
+    })()
 
       // For now, use empty arrays to avoid schema issues - we'll populate with real data later
       const upcomingBookingsData: any[] = []
@@ -117,29 +135,54 @@ export async function GET(request: NextRequest) {
         },
       }
 
-      const result: DashboardData = {
-        user: user,
-        stats: stats,
-        recentSessions: [],
-        progressData: { 
-          overall: [], 
-          bySkill: {}, 
-          byPosition: [], 
-          confidence: [], 
-          weeklyTrends: [] 
+    const result: DashboardData = {
+      user: dashboardData,
+      stats: {
+        totalSessions: 0,
+        completedSessions: 0,
+        totalWatchTime: 0,
+        averageRating: 0,
+        certificatesEarned: 0,
+        currentStreak: 0,
+        lastActive: new Date(),
+        improvementRate: 0,
+        successRate: 85,
+        confidenceGrowth: 0,
+        positionRank: 1,
+        positionProgress: 0,
+        thisWeekSessions: 0,
+        thisMonthSessions: 0,
+        weeklyGoal: 3,
+        monthlyGoal: 12,
+      },
+      recentSessions: [],
+      progressData: { 
+        overall: [], 
+        bySkill: {}, 
+        byPosition: [], 
+        confidence: [], 
+        weeklyTrends: [] 
+      },
+      upcomingBookings: [],
+      recommendations: [],
+      achievements: [],
+      goalProgress: {
+        weekly: {
+          target: 3,
+          current: 0,
+          percentage: 0,
         },
-        upcomingBookings,
-        recommendations,
-        achievements: achievements.slice(0, 5), // Show top 5 achievements
-        goalProgress,
-      }
-
-      return result
-    })
+        monthly: {
+          target: 12,
+          current: 0,
+          percentage: 0,
+        },
+      },
+    }
 
     const response: DashboardOverviewResponse = {
       success: true,
-      data: dashboardData,
+      data: result,
     }
 
     // Set cache headers for dashboard data (5 minutes)
@@ -174,52 +217,64 @@ export async function POST(request: NextRequest) {
 
     const userId = session.user.id
 
-    // Simplified approach - return basic dashboard data directly
-    console.log("POST method called - returning basic data")
+    // Use raw PostgreSQL client to avoid prepared statement conflicts (same as GET)
+    console.log("POST method called - using raw PostgreSQL")
     
-    // Get user with profile using raw SQL (same as GET method)
-    const users = await db.$queryRaw<Array<{
-      id: string
-      name: string
-      email: string
-      profile_id: string | null
-      profile_firstName: string | null
-      profile_lastName: string | null
-      profile_position: string | null
-      profile_trainingLevel: string | null
-    }>>`
-      SELECT 
-        u.id, u.name, u.email,
-        p.id as profile_id,
-        p."firstName" as profile_firstName,
-        p."lastName" as profile_lastName,
-        p.position as profile_position,
-        p."trainingLevel" as profile_trainingLevel
-      FROM "users" u
-      LEFT JOIN "profiles" p ON u.id = p."userId"
-      WHERE u.id = ${userId}
-      LIMIT 1
-    `
+    const pgClient = new Client({
+      connectionString: process.env.DIRECT_URL || process.env.DATABASE_URL,
+    })
 
-    const userWithProfile = users[0]
+    let user
+    try {
+      await pgClient.connect()
+      console.log("POST: Connected to database successfully")
 
-    if (!userWithProfile) {
-      throw new Error("User not found")
-    }
+      // Get user with profile using raw PostgreSQL
+      const userResult = await pgClient.query(`
+        SELECT 
+          u.id, u.name, u.email,
+          p.id as profile_id,
+          p."firstName" as profile_firstName,
+          p."lastName" as profile_lastName,
+          p.position as profile_position,
+          p."trainingLevel" as profile_trainingLevel
+        FROM "users" u
+        LEFT JOIN "profiles" p ON u.id = p."userId"
+        WHERE u.id = $1
+        LIMIT 1
+      `, [userId])
 
-    // Transform the raw SQL result to match expected format
-    const user = {
-      id: userWithProfile.id,
-      name: userWithProfile.name,
-      email: userWithProfile.email,
-      profile: userWithProfile.profile_id ? {
-        id: userWithProfile.profile_id,
-        firstName: userWithProfile.profile_firstName || '',
-        lastName: userWithProfile.profile_lastName || '',
-        position: userWithProfile.profile_position || 'GENERAL',
-        trainingLevel: userWithProfile.profile_trainingLevel || 'BEGINNER',
-        onboardingCompleted: false,
-      } : null
+      const userWithProfile = userResult.rows.length > 0 ? userResult.rows[0] : null
+
+      if (!userWithProfile) {
+        throw new Error("User not found")
+      }
+
+      // Transform the raw SQL result to match expected format
+      user = {
+        id: userWithProfile.id,
+        name: userWithProfile.name,
+        email: userWithProfile.email,
+        profile: userWithProfile.profile_id ? {
+          id: userWithProfile.profile_id,
+          firstName: userWithProfile.profile_firstName || '',
+          lastName: userWithProfile.profile_lastName || '',
+          position: userWithProfile.profile_position || 'GENERAL',
+          trainingLevel: userWithProfile.profile_trainingLevel || 'BEGINNER',
+          onboardingCompleted: false,
+        } : null
+      }
+
+      await pgClient.end()
+      console.log("POST: PostgreSQL connection closed successfully")
+    } catch (error) {
+      console.error("POST: Dashboard error:", error)
+      try {
+        await pgClient.end()
+      } catch (disconnectError) {
+        console.error("POST: Failed to close PostgreSQL connection:", disconnectError)
+      }
+      throw error
     }
 
     const dashboardData = {
