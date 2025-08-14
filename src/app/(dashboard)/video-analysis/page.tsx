@@ -73,7 +73,7 @@ export default function VideoAnalysisPage() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/login")
+      router.push("/login-simple")
       return
     }
 

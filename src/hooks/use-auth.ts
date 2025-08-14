@@ -98,8 +98,8 @@ export function useAuth() {
 
   const redirectToLogin = (callbackUrl?: string) => {
     const url = callbackUrl 
-      ? `/login?callbackUrl=${encodeURIComponent(callbackUrl)}`
-      : "/login"
+      ? `/login-simple?callbackUrl=${encodeURIComponent(callbackUrl)}`
+      : "/login-simple"
     router.push(url)
   }
 

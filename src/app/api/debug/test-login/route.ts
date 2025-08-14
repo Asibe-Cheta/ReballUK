@@ -1,77 +1,73 @@
 import { NextRequest, NextResponse } from "next/server"
+import { getFreshDbClient } from "@/lib/db"
 import { compare } from "bcryptjs"
-import { db } from "@/lib/db"
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { email, password } = body
-    
-    console.log("=== LOGIN DEBUG START ===")
-    console.log("Attempting login for:", email)
-    
-    // Find user using raw SQL (same approach as registration)
-    const users = await db.$queryRaw<Array<{
-      id: string
-      name: string
-      email: string
-      password: string
-    }>>`
-      SELECT id, name, email, password 
-      FROM "users" 
-      WHERE email = ${email} 
-      LIMIT 1
-    `
-    
-    const user = users[0]
-    
-    if (!user) {
-      console.log("User not found")
-      return NextResponse.json({
-        success: false,
-        error: "User not found"
-      }, { status: 404 })
-    }
-    
-    console.log("User found:", { id: user.id, name: user.name, hasPassword: !!user.password })
-    
-    if (!user.password) {
-      console.log("User has no password (OAuth only)")
-      return NextResponse.json({
-        success: false,
-        error: "This account was created with Google OAuth. Please sign in with Google."
+
+    if (!email || !password) {
+      return NextResponse.json({ 
+        error: "Email and password are required" 
       }, { status: 400 })
     }
+
+    const freshDb = getFreshDbClient()
     
-    // Verify password
-    const isValidPassword = await compare(password, user.password)
-    console.log("Password valid:", isValidPassword)
-    
-    if (!isValidPassword) {
-      return NextResponse.json({
-        success: false,
-        error: "Invalid password"
-      }, { status: 401 })
-    }
-    
-    console.log("=== LOGIN DEBUG SUCCESS ===")
-    
-    return NextResponse.json({
-      success: true,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email
+    try {
+      console.log("Testing login for email:", email)
+      
+      // Check if user exists
+      const userResult = await freshDb.$queryRaw`
+        SELECT id, name, email, password 
+        FROM users 
+        WHERE email = ${email} 
+        LIMIT 1
+      `
+      
+      const user = Array.isArray(userResult) && userResult.length > 0 ? userResult[0] : null
+
+      if (!user) {
+        return NextResponse.json({ 
+          error: "User not found",
+          email: email,
+          userExists: false
+        }, { status: 404 })
       }
-    })
-    
+
+      if (!user.password) {
+        return NextResponse.json({ 
+          error: "User has no password (OAuth account)",
+          email: email,
+          userExists: true,
+          hasPassword: false
+        }, { status: 400 })
+      }
+
+      // Test password
+      const isValidPassword = await compare(password, user.password)
+
+      return NextResponse.json({
+        success: true,
+        userExists: true,
+        hasPassword: true,
+        passwordValid: isValidPassword,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email
+        }
+      })
+
+    } finally {
+      await freshDb.$disconnect()
+    }
+
   } catch (error) {
-    console.error("=== LOGIN DEBUG ERROR ===")
-    console.error("Error:", error)
-    
-    return NextResponse.json({
-      success: false,
-      error: "Login failed",
+    console.error("Debug login test error:", error)
+    return NextResponse.json({ 
+      error: "Internal server error",
       details: error instanceof Error ? error.message : "Unknown error"
     }, { status: 500 })
   }

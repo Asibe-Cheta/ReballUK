@@ -63,7 +63,7 @@ export default function ProgressPage() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/login")
+      router.push("/login-simple")
     }
   }, [user, isLoading, router])
 
