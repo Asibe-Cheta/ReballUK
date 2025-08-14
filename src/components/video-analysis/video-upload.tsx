@@ -116,7 +116,7 @@ export default function VideoUpload({ onUploadComplete }: VideoUploadProps) {
 
     try {
       // Get upload signature from our API
-      const signatureResponse = await fetch("/api/videos/upload-signature", {
+      const signatureResponse = await fetch("/api/cloudinary/signature", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -133,11 +133,15 @@ export default function VideoUpload({ onUploadComplete }: VideoUploadProps) {
         const errorData = await signatureResponse.json()
         if (errorData.error && errorData.error.includes("Cloudinary configuration is missing")) {
           throw new Error("Cloudinary is not configured. Please set up Cloudinary environment variables to enable video uploads.")
+        } else if (errorData.error && errorData.error.includes("Unauthorized")) {
+          throw new Error("Please log in to upload videos.")
+        } else if (errorData.error) {
+          throw new Error(`Upload signature error: ${errorData.error}`)
         }
         throw new Error("Failed to get upload signature")
       }
 
-      const { signature, timestamp, apiKey, cloudName } = await signatureResponse.json()
+      const { signature, timestamp, apiKey, cloudName, params } = await signatureResponse.json()
 
       // Create form data for Cloudinary upload
       const formData = new FormData()
@@ -145,10 +149,11 @@ export default function VideoUpload({ onUploadComplete }: VideoUploadProps) {
       formData.append("api_key", apiKey)
       formData.append("timestamp", timestamp)
       formData.append("signature", signature)
-      formData.append("folder", "reball-videos")
-      formData.append("resource_type", "video")
-      formData.append("transformation", "f_auto,q_auto")
-      formData.append("context", `analysis_type=${analysisType}|position=${position}|tags=${tags.join(",")}`)
+      formData.append("folder", params.folder)
+      formData.append("resource_type", params.resource_type)
+      formData.append("transformation", params.transformation)
+      formData.append("context", params.context)
+      formData.append("public_id", params.public_id)
 
       // Upload to Cloudinary
       const uploadResponse = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/video/upload`, {
