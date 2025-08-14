@@ -1,6 +1,6 @@
 import NextAuth from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
-import { db } from "@/lib/db"
+import { db, getFreshDbClient } from "@/lib/db"
 import { authConfig } from "@/lib/auth-config"
 import { userProfileOperations } from "@/lib/db-utils"
 import type { PlayerPosition } from "@/types/profile"
@@ -70,22 +70,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null
         }
 
+        // Use fresh database client to avoid prepared statement conflicts
+        const freshDb = getFreshDbClient()
+        
         try {
           console.log("Looking up user with email:", credentials.email)
           
-          // Find user by email using Prisma ORM
-          const user = await db.user.findUnique({
-            where: { email: credentials.email },
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              password: true
-            }
-          })
+          // Find user by email using fresh client with raw SQL
+          const userResult = await freshDb.$queryRaw`
+            SELECT id, name, email, password 
+            FROM users 
+            WHERE email = ${credentials.email} 
+            LIMIT 1
+          `
+          
+          const user = Array.isArray(userResult) && userResult.length > 0 ? userResult[0] : null
 
           if (!user || !user.password) {
             console.log("User not found or no password")
+            await freshDb.$disconnect()
             return null
           }
 
@@ -97,10 +100,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           
           if (!isValidPassword) {
             console.log("Invalid password")
+            await freshDb.$disconnect()
             return null
           }
 
           console.log("Login successful for user:", user.email)
+          
+          // Clean up fresh client
+          await freshDb.$disconnect()
 
           return {
             id: user.id,
@@ -110,6 +117,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           }
         } catch (error) {
           console.error("Credentials authorization error:", error)
+          // Clean up fresh client on error
+          try {
+            await freshDb.$disconnect()
+          } catch (disconnectError) {
+            console.error("Failed to disconnect fresh client:", disconnectError)
+          }
           return null
         }
       }
@@ -146,7 +159,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                   id: true,
                   position: true,
                   trainingLevel: true,
-                  onboardingCompleted: true
+                  // onboardingCompleted field was removed from schema
                 }
               }
             }
@@ -159,7 +172,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           if (userWithProfile?.profile) {
             session.user.position = userWithProfile.profile.position
             session.user.trainingLevel = userWithProfile.profile.trainingLevel
-            session.user.completedOnboarding = userWithProfile.profile.onboardingCompleted
+            // completedOnboarding field was removed from schema
+            session.user.completedOnboarding = false
             console.log("Enhanced session with profile data")
           }
         } catch (error) {
@@ -234,7 +248,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           data: {
             userId: user.id,
             // Profile will be completed during onboarding
-            completedOnboarding: false,
+            // completedOnboarding field was removed from schema
+            isActive: true,
           }
         })
         console.log("Profile created for user:", user.email)
