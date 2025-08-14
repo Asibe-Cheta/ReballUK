@@ -15,11 +15,7 @@ export default function Navbar() {
 
   // Debug logging
   useEffect(() => {
-    console.log("Navbar Auth State:", { 
-      isAuthenticated, 
-      isLoading, 
-      user: user ? { id: user.id, name: user.name, email: user.email } : null 
-    });
+
   }, [isAuthenticated, isLoading, user]);
 
   useEffect(() => {
@@ -116,12 +112,8 @@ export default function Navbar() {
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             
-            {isAuthenticated ? (
-              <div className="hidden md:flex items-center gap-4">
-                {/* Debug indicator */}
-                <div className="text-xs bg-green-500 text-white px-2 py-1 rounded">
-                  Logged In
-                </div>
+                         {isAuthenticated ? (
+               <div className="hidden md:flex items-center gap-4">
                 <div className="relative group">
                   <Button variant="ghost" className="flex items-center gap-2">
                     {user?.image ? (
@@ -158,12 +150,8 @@ export default function Navbar() {
                   </div>
                 </div>
               </div>
-            ) : (
-              <>
-                {/* Debug indicator */}
-                <div className="text-xs bg-red-500 text-white px-2 py-1 rounded">
-                  Not Logged In
-                </div>
+                         ) : (
+               <>
                 <Link href="/login-simple" className={`hidden md:inline font-medium transition-all duration-300 hover:opacity-70 ${isScrolled ? 'text-dark-text dark:text-pure-white' : 'text-pure-white'}`}>
                   Sign In
                 </Link>

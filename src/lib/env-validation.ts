@@ -76,7 +76,7 @@ export function checkAuthEnvironment() {
     };
   }
   
-  console.log("✅ All authentication environment variables are configured");
+
   return {
     isValid: true,
     missing: [],

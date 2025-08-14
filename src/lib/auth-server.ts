@@ -65,20 +65,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          console.log("Missing credentials")
-          return null
-        }
+            if (!credentials?.email || !credentials?.password) {
+      return null
+    }
 
         // Use fresh database client to avoid prepared statement conflicts
         const freshDb = getFreshDbClient()
         
         try {
-          console.log("Looking up user with email:", credentials.email)
-          
           // Find user by email using fresh client with raw SQL
           const userResult = await freshDb.$queryRaw`
-            SELECT id, name, email, password 
+            SELECT id, name, email, password, "emailVerified"
             FROM users 
             WHERE email = ${credentials.email} 
             LIMIT 1
@@ -87,24 +84,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const user = Array.isArray(userResult) && userResult.length > 0 ? userResult[0] : null
 
           if (!user || !user.password) {
-            console.log("User not found or no password")
             await freshDb.$disconnect()
             return null
           }
-
-          console.log("User found:", { id: user.id, name: user.name, hasPassword: !!user.password })
 
           // Verify password
           const isValidPassword = await compare(credentials.password, user.password)
-          console.log("Password valid:", isValidPassword)
           
           if (!isValidPassword) {
-            console.log("Invalid password")
             await freshDb.$disconnect()
             return null
           }
-
-          console.log("Login successful for user:", user.email)
+          
+          // Check if email is verified
+          if (!user.emailVerified) {
+            await freshDb.$disconnect()
+            throw new Error("EmailNotVerified")
+          }
           
           // Clean up fresh client
           await freshDb.$disconnect()
@@ -134,17 +130,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   callbacks: {
     async session({ session, token }) {
-      console.log("Session callback triggered:", { 
-        hasToken: !!token, 
-        hasSession: !!session,
-        tokenSub: token?.sub,
-        sessionUser: session?.user ? { name: session.user.name, email: session.user.email } : null
-      })
-      
       // With JWT strategy, we get user data from token
       if (token && session.user) {
         session.user.id = token.sub as string
-        console.log("Set session user ID:", token.sub)
         
         try {
           // Get user profile to enhance session using fresh DB client
@@ -171,17 +159,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             session.user.position = userWithProfile.position
             session.user.trainingLevel = userWithProfile.trainingLevel
             session.user.completedOnboarding = false
-            console.log("Enhanced session with profile data")
           }
         } catch (error) {
-          console.error("Error getting user profile for session:", error)
           // Don't fail the session if profile lookup fails
         }
       }
-      
-      console.log("Final session:", session ? {
-        user: session.user ? { id: session.user.id, name: session.user.name, email: session.user.email } : null
-      } : null)
       
       return session
     },
@@ -205,26 +187,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return true
     },
     async signIn({ user, account, profile }) {
-      console.log("SignIn callback triggered:", { 
-        user: user ? { id: user.id, name: user.name, email: user.email } : null,
-        account: account ? { provider: account.provider } : null,
-        profile: profile ? { email: profile.email } : null
-      })
-      
       // Allow OAuth sign-ins
       if (account?.provider === "google") {
-        console.log("Google OAuth sign-in allowed")
         return true
       }
 
       // For credentials
       if (account?.provider === "credentials") {
-        console.log("Credentials sign-in allowed for user:", user.email)
         return true
       }
 
       // Default allow
-      console.log("Default sign-in allowed")
       return true
     },
     async redirect({ url, baseUrl }) {
@@ -237,8 +210,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   events: {
     async createUser({ user }) {
-      console.log("New user created:", user.email)
-      
       // Create a basic profile for the new user
       try {
         await db.profile.create({
@@ -249,22 +220,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             isActive: true,
           }
         })
-        console.log("Profile created for user:", user.email)
       } catch (error) {
-        console.error("Error creating profile for user:", user.email, error)
         // Don't fail the user creation if profile creation fails
       }
     },
     async signIn({ user, account, profile, isNewUser }) {
-      console.log("User signed in:", user.email, { isNewUser })
-      
-      // Track sign-in analytics
-      if (account?.provider === "google") {
-        console.log("Google OAuth sign-in successful")
-      }
+      // Track sign-in analytics if needed
     },
     async signOut({ token }) {
-      console.log("User signed out:", token?.email)
+      // Handle sign out if needed
     },
   },
   debug: process.env.NODE_ENV === "development",

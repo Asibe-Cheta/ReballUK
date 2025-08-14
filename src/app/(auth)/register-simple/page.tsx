@@ -80,11 +80,7 @@ export default function RegisterSimplePage() {
       agreeToPrivacy,
     }
     
-    console.log("=== REGISTRATION FORM SUBMIT ===")
-    console.log("Request data:", JSON.stringify(requestData, null, 2))
-    
     try {
-      console.log("Sending registration request...")
       const response = await fetch("/api/auth/register-simple", {
         method: "POST",
         headers: {
@@ -93,30 +89,44 @@ export default function RegisterSimplePage() {
         body: JSON.stringify(requestData),
       })
       
-      console.log("Response status:", response.status)
-      console.log("Response headers:", response.headers)
-      
       const data = await response.json()
-      console.log("Response data:", JSON.stringify(data, null, 2))
       
       if (response.ok && data.success) {
-        console.log("Registration successful!")
-        setSuccess("Account created successfully! Redirecting to login...")
-        // Reset form
-        setFormData({
-          name: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-          position: "",
-        })
-        setAgreeToTerms(false)
-        setAgreeToPrivacy(false)
-        
-        // Redirect to login after 2 seconds
-        setTimeout(() => {
-          router.push("/login-simple")
-        }, 2000)
+        if (data.requiresVerification) {
+          setSuccess("Account created successfully! Please check your email to verify your account before signing in.")
+          // Reset form
+          setFormData({
+            name: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+            position: "",
+          })
+          setAgreeToTerms(false)
+          setAgreeToPrivacy(false)
+          
+          // Redirect to login after 5 seconds to give user time to read the message
+          setTimeout(() => {
+            router.push("/login-simple")
+          }, 5000)
+        } else {
+          setSuccess("Account created successfully! Redirecting to login...")
+          // Reset form
+          setFormData({
+            name: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+            position: "",
+          })
+          setAgreeToTerms(false)
+          setAgreeToPrivacy(false)
+          
+          // Redirect to login after 2 seconds
+          setTimeout(() => {
+            router.push("/login-simple")
+          }, 2000)
+        }
       } else {
         console.error("Registration failed:", data)
         setError(data.error || "Registration failed. Please try again.")

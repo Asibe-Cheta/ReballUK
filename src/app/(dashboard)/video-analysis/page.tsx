@@ -41,6 +41,7 @@ import SISWPlayer from "@/components/video-analysis/sisw-player"
 import TAVBreakdown from "@/components/video-analysis/tav-breakdown"
 import VideoUpload from "@/components/video-analysis/video-upload"
 import VideoLibrary from "@/components/video-analysis/video-library"
+import { ErrorBoundary } from "@/components/ui/error-boundary"
 
 interface VideoData {
   id: string
@@ -63,6 +64,14 @@ interface VideoData {
 }
 
 export default function VideoAnalysisPage() {
+  return (
+    <ErrorBoundary>
+      <VideoAnalysisContent />
+    </ErrorBoundary>
+  )
+}
+
+function VideoAnalysisContent() {
   const { user, isLoading } = useAuth()
   const router = useRouter()
   const [videos, setVideos] = useState<VideoData[]>([])

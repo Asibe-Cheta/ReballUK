@@ -17,6 +17,7 @@ import {
   AlertCircle
 } from "lucide-react"
 import { toast } from "sonner"
+import { ErrorBoundary } from "@/components/ui/error-boundary"
 
 // Import booking components
 import SessionTypeSelector, { SessionType } from "@/components/bookings/session-type-selector"
@@ -27,6 +28,14 @@ import BookingSummary from "@/components/bookings/booking-summary"
 type BookingStep = "session-type" | "position" | "datetime" | "summary"
 
 export default function BookingsPage() {
+  return (
+    <ErrorBoundary>
+      <BookingsContent />
+    </ErrorBoundary>
+  )
+}
+
+function BookingsContent() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth()
   const router = useRouter()
   

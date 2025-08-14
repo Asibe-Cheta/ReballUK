@@ -49,17 +49,16 @@ export default function MyBookingsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Redirect if not authenticated
-  if (!authLoading && !isAuthenticated) {
-    router.push("/login-simple?callbackUrl=/my-bookings")
-    return null
-  }
-
   useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push("/login-simple?callbackUrl=/my-bookings")
+      return
+    }
+    
     if (isAuthenticated && user?.id) {
       fetchBookings()
     }
-  }, [isAuthenticated, user?.id])
+  }, [authLoading, isAuthenticated, user?.id, router])
 
   const fetchBookings = async () => {
     try {

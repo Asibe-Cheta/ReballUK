@@ -1,20 +1,17 @@
 import { NextRequest, NextResponse } from "next/server"
 import { hash } from "bcryptjs"
 import { getFreshDbClient } from "@/lib/db"
+import { generateVerificationToken, storeVerificationToken, generateVerificationUrl } from "@/lib/verification"
+import { EmailService } from "@/lib/email"
 
 export async function POST(request: NextRequest) {
   try {
-    console.log("=== SIMPLE REGISTRATION API START ===")
-    console.log("Timestamp:", new Date().toISOString())
-    
     const body = await request.json()
-    console.log("Received body:", JSON.stringify(body, null, 2))
     
     const { name, email, password, confirmPassword, position, agreeToTerms, agreeToPrivacy } = body
     
     // Basic validation
     if (!name || !email || !password || !confirmPassword || !position) {
-      console.log("Missing required fields")
       return NextResponse.json(
         { success: false, error: "All fields are required" },
         { status: 400 }
@@ -22,7 +19,6 @@ export async function POST(request: NextRequest) {
     }
     
     if (password !== confirmPassword) {
-      console.log("Passwords don't match")
       return NextResponse.json(
         { success: false, error: "Passwords do not match" },
         { status: 400 }
@@ -30,7 +26,6 @@ export async function POST(request: NextRequest) {
     }
     
     if (!agreeToTerms || !agreeToPrivacy) {
-      console.log("Terms not agreed to")
       return NextResponse.json(
         { success: false, error: "Please agree to Terms and Privacy Policy" },
         { status: 400 }
@@ -38,26 +33,16 @@ export async function POST(request: NextRequest) {
     }
     
     // Use a fresh database client to avoid prepared statement conflicts
-    console.log("Creating fresh database client to avoid prepared statement conflicts")
     const freshDb = getFreshDbClient()
     
     try {
       // Hash password
-      console.log("Hashing password...")
       const hashedPassword = await hash(password, 12)
       
-      console.log("Creating user and profile with fresh database client...")
-      
-      console.log("=== ATTEMPTING USER CREATION ===")
-      console.log("Email to insert:", email)
-      console.log("Name to insert:", name)
-      console.log("Position to insert:", position)
-      
-      // Create user with raw SQL using fresh client
-      console.log("Executing user INSERT query...")
+      // Create user with raw SQL using fresh client (unverified)
       const userResult = await freshDb.$queryRaw`
         INSERT INTO users (id, name, email, password, "emailVerified", "createdAt", "updatedAt")
-        VALUES (gen_random_uuid()::text, ${name}, ${email}, ${hashedPassword}, NOW(), NOW(), NOW())
+        VALUES (gen_random_uuid()::text, ${name}, ${email}, ${hashedPassword}, NULL, NOW(), NOW())
         RETURNING id, name, email
       `
       console.log("User INSERT successful, result:", userResult)
@@ -92,6 +77,32 @@ export async function POST(request: NextRequest) {
       }
       
       console.log("Profile created successfully!")
+      
+      // Generate verification token and send email
+      const verificationToken = generateVerificationToken()
+      const verificationUrl = generateVerificationUrl(verificationToken.token)
+      
+      // Store verification token
+      const tokenStored = await storeVerificationToken(user.id, verificationToken.token, verificationToken.expires)
+      
+      if (!tokenStored) {
+        console.error("Failed to store verification token")
+        // Continue anyway - user can request new verification email
+      }
+      
+      // Send verification email
+      const emailSent = await EmailService.sendVerificationEmail({
+        name: user.name,
+        email: user.email,
+        verificationToken: verificationToken.token,
+        verificationUrl
+      })
+      
+      if (!emailSent) {
+        console.error("Failed to send verification email")
+        // Continue anyway - user can request new verification email
+      }
+      
       console.log("=== SIMPLE REGISTRATION API SUCCESS ===")
       
       // Clean up fresh database client
@@ -99,12 +110,13 @@ export async function POST(request: NextRequest) {
       
       return NextResponse.json({
         success: true,
-        message: "Account created successfully",
+        message: "Account created successfully! Please check your email to verify your account.",
         user: {
           id: user.id,
           name: user.name,
           email: user.email
-        }
+        },
+        requiresVerification: true
       })
       
     } catch (sqlError) {

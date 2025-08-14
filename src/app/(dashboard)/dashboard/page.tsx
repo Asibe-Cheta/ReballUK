@@ -31,11 +31,21 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Separator } from "@/components/ui/separator"
+import { ErrorBoundary } from "@/components/ui/error-boundary"
 
 // Import types
 import type { DashboardData } from "@/types/dashboard"
 
 export default function DashboardPage() {
+  return (
+    <ErrorBoundary>
+      <DashboardContent />
+    </ErrorBoundary>
+  )
+}
+
+function DashboardContent() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth()
   const router = useRouter()
   

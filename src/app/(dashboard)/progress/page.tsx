@@ -29,6 +29,7 @@ import ConfidenceRating from "@/components/progress/confidence-rating"
 import SessionPerformance from "@/components/progress/session-performance"
 import SkillBreakdown from "@/components/progress/skill-breakdown"
 import GoalSetting from "@/components/progress/goal-setting"
+import { ErrorBoundary } from "@/components/ui/error-boundary"
 
 interface ProgressStats {
   totalSessions: number
@@ -54,6 +55,14 @@ interface SessionResult {
 }
 
 export default function ProgressPage() {
+  return (
+    <ErrorBoundary>
+      <ProgressContent />
+    </ErrorBoundary>
+  )
+}
+
+function ProgressContent() {
   const { user, isLoading } = useAuth()
   const router = useRouter()
   const [timeRange, setTimeRange] = useState("month")

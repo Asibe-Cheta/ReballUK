@@ -3,7 +3,7 @@
 import { SessionProvider } from "next-auth/react"
 import type { Session } from "next-auth"
 
-export default function AuthSessionProvider({
+export function AuthSessionProvider({
   children,
   session,
 }: {
@@ -11,10 +11,7 @@ export default function AuthSessionProvider({
   session: Session | null
 }) {
   // Debug logging
-  console.log("SessionProvider - Session:", session ? {
-    user: session.user ? { id: session.user.id, name: session.user.name, email: session.user.email } : null,
-    expires: session.expires
-  } : null);
+
 
   return (
     <SessionProvider session={session}>

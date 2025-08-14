@@ -69,12 +69,10 @@ export const withRetry = async <T>(
 
       // If it's a prepared statement error, reset the connection
       if (error instanceof Error && error.message.includes('prepared statement')) {
-        console.log(`Prepared statement error detected, resetting connection...`)
         try {
           await db.$disconnect()
           await new Promise(resolve => setTimeout(resolve, 500))
           await db.$connect()
-          console.log(`Connection reset successful`)
         } catch (connectionError) {
           console.error('Failed to reset connection:', connectionError)
         }
@@ -111,7 +109,6 @@ export const ensureConnection = async (): Promise<void> => {
 
 export const resetDatabaseConnection = async (): Promise<void> => {
   try {
-    console.log('Resetting database connection...')
     await db.$disconnect()
     await new Promise(resolve => setTimeout(resolve, 1000))
     
@@ -122,7 +119,6 @@ export const resetDatabaseConnection = async (): Promise<void> => {
     }
     
     await db.$connect()
-    console.log('Database connection reset successfully')
   } catch (error) {
     console.error('Failed to reset database connection:', error)
     throw error
@@ -131,7 +127,6 @@ export const resetDatabaseConnection = async (): Promise<void> => {
 
 // Create a fresh database client for critical operations
 export const getFreshDbClient = (): PrismaClient => {
-  console.log('Creating fresh database client...')
   return new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
     datasources: {

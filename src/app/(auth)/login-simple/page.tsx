@@ -25,8 +25,6 @@ export default function SimpleLoginPage() {
     setIsLoading(true)
 
     try {
-      console.log("Attempting login with:", formData.email)
-      
       const result = await signIn("credentials", {
         email: formData.email,
         password: formData.password,
@@ -34,12 +32,16 @@ export default function SimpleLoginPage() {
         redirect: false
       })
 
-      console.log("Sign in result:", result)
-
       if (result?.error) {
-        toast.error("Login failed", {
-          description: "Invalid email or password"
-        })
+        if (result.error === "EmailNotVerified") {
+          toast.error("Email not verified", {
+            description: "Please check your email and click the verification link before signing in"
+          })
+        } else {
+          toast.error("Login failed", {
+            description: "Invalid email or password"
+          })
+        }
       } else if (result?.url) {
         toast.success("Login successful!")
         window.location.href = result.url
@@ -59,7 +61,7 @@ export default function SimpleLoginPage() {
   }
 
   const handleGoogleSignIn = () => {
-    console.log("Starting Google OAuth...")
+
     signIn("google", { 
       callbackUrl: "/dashboard",
       redirect: true 
@@ -139,6 +141,14 @@ export default function SimpleLoginPage() {
               Don&apos;t have an account?{" "}
               <Link href="/register-simple" className="text-blue-400 hover:underline">
                 Sign up
+              </Link>
+            </div>
+            
+            {/* Verification Help */}
+            <div className="text-center text-sm text-gray-400">
+              Need to verify your email?{" "}
+              <Link href="/verify-email" className="text-blue-400 hover:underline">
+                Request verification email
               </Link>
             </div>
           </form>
