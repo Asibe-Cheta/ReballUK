@@ -8,14 +8,14 @@ export const authConfig = {
     error: "/login-simple",
   },
   session: {
-    strategy: "database",
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
-    async session({ session, user }) {
-      // With database strategy, we get user from database
-      if (user && session.user) {
-        session.user.id = user.id
+    async session({ session, token }) {
+      // With JWT strategy, we get user data from token
+      if (token && session.user) {
+        session.user.id = token.sub as string
       }
       return session
     },
