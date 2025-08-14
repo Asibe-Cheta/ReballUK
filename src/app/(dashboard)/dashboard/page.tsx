@@ -20,7 +20,8 @@ import {
   Zap,
   ArrowRight,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Video
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -91,7 +92,11 @@ export default function DashboardPage() {
   }
 
   const handleViewProgress = () => {
-    router.push("/bookings")
+    router.push("/progress")
+  }
+
+  const handleVideoAnalysis = () => {
+    router.push("/video-analysis")
   }
 
   // Loading state
@@ -189,8 +194,9 @@ export default function DashboardPage() {
                 <Plus className="mr-2 h-4 w-4" />
                 Book First Session
               </Button>
-              <Button variant="outline" onClick={handleViewProgress}>
-                View Training Plans
+              <Button variant="outline" onClick={handleVideoAnalysis}>
+                <Video className="mr-2 h-4 w-4" />
+                Video Analysis
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -342,6 +348,13 @@ export default function DashboardPage() {
               <span className="font-medium">
                 {stats.totalSessions > 0 ? Math.round(((stats.completedSessions || 0) / stats.totalSessions) * 100) : 0}%
               </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Video className="h-4 w-4 text-orange-500" />
+                <span className="text-sm">Video Analysis</span>
+              </div>
+              <span className="font-medium">0 videos</span>
             </div>
           </CardContent>
         </Card>

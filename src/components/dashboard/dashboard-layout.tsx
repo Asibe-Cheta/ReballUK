@@ -55,10 +55,10 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
 
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: Home, current: true },
-    { name: "Training", href: "/training", icon: PlayCircle, current: false },
+    { name: "Bookings", href: "/bookings", icon: Calendar, current: false },
     { name: "Progress", href: "/progress", icon: BarChart3, current: false },
-    { name: "Goals", href: "/goals", icon: Target, current: false },
-    { name: "Sessions", href: "/sessions", icon: Calendar, current: false },
+    { name: "Video Analysis", href: "/video-analysis", icon: PlayCircle, current: false },
+    { name: "My Bookings", href: "/my-bookings", icon: Target, current: false },
     { name: "Achievements", href: "/achievements", icon: Trophy, current: false },
     { name: "Community", href: "/community", icon: Users, current: false },
   ]
