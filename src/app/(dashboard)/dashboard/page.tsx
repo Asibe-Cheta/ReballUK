@@ -4,21 +4,31 @@ import { useEffect, useState } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 import { 
-  Users,
+  PlayCircle,
   Target,
   TrendingUp,
   Trophy,
-  PlayCircle,
   Star,
   BarChart3,
   Activity,
   Award,
-  UserRound
+  UserRound,
+  Calendar,
+  Clock,
+  Plus,
+  BookOpen,
+  Zap,
+  ArrowRight,
+  CheckCircle,
+  AlertCircle
 } from "lucide-react"
 import { toast } from "sonner"
 
-// Import modern components
-import ModernStatsCard from "@/components/dashboard/modern-stats-card"
+// Import Shadcn components
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 
 // Import types
@@ -76,6 +86,14 @@ export default function DashboardPage() {
     }
   }
 
+  const handleBookSession = () => {
+    router.push("/training")
+  }
+
+  const handleViewProgress = () => {
+    router.push("/progress")
+  }
+
   // Loading state
   if (authLoading || isLoading) {
     return <DashboardSkeleton />
@@ -85,19 +103,18 @@ export default function DashboardPage() {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-            Dashboard Unavailable
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">{error}</p>
-          <button
-            onClick={fetchDashboardData}
-            className="px-6 py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg hover:opacity-90 transition-opacity"
-          >
-            Try Again
-          </button>
-        </div>
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <AlertCircle className="mx-auto h-12 w-12 text-red-500 mb-4" />
+            <CardTitle className="text-xl">Dashboard Unavailable</CardTitle>
+            <CardDescription>{error}</CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Button onClick={fetchDashboardData} className="w-full">
+              Try Again
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     )
   }
@@ -108,225 +125,285 @@ export default function DashboardPage() {
 
   const { stats, user: userData } = dashboardData
   const userName = userData.profile?.firstName || userData.name?.split(' ')[0] || "Player"
+  const isNewUser = (stats.totalSessions || 0) === 0
 
   return (
     <div className="space-y-6">
       {/* Welcome Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-bold tracking-tight">
           Welcome back, {userName}!
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Here&apos;s your football training progress and performance overview
+        <p className="text-muted-foreground">
+          {isNewUser 
+            ? "Ready to start your football training journey? Let's get you set up with your first session."
+            : "Here's your football training progress and performance overview."
+          }
         </p>
       </div>
 
-      {/* Main Stats Grid - DashboardKit Style (2x2 Layout) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <ModernStatsCard
-          title="SESSIONS"
-          value={stats.totalSessions || 0}
-          icon={<PlayCircle className="w-6 h-6" />}
-          color="blue"
-          description="Training sessions completed"
-        />
-        
-        <ModernStatsCard
-          title="SUCCESS RATE"
-          value={`${stats.successRate || 0}%`}
-          icon={<Target className="w-6 h-6" />}
-          color="green"
-          description="Performance in training"
-        />
-        
-        <ModernStatsCard
-          title="TRAINING HOURS"
-          value={Math.floor((stats.totalWatchTime || 0) / 60) || 0}
-          icon={<TrendingUp className="w-6 h-6" />}
-          color="purple"
-          description="Hours trained this month"
-        />
-        
-        <ModernStatsCard
-          title="STREAK"
-          value={`${stats.currentStreak || 0} days`}
-          icon={<Activity className="w-6 h-6" />}
-          color="orange"
-          description="Consecutive training days"
-        />
-      </div>
-
-      {/* Secondary Stats Grid (3x2 Layout like DashboardKit) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <ModernStatsCard
-          title="VIDEO SESSIONS"
-          value={stats.completedSessions || 0}
-          icon={<PlayCircle className="w-6 h-6" />}
-          color="indigo"
-          description="Video analysis sessions"
-          size="sm"
-        />
-        
-        <ModernStatsCard
-          title="GOAL COMPLETION"
-          value={`${stats.totalSessions > 0 ? Math.round(((stats.completedSessions || 0) / stats.totalSessions) * 100) : 0}%`}
-          icon={<Trophy className="w-6 h-6" />}
-          color="green"
-          description="Training goal completion"
-          size="sm"
-        />
-        
-        <ModernStatsCard
-          title="ACHIEVEMENTS"
-          value={stats.certificatesEarned || 0}
-          icon={<Star className="w-6 h-6" />}
-          color="orange"
-          description="Badges and certificates"
-          size="sm"
-        />
-        
-        <ModernStatsCard
-          title="POSITION RANK"
-          value={`#${stats.positionRank || 0}`}
-          icon={<BarChart3 className="w-6 h-6" />}
-          color="purple"
-          description="Among position players"
-          size="sm"
-        />
-        
-        <ModernStatsCard
-          title="TRAINING LEVEL"
-          value={userData.profile?.trainingLevel || "BEGINNER"}
-          icon={<Award className="w-6 h-6" />}
-          color="blue"
-          description="Current skill level"
-          size="sm"
-        />
-        
-        <ModernStatsCard
-          title="POSITION"
-          value={userData.profile?.position || "GENERAL"}
-          icon={<UserRound className="w-6 h-6" />}
-          color="red"
-          description="Playing position"
-          size="sm"
-        />
-      </div>
-
-      {/* Large Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Training Success Rate
-            </h3>
-          </div>
-          <div className="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">
-            {stats.successRate || 0}%
-          </div>
-          <p className="text-gray-600 dark:text-gray-400 text-sm">
-            Number of successful training sessions divided by total sessions completed.
-          </p>
-          
-          {/* Mini Chart Placeholder */}
-          <div className="mt-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
-            <div className="flex items-end space-x-1 h-16">
-              {[65, 70, 68, 85, 75, 82, 88].map((height, i) => (
-                <div
-                  key={i}
-                  className="bg-purple-500 dark:bg-purple-400 rounded-sm flex-1"
-                  style={{ height: `${height}%` }}
-                />
-              ))}
-            </div>
-            <div className="flex justify-between text-xs text-purple-600 dark:text-purple-400 mt-2">
-              <span>Week 1</span>
-              <span>Week 2</span>
-              <span>Week 3</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-              Monthly Training Progress
-            </h3>
-          </div>
-          <div className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
-            {stats.completedSessions || 0}
-          </div>
-          <p className="text-gray-600 dark:text-gray-400 text-sm">
-            Training sessions completed this month across all categories.
-          </p>
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-3 gap-4 mt-6">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">0</div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">Technical</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">0</div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">Physical</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">0</div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">Tactical</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Position-wise monthly training report */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            Position-wise monthly training progress
-          </h3>
-                     <div className="flex items-center space-x-4">
-             <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-               {stats.totalWatchTime || 0} min
-             </div>
-             <div className="text-lg text-gray-600 dark:text-gray-400">
-               {stats.totalSessions > 0 ? Math.round((stats.totalWatchTime || 0) / stats.totalSessions) : 0} min avg
-             </div>
-           </div>
-        </div>
-        
-        <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
-          <div>Total Training Time</div>
-          <div>Average per Session</div>
-        </div>
-
-                 {/* Chart Placeholder */}
-         <div className="h-64 bg-gray-50 dark:bg-gray-700 rounded-lg flex items-end justify-center space-x-2 p-4">
-           {[
-             { month: "Jan", value: 0 },
-             { month: "Feb", value: 0 },
-             { month: "Mar", value: 0 },
-             { month: "Apr", value: 0 },
-             { month: "May", value: 0 },
-             { month: "Jun", value: 0 },
-             { month: "Jul", value: 0 },
-             { month: "Aug", value: 0 },
-             { month: "Sep", value: 0 },
-             { month: "Oct", value: 0 },
-             { month: "Nov", value: 0 },
-             { month: "Dec", value: 0 }
-           ].map((item, i) => (
-            <div key={i} className="flex flex-col items-center">
-              <div
-                className="bg-blue-500 dark:bg-blue-400 w-8 rounded-t-sm"
-                style={{ height: `${item.value * 4}px` }}
-              />
-              <div className="text-xs text-gray-500 dark:text-gray-400 mt-2 rotate-45">
-                {item.month}
+      {/* New User Onboarding */}
+      {isNewUser && (
+        <Card className="border-dashed">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Zap className="h-5 w-5 text-yellow-500" />
+              Welcome to REBALL!
+            </CardTitle>
+                         <CardDescription>
+               You&apos;re all set up! Here&apos;s what you can do to get started with your football training.
+             </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                <div className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/20">
+                  <BookOpen className="h-4 w-4 text-blue-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Book Your First Session</p>
+                  <p className="text-xs text-muted-foreground">Start with a beginner-friendly training</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                <div className="p-2 rounded-full bg-green-100 dark:bg-green-900/20">
+                  <Target className="h-4 w-4 text-green-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Set Your Goals</p>
+                  <p className="text-xs text-muted-foreground">Define what you want to achieve</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                <div className="p-2 rounded-full bg-purple-100 dark:bg-purple-900/20">
+                  <TrendingUp className="h-4 w-4 text-purple-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Track Progress</p>
+                  <p className="text-xs text-muted-foreground">Monitor your improvement over time</p>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
+            <div className="flex gap-2">
+              <Button onClick={handleBookSession} className="flex-1">
+                <Plus className="mr-2 h-4 w-4" />
+                Book First Session
+              </Button>
+              <Button variant="outline" onClick={handleViewProgress}>
+                View Training Plans
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Main Stats Grid */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Sessions</CardTitle>
+            <PlayCircle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalSessions || 0}</div>
+            <p className="text-xs text-muted-foreground">
+              {isNewUser ? "No sessions completed yet" : "Training sessions completed"}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
+            <Target className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {isNewUser ? "N/A" : `${stats.successRate || 0}%`}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {isNewUser ? "Complete your first session" : "Performance in training"}
+            </p>
+            {!isNewUser && (
+              <Progress value={stats.successRate || 0} className="mt-2" />
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Training Hours</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {Math.floor((stats.totalWatchTime || 0) / 60) || 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {isNewUser ? "No training time yet" : "Hours trained this month"}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Training Level</CardTitle>
+            <Award className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {userData.profile?.trainingLevel || "BEGINNER"}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Current skill level
+            </p>
+            <Badge variant="secondary" className="mt-2">
+              {userData.profile?.position || "GENERAL"}
+            </Badge>
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Secondary Stats and Recent Activity */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        {/* Recent Sessions */}
+        <Card className="col-span-4">
+          <CardHeader>
+            <CardTitle>Recent Sessions</CardTitle>
+            <CardDescription>
+              {isNewUser ? "Your training sessions will appear here" : "Your latest training activities"}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {isNewUser ? (
+              <div className="flex flex-col items-center justify-center py-8 text-center">
+                <Calendar className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No sessions yet</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Book your first training session to get started
+                </p>
+                <Button onClick={handleBookSession}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Book Session
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {/* Placeholder for actual session data */}
+                <div className="flex items-center gap-4 p-3 rounded-lg border">
+                  <div className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/20">
+                    <PlayCircle className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium">Technical Training</p>
+                    <p className="text-sm text-muted-foreground">Ball control and dribbling</p>
+                  </div>
+                  <Badge variant="outline">Completed</Badge>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Quick Stats */}
+        <Card className="col-span-3">
+          <CardHeader>
+            <CardTitle>Quick Stats</CardTitle>
+            <CardDescription>Your training summary</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Trophy className="h-4 w-4 text-yellow-500" />
+                <span className="text-sm">Achievements</span>
+              </div>
+              <span className="font-medium">{stats.certificatesEarned || 0}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="h-4 w-4 text-blue-500" />
+                <span className="text-sm">Position Rank</span>
+              </div>
+              <span className="font-medium">#{stats.positionRank || 0}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Activity className="h-4 w-4 text-green-500" />
+                <span className="text-sm">Current Streak</span>
+              </div>
+              <span className="font-medium">{stats.currentStreak || 0} days</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Star className="h-4 w-4 text-purple-500" />
+                <span className="text-sm">Goal Completion</span>
+              </div>
+              <span className="font-medium">
+                {stats.totalSessions > 0 ? Math.round(((stats.completedSessions || 0) / stats.totalSessions) * 100) : 0}%
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Training Progress Overview */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Training Progress</CardTitle>
+          <CardDescription>
+            {isNewUser ? "Start training to see your progress" : "Your training performance over time"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isNewUser ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <TrendingUp className="h-16 w-16 text-muted-foreground mb-4" />
+              <h3 className="text-xl font-semibold mb-2">No training data yet</h3>
+              <p className="text-muted-foreground mb-6 max-w-md">
+                Complete your first training session to start tracking your progress and see detailed analytics.
+              </p>
+              <div className="flex gap-2">
+                <Button onClick={handleBookSession}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Start Training
+                </Button>
+                <Button variant="outline">
+                  Learn More
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center p-4 rounded-lg bg-muted/50">
+                  <div className="text-2xl font-bold text-blue-600">0</div>
+                  <div className="text-sm text-muted-foreground">Technical</div>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-muted/50">
+                  <div className="text-2xl font-bold text-green-600">0</div>
+                  <div className="text-sm text-muted-foreground">Physical</div>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-muted/50">
+                  <div className="text-2xl font-bold text-purple-600">0</div>
+                  <div className="text-sm text-muted-foreground">Tactical</div>
+                </div>
+              </div>
+              <div className="h-32 bg-muted rounded-lg flex items-end justify-center space-x-2 p-4">
+                {Array.from({ length: 12 }, (_, i) => (
+                  <div key={i} className="flex flex-col items-center">
+                    <div className="bg-primary w-6 rounded-t-sm" style={{ height: '4px' }} />
+                    <div className="text-xs text-muted-foreground mt-2 rotate-45">
+                      {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i]}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }
@@ -336,41 +413,66 @@ function DashboardSkeleton() {
   return (
     <div className="space-y-6">
       {/* Header skeleton */}
-      <div className="mb-8">
-        <Skeleton className="h-8 w-64 mb-2" />
+      <div className="flex flex-col gap-2">
+        <Skeleton className="h-8 w-64" />
         <Skeleton className="h-4 w-96" />
       </div>
 
-      {/* Main stats skeleton */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* Stats skeleton */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex-1">
-                <Skeleton className="h-12 w-12 rounded-lg mb-3" />
-                <Skeleton className="h-8 w-20 mb-1" />
-                <Skeleton className="h-4 w-24" />
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <Skeleton className="h-4 w-32" />
-              <Skeleton className="h-6 w-16 rounded-full" />
-            </div>
-          </div>
+          <Card key={i}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-4" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-8 w-16 mb-2" />
+              <Skeleton className="h-3 w-32" />
+            </CardContent>
+          </Card>
         ))}
       </div>
 
-      {/* Secondary stats skeleton */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {[...Array(4)].map((_, i) => (
-          <Skeleton key={i} className="h-32 rounded-xl" />
-        ))}
-      </div>
+      {/* Content skeleton */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <Card className="col-span-4">
+          <CardHeader>
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-4 w-48" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="flex items-center gap-4">
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                  <Skeleton className="h-6 w-16" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Large cards skeleton */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Skeleton className="h-64 rounded-xl" />
-        <Skeleton className="h-64 rounded-xl" />
+        <Card className="col-span-3">
+          <CardHeader>
+            <Skeleton className="h-6 w-24" />
+            <Skeleton className="h-4 w-32" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="flex items-center justify-between">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-4 w-8" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
