@@ -76,6 +76,7 @@
         <button onclick="checkProfilesSchema()" style="background-color: #fd7e14; color: white;">🔍 Check Profiles Schema</button>
         <button onclick="testEmailCheck()" style="background-color: #e83e8c; color: white;">📧 Test Email Check</button>
         <button onclick="checkUsers()" style="background-color: #28a745; color: white;">👥 Check Users</button>
+        <button onclick="testLoginDirect()" style="background-color: #6f42c1; color: white;">🔐 Test Login Direct</button>
     </div>
     
     <div id="result" class="result-box"></div>
@@ -500,6 +501,34 @@
                 }
             } catch (error) {
                 showResult('Users check error', 'error', { error: error.message });
+            }
+        }
+
+        async function testLoginDirect() {
+            const email = prompt('Enter email to test login:', 'newman@gmail.com');
+            if (!email) return;
+            
+            const password = prompt('Enter password:');
+            if (!password) return;
+            
+            showResult(`Testing direct login for: ${email}`, 'info');
+            
+            try {
+                const response = await fetch('/api/debug/test-login-direct', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('Direct login test completed!', 'success', result);
+                } else {
+                    showResult('Direct login test failed', 'error', result);
+                }
+            } catch (error) {
+                showResult('Direct login test error', 'error', { error: error.message });
             }
         }
     </script>

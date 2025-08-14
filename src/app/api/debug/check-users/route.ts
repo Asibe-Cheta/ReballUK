@@ -17,9 +17,9 @@ export async function GET(request: NextRequest) {
     
     console.log("All users in database:", allUsers)
     
-    // Get count of users
+    // Get count of users (cast to avoid BigInt serialization issues)
     const userCount = await freshDb.$queryRaw`
-      SELECT COUNT(*) as count FROM users
+      SELECT COUNT(*)::int as count FROM users
     `
     
     console.log("Total user count:", userCount)

@@ -129,50 +129,47 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     })
   ],
   session: {
-    strategy: "database",
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
-    async session({ session, user }) {
+    async session({ session, token }) {
       console.log("Session callback triggered:", { 
-        hasUser: !!user, 
+        hasToken: !!token, 
         hasSession: !!session,
-        user: user ? { id: user.id, name: user.name, email: user.email } : null,
-        sessionUser: session?.user ? { id: session.user.id, name: session.user.name, email: session.user.email } : null
+        tokenSub: token?.sub,
+        sessionUser: session?.user ? { name: session.user.name, email: session.user.email } : null
       })
       
-      // With database strategy, we get user from database
-      if (user && session.user) {
-        session.user.id = user.id
-        console.log("Set session user ID:", user.id)
+      // With JWT strategy, we get user data from token
+      if (token && session.user) {
+        session.user.id = token.sub as string
+        console.log("Set session user ID:", token.sub)
         
         try {
-          // Get user profile to enhance session using Prisma ORM
-          const userWithProfile = await db.user.findUnique({
-            where: { id: user.id },
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              profile: {
-                select: {
-                  id: true,
-                  position: true,
-                  trainingLevel: true,
-                  // onboardingCompleted field was removed from schema
-                }
-              }
-            }
-          })
+          // Get user profile to enhance session using fresh DB client
+          const freshDb = getFreshDbClient()
+          
+          const userResult = await freshDb.$queryRaw`
+            SELECT u.id, u.name, u.email, p.position, p."trainingLevel"
+            FROM users u
+            LEFT JOIN profiles p ON u.id = p."userId"
+            WHERE u.id = ${token.sub}
+            LIMIT 1
+          `
+          
+          await freshDb.$disconnect()
+          
+          const userWithProfile = Array.isArray(userResult) && userResult.length > 0 ? userResult[0] : null
+          
           console.log("User profile lookup result:", userWithProfile ? { 
             id: userWithProfile.id, 
-            hasProfile: !!userWithProfile.profile 
+            hasProfile: !!userWithProfile.position 
           } : null)
           
-          if (userWithProfile?.profile) {
-            session.user.position = userWithProfile.profile.position
-            session.user.trainingLevel = userWithProfile.profile.trainingLevel
-            // completedOnboarding field was removed from schema
+          if (userWithProfile) {
+            session.user.position = userWithProfile.position
+            session.user.trainingLevel = userWithProfile.trainingLevel
             session.user.completedOnboarding = false
             console.log("Enhanced session with profile data")
           }
