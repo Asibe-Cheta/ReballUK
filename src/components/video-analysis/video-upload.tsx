@@ -130,6 +130,10 @@ export default function VideoUpload({ onUploadComplete }: VideoUploadProps) {
       })
 
       if (!signatureResponse.ok) {
+        const errorData = await signatureResponse.json()
+        if (errorData.error && errorData.error.includes("Cloudinary configuration is missing")) {
+          throw new Error("Cloudinary is not configured. Please set up Cloudinary environment variables to enable video uploads.")
+        }
         throw new Error("Failed to get upload signature")
       }
 
