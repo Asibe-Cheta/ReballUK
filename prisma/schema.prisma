@@ -76,3 +76,67 @@ model Profile {
 
   @@map("profiles")
 }
+
+model Booking {
+  id            String        @id @default(cuid())
+  userId        String        @map("user_id")
+  sessionType   String        @map("session_type")
+  position      String?
+  scheduledFor  DateTime      @map("scheduled_for")
+  duration      Int           @default(60)
+  status        BookingStatus @default(PENDING)
+  paymentStatus PaymentStatus @default(PENDING)
+  price         Decimal       @default(0)
+  notes         String?
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at")
+
+  @@map("bookings")
+}
+
+model Progress {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  sessionType   String   @map("session_type")
+  position      String?
+  successRate   Float    @map("success_rate")
+  confidence    Int
+  duration      Int
+  notes         String?
+  sessionDate   DateTime @map("session_date")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("progress")
+}
+
+model Video {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  bookingId     String?  @map("booking_id")
+  title         String
+  description   String?
+  videoUrl      String   @map("video_url")
+  thumbnailUrl  String?  @map("thumbnail_url")
+  videoType     String   @map("video_type") // "SISW" or "TAV"
+  duration      Int?
+  uploadDate    DateTime @default(now()) @map("upload_date")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("videos")
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  REFUNDED
+  FAILED
+}
