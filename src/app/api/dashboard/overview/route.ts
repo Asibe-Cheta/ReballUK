@@ -195,7 +195,7 @@ export async function GET() {
 }
 
 // Alternative approach: Direct database queries (more efficient)
-export async function POST() {
+export async function POST(request: Request) {
   try {
     const session = await auth()
     if (!session?.user?.id) {
