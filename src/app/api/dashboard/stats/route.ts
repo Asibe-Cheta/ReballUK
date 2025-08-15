@@ -169,7 +169,7 @@ export async function GET() {
         : new Date()
 
       // Calculate current streak
-      const currentStreak = calculateStreak(progressData.map(p => ({ lastAccessedAt: p.lastAccessedAt })))
+      const currentStreak = calculateStreakFromProgress(progressData.map(p => ({ lastAccessedAt: p.lastAccessedAt })))
 
       // Calculate improvement rate
       const progressPoints = progressData.map(p => ({
@@ -281,7 +281,7 @@ export async function GET() {
 }
 
 // Helper function to calculate streak - Fixed type casting
-function calculateStreak(progressData: Array<{ lastAccessedAt: Date }>): number {
+function calculateStreakFromProgress(progressData: Array<{ lastAccessedAt: Date }>): number {
   if (progressData.length === 0) return 0
 
   const sortedData = progressData
