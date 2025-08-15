@@ -58,7 +58,7 @@ export default function WelcomePage() {
 
   // Form setup
   const form = useForm<WelcomeFormData>({
-    resolver: zodResolver(welcomeFormSchema) as any,
+    resolver: zodResolver(welcomeFormSchema),
     mode: "onChange",
     defaultValues: {
       personal: {
@@ -211,15 +211,7 @@ export default function WelcomePage() {
     }
   }
 
-  const handleStepClick = (step: OnboardingStep) => {
-    const stepIndex = welcomeUtils.getStepIndex(step)
-    const currentIndex = welcomeUtils.getStepIndex(currentStep)
-    
-    // Only allow navigation to previous steps or the next immediate step
-    if (stepIndex <= currentIndex || completedSteps.includes(step)) {
-      setCurrentStep(step)
-    }
-  }
+
 
   const handleSubmit = async (data: WelcomeFormData) => {
     if (!user?.id) {
