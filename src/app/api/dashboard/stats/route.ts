@@ -140,7 +140,7 @@ export async function GET() {
           where: {
             user: {
               profile: {
-                position: profile?.position || "GENERAL"
+                position: profile?.position || "OTHER"
               }
             }
           },
