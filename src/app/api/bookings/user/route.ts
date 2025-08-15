@@ -30,18 +30,6 @@ export async function GET(request: NextRequest) {
     // Get user's bookings
     const bookings = await prisma.booking.findMany({
       where: whereClause,
-      include: {
-        course: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
-            duration: true,
-            level: true,
-            position: true
-          }
-        }
-      },
       orderBy: {
         scheduledFor: 'desc'
       },
@@ -60,10 +48,10 @@ export async function GET(request: NextRequest) {
       status: booking.status,
       paymentStatus: booking.paymentStatus,
       scheduledFor: booking.scheduledFor,
-      completedAt: booking.completedAt,
       amount: booking.amount,
       notes: booking.notes,
-      course: booking.course,
+      sessionType: booking.sessionType,
+      position: booking.position,
       createdAt: booking.createdAt
     }))
 
@@ -142,15 +130,7 @@ export async function PUT(request: NextRequest) {
 
         updatedBooking = await prisma.booking.update({
           where: { id: bookingId },
-          data: { status: "CANCELLED" },
-          include: {
-            course: {
-              select: {
-                title: true,
-                duration: true
-              }
-            }
-          }
+          data: { status: "CANCELLED" }
         })
         break
 
@@ -158,16 +138,7 @@ export async function PUT(request: NextRequest) {
         updatedBooking = await prisma.booking.update({
           where: { id: bookingId },
           data: { 
-            status: "COMPLETED",
-            completedAt: new Date()
-          },
-          include: {
-            course: {
-              select: {
-                title: true,
-                duration: true
-              }
-            }
+            status: "COMPLETED"
           }
         })
         break
@@ -186,8 +157,8 @@ export async function PUT(request: NextRequest) {
           id: updatedBooking.id,
           status: updatedBooking.status,
           scheduledFor: updatedBooking.scheduledFor,
-          completedAt: updatedBooking.completedAt,
-          course: updatedBooking.course
+          sessionType: updatedBooking.sessionType,
+          position: updatedBooking.position
         }
       }
     })

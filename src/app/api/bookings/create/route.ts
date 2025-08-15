@@ -86,19 +86,13 @@ export async function POST(request: NextRequest) {
       data: {
         userId: session.user.id,
         courseId: course.id,
+        sessionType: sessionType,
+        position: position,
         status: "PENDING",
         scheduledFor: selectedDate,
         amount: sessionType === '1v1' ? 75 : 25,
         paymentStatus: "PENDING",
         notes: `Session Type: ${sessionType}, Position: ${position}`
-      },
-      include: {
-        course: true,
-        user: {
-          include: {
-            profile: true
-          }
-        }
       }
     })
 
@@ -110,14 +104,8 @@ export async function POST(request: NextRequest) {
           status: booking.status,
           scheduledFor: booking.scheduledFor,
           amount: booking.amount,
-          course: {
-            title: booking.course.title,
-            duration: booking.course.duration
-          },
-          user: {
-            name: booking.user.name,
-            email: booking.user.email
-          }
+          sessionType: booking.sessionType,
+          position: booking.position
         }
       }
     })
