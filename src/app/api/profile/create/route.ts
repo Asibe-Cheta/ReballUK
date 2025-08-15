@@ -55,7 +55,7 @@ const profileCreationSchema = z.object({
   completedOnboarding: z.boolean().default(true),
 })
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
     // Authenticate user
     const session = await auth()
