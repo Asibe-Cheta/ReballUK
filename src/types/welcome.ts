@@ -97,7 +97,7 @@ export const personalInfoSchema = z.object({
 export const positionInfoSchema = z.object({
   position: z.nativeEnum(PlayerPosition, {
     errorMap: () => ({ message: "Please select your playing position" })
-  }),
+  }).optional(),
   alternativePositions: z.array(z.nativeEnum(PlayerPosition)).optional(),
   preferredFoot: z.enum(["left", "right", "both"], {
     errorMap: () => ({ message: "Please select your preferred foot" })
@@ -109,7 +109,7 @@ export const positionInfoSchema = z.object({
 export const experienceInfoSchema = z.object({
   trainingLevel: z.nativeEnum(TrainingLevel, {
     errorMap: () => ({ message: "Please select your experience level" })
-  }),
+  }).optional(),
   yearsPlaying: z.number().min(0).max(30).optional(),
   currentClub: z.string().max(100, "Club name too long").optional(),
   previousExperience: z.string().max(500, "Description too long").optional(),
@@ -117,7 +117,7 @@ export const experienceInfoSchema = z.object({
 })
 
 export const goalsInfoSchema = z.object({
-  primaryGoals: z.array(z.enum(TRAINING_GOALS)).min(1, "Please select at least one goal").max(5, "Please select at most 5 goals"),
+  primaryGoals: z.array(z.enum(TRAINING_GOALS)).min(1, "Please select at least one goal").max(5, "Please select at most 5 goals").optional(),
   specificAreas: z.string().max(500, "Description too long").optional(),
   shortTermGoals: z.string().max(300, "Description too long").optional(),
   longTermGoals: z.string().max(300, "Description too long").optional(),
@@ -127,14 +127,14 @@ export const confidenceInfoSchema = z.object({
   scenarios: z.record(
     z.enum(CONFIDENCE_SCENARIOS),
     z.number().min(1).max(10)
-  ),
+  ).optional(),
   overallConfidence: z.number().min(1).max(10),
   areasForImprovement: z.array(z.enum(CONFIDENCE_SCENARIOS)).optional(),
 })
 
 export const preferencesInfoSchema = z.object({
-  availableDays: z.array(z.enum(TRAINING_DAYS)).min(1, "Please select at least one day"),
-  preferredTimes: z.array(z.enum(TIME_SLOTS)).min(1, "Please select at least one time slot"),
+  availableDays: z.array(z.enum(TRAINING_DAYS)).min(1, "Please select at least one day").optional(),
+  preferredTimes: z.array(z.enum(TIME_SLOTS)).min(1, "Please select at least one time slot").optional(),
   sessionFrequency: z.enum(["once-week", "twice-week", "three-times-week", "daily"], {
     errorMap: () => ({ message: "Please select training frequency" })
   }),
