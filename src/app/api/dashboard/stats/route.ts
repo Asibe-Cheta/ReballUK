@@ -169,7 +169,7 @@ export async function GET() {
         : new Date()
 
       // Calculate current streak
-      const currentStreak = calculateStreak(progressData)
+      const currentStreak = calculateStreak(progressData.map(p => ({ lastAccessedAt: p.lastAccessedAt })))
 
       // Calculate improvement rate
       const progressPoints = progressData.map(p => ({
