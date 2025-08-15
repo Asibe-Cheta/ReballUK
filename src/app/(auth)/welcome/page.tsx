@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, Resolver } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/use-auth"
@@ -58,7 +58,7 @@ export default function WelcomePage() {
 
   // Form setup
   const form = useForm<WelcomeFormData>({
-    resolver: zodResolver(welcomeFormSchema) as any,
+    resolver: zodResolver(welcomeFormSchema) as Resolver<WelcomeFormData>,
     mode: "onChange",
     defaultValues: {
       personal: {
