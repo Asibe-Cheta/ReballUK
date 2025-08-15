@@ -41,7 +41,7 @@ export default async function CommunicationsPage({
 }: {
   searchParams: { user?: string; type?: string }
 }) {
-  await requireCoach()
+  const session = await requireCoach()
 
   const { user, type } = searchParams
 
