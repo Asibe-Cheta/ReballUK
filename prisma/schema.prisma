@@ -188,6 +188,7 @@ model Video {
   userId        String   @map("user_id")
   bookingId     String?  @map("booking_id")
   courseId      String?  @map("course_id")
+  sessionId     String?  @map("session_id")
   title         String
   description   String?
   videoUrl      String   @map("video_url")
@@ -198,6 +199,9 @@ model Video {
   tags          String[] @default([])
   viewCount     Int      @default(0) @map("view_count")
   publicId      String?  @map("public_id")
+  isActive      Boolean  @default(true) @map("is_active")
+  isPreview     Boolean  @default(false) @map("is_preview")
+  orderIndex    Int?     @map("order_index")
   duration      Int?
   uploadDate    DateTime @default(now()) @map("upload_date")
   createdAt     DateTime @default(now()) @map("created_at")
