@@ -87,7 +87,19 @@ export async function GET() {
       
 
     const result: DashboardData = {
-      user: dashboardData as User & { profile: Profile },
+      user: {
+        id: dashboardData.id,
+        name: dashboardData.name,
+        email: dashboardData.email,
+        password: null,
+        emailVerified: null,
+        image: null,
+        verificationToken: null,
+        verificationExpires: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        profile: dashboardData.profile
+      } as User & { profile: Profile },
       stats: {
         totalSessions: 0,
         completedSessions: 0,
