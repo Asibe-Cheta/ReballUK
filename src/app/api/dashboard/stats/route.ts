@@ -18,6 +18,16 @@ export async function GET() {
 
     // Fetch comprehensive user statistics
     const stats = await withRetry(async () => {
+      // Get profile first
+      const profile = await db.profile.findUnique({
+        where: { userId },
+        select: {
+          position: true,
+          trainingLevel: true,
+          confidenceRating: true,
+        }
+      })
+
       const [
         // Basic counts
         totalBookings,
@@ -25,7 +35,6 @@ export async function GET() {
         totalProgress,
         progressData,
         certificates,
-        profile,
         
         // Recent data for trends
         recentSessions,
@@ -76,15 +85,7 @@ export async function GET() {
           }
         }),
         
-        // User profile for position data
-        db.profile.findUnique({
-          where: { userId },
-          select: {
-            position: true,
-            trainingLevel: true,
-            confidenceRating: true,
-          }
-        }),
+
         
         // Recent sessions for performance calculation
         db.progress.findMany({
@@ -139,7 +140,7 @@ export async function GET() {
           where: {
             user: {
               profile: {
-                position: profile?.position || undefined
+                position: profile?.position || "GENERAL"
               }
             }
           },

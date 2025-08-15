@@ -292,6 +292,13 @@ export async function POST(request: NextRequest) {
           userId: session.user.id,
           courseId,
           videoId: videoId || null,
+          sessionType: "PRACTICE",
+          position: "GENERAL",
+          duration: timeSpent,
+          notes: feedback || "",
+          successRate: completionPercentage,
+          confidence: rating ? rating * 20 : 50,
+          sessionDate: new Date(),
           completionPercentage: Math.max(0, Math.min(100, completionPercentage)),
           timeSpent: Math.max(0, timeSpent),
           rating: rating ? Math.max(1, Math.min(5, rating)) : undefined,
@@ -325,8 +332,6 @@ export async function POST(request: NextRequest) {
         timeSpent: progress.timeSpent,
         rating: progress.rating,
         isCompleted: progress.isCompleted,
-        course: progress.course,
-        video: progress.video,
         message: "Progress recorded successfully"
       }
     })

@@ -21,24 +21,22 @@ export async function GET() {
     const versionResult = await db.$queryRaw`SELECT version() as version`
     const healthData = { version: Array.isArray(versionResult) && versionResult[0] ? (versionResult[0] as Record<string, unknown>).version : 'Unknown' }
     
-    const status = dbConnection.isConnected ? 200 : 503
+    const status = dbConnection ? 200 : 503
     
     return NextResponse.json({
-      success: dbConnection.isConnected,
+      success: dbConnection,
       timestamp: new Date().toISOString(),
       environment: {
         NODE_ENV: env.NODE_ENV,
         variables: envCheck,
       },
       database: {
-        connected: dbConnection.isConnected,
-        latency: dbConnection.latency,
-        error: dbConnection.error,
+        connected: dbConnection,
         version: healthData.version,
       },
       services: {
         nextauth: envCheck.NEXTAUTH_SECRET && envCheck.GOOGLE_CLIENT_ID,
-        prisma: dbConnection.isConnected,
+        prisma: dbConnection,
       }
     }, { status })
     
