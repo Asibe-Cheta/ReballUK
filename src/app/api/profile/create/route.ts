@@ -72,7 +72,7 @@ export async function POST(request: Request) {
     
     const validationResult = profileCreationSchema.safeParse(body)
     if (!validationResult.success) {
-      const errors = validationResult.error.errors.map(err => ({
+      const errors = validationResult.error.errors.map((err: any) => ({
         field: err.path.join('.'),
         message: err.message,
       }))
