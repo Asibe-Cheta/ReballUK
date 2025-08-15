@@ -35,7 +35,7 @@ export async function GET() {
         // Get user with profile using raw PostgreSQL
         const userResult = await pgClient.query(`
           SELECT 
-            u.id, u.name, u.email,
+            u.id, u.name, u.email, u.role,
             p.id as profile_id,
             p."firstName" as profile_firstName,
             p."lastName" as profile_lastName,
@@ -58,6 +58,7 @@ export async function GET() {
           id: userWithProfile.id,
           name: userWithProfile.name,
           email: userWithProfile.email,
+          role: userWithProfile.role || 'USER',
           profile: userWithProfile.profile_id ? {
             id: userWithProfile.profile_id,
             firstName: userWithProfile.profile_firstName || '',
@@ -94,6 +95,7 @@ export async function GET() {
         password: null,
         emailVerified: null,
         image: null,
+        role: dashboardData.role || "USER",
         verificationToken: null,
         verificationExpires: null,
         createdAt: new Date(),
