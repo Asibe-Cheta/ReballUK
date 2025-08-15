@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       })
     })
 
-    // Transform progress data to session data format
+    // Transform progress data to session data format - Fixed type casting for TrainingLevel enum
     const sessionData: SessionData[] = recentSessions.map(progress => {
       // Determine session type based on video analysis type or default
       const sessionType = progress.video?.analysisType as "SISW" | "TAV" | undefined || "PRACTICE"
@@ -111,7 +111,7 @@ export async function GET(request: NextRequest) {
           id: progress.course.id,
           title: progress.course.title,
           level: progress.course.level as "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "PROFESSIONAL",
-          position: progress.course.position,
+          position: progress.course.position as "STRIKER" | "WINGER" | "CAM" | "FULLBACK" | "MIDFIELDER" | "DEFENDER" | "GOALKEEPER" | "OTHER",
         }
       }
     })

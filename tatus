@@ -1,0 +1,5 @@
+[33m641bfb9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix TrainingLevel type casting in dashboard sessions API - Cast course.level to proper enum type
+[33me8c413b[m Fix critical TypeScript errors - Progress route missing fields, stats route variable order, health route property access
+[33mbac842e[m Fix ProgressPoint metric type in dashboard progress API - Properly type metric parameter to match union type
+[33m6085892[m Fix Profile object structure in dashboard API - Add all required Profile fields with proper defaults
+[33md9d9e96[m Fix missing role property in dashboard overview API - Add role field to SQL query and user object
