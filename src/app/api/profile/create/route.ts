@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth-server"
 import { db, withRetry } from "@/lib/db"
-import { z } from "zod"
+import { z, ZodError } from "zod"
 
 // Enhanced profile creation schema
 const profileCreationSchema = z.object({
@@ -72,7 +72,8 @@ export async function POST(request: Request) {
     
     const validationResult = profileCreationSchema.safeParse(body)
     if (!validationResult.success) {
-      const errors = validationResult.error.errors.map((err: any) => ({
+      const zodError = validationResult.error as ZodError
+      const errors = zodError.errors.map((err: any) => ({
         field: err.path.join('.'),
         message: err.message,
       }))
