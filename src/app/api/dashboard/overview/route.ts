@@ -61,11 +61,22 @@ export async function GET() {
           role: userWithProfile.role || 'USER',
           profile: userWithProfile.profile_id ? {
             id: userWithProfile.profile_id,
+            userId: userWithProfile.id,
             firstName: userWithProfile.profile_firstName || '',
             lastName: userWithProfile.profile_lastName || '',
             position: userWithProfile.profile_position || 'GENERAL',
             trainingLevel: userWithProfile.profile_trainingLevel || 'BEGINNER',
-            onboardingCompleted: false, // Default to false since we removed this field
+            dateOfBirth: null,
+            preferredFoot: null,
+            height: null,
+            weight: null,
+            bio: null,
+            goals: [],
+            confidenceRating: null,
+            completedOnboarding: false,
+            isActive: true,
+            createdAt: new Date(),
+            updatedAt: new Date(),
           } : null
         }
 
@@ -100,7 +111,21 @@ export async function GET() {
         verificationExpires: null,
         createdAt: new Date(),
         updatedAt: new Date(),
-        profile: dashboardData.profile
+        profile: dashboardData.profile ? {
+          ...dashboardData.profile,
+          userId: dashboardData.id,
+          dateOfBirth: dashboardData.profile.dateOfBirth || null,
+          preferredFoot: dashboardData.profile.preferredFoot || null,
+          height: dashboardData.profile.height || null,
+          weight: dashboardData.profile.weight || null,
+          bio: dashboardData.profile.bio || null,
+          goals: dashboardData.profile.goals || [],
+          confidenceRating: dashboardData.profile.confidenceRating || null,
+          completedOnboarding: dashboardData.profile.completedOnboarding || false,
+          isActive: dashboardData.profile.isActive !== undefined ? dashboardData.profile.isActive : true,
+          createdAt: dashboardData.profile.createdAt || new Date(),
+          updatedAt: dashboardData.profile.updatedAt || new Date(),
+        } : null
       } as User & { profile: Profile },
       stats: {
         totalSessions: 0,
