@@ -889,13 +889,13 @@ export default function WelcomePage() {
                 </div>
               </div>
 
-              {/* Goals summary */}
-              <div className="p-4 bg-light-gray dark:bg-charcoal rounded-xl">
-                <h3 className="font-semibold mb-2">Training Goals</h3>
-                <div className="text-sm">
-                  <p><strong>Primary Goals:</strong> {form.getValues("goals.primaryGoals").length} selected</p>
-                </div>
-              </div>
+                             {/* Goals summary */}
+               <div className="p-4 bg-light-gray dark:bg-charcoal rounded-xl">
+                 <h3 className="font-semibold mb-2">Training Goals</h3>
+                 <div className="text-sm">
+                   <p><strong>Primary Goals:</strong> {form.getValues("goals.primaryGoals")?.length || 0} selected</p>
+                 </div>
+               </div>
             </div>
 
             <div className="p-6 bg-pure-black/5 dark:bg-pure-white/5 rounded-xl border border-pure-black/10 dark:border-pure-white/10">
