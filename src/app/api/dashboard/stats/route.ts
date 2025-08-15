@@ -280,7 +280,7 @@ export async function GET() {
   }
 }
 
-// Helper function to calculate streak
+// Helper function to calculate streak - Fixed type casting
 function calculateStreak(progressData: Array<{ lastAccessedAt: Date }>): number {
   if (progressData.length === 0) return 0
 
