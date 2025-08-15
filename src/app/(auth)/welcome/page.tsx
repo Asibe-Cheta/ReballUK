@@ -58,7 +58,7 @@ export default function WelcomePage() {
 
   // Form setup
   const form = useForm<WelcomeFormData>({
-    resolver: zodResolver(welcomeFormSchema),
+    resolver: zodResolver(welcomeFormSchema) as any,
     mode: "onChange",
     defaultValues: {
       personal: {
