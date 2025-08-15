@@ -281,7 +281,7 @@ export async function GET() {
 }
 
 // Helper function to calculate streak
-function calculateStreak(progressData: Record<string, unknown>[]): number {
+function calculateStreak(progressData: Array<{ lastAccessedAt: Date }>): number {
   if (progressData.length === 0) return 0
 
   const sortedData = progressData
