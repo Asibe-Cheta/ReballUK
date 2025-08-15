@@ -57,7 +57,7 @@ export async function GET() {
 }
 
 // PUT /api/profile - Update user profile
-export async function PUT() {
+export async function PUT(request: Request) {
   try {
     // Authenticate user
     const session = await auth()
