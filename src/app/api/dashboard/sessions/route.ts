@@ -110,7 +110,7 @@ export async function GET(request: NextRequest) {
         course: {
           id: progress.course.id,
           title: progress.course.title,
-          level: progress.course.level,
+          level: progress.course.level as "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "PROFESSIONAL",
           position: progress.course.position,
         }
       }
