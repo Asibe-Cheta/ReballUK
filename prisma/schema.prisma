@@ -42,6 +42,12 @@ enum PaymentStatus {
   REFUNDED
 }
 
+enum UserRole {
+  USER
+  COACH
+  ADMIN
+}
+
 model Account {
   id                String  @id @default(cuid())
   userId            String  @map("user_id")
@@ -87,6 +93,7 @@ model User {
   emailVerified DateTime? @map("email_verified")
   image         String?
   password      String?
+  role          UserRole  @default(USER)
   // Email verification fields
   verificationToken      String?   @map("verification_token")
   verificationExpires    DateTime? @map("verification_expires")
@@ -100,6 +107,11 @@ model User {
   progress      Progress[]
   videos        Video[]
   certificates  Certificate[]
+  // Coach relations
+  coachNotes    CoachNote[]    @relation("CoachNotes")
+  userNotes     CoachNote[]    @relation("UserNotes")
+  coachCommunications Communication[] @relation("CoachCommunications")
+  userCommunications  Communication[] @relation("UserCommunications")
 
   @@map("users")
 }
@@ -252,6 +264,44 @@ model Certificate {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("certificates")
+}
+
+model CoachNote {
+  id          String   @id @default(cuid())
+  coachId     String   @map("coach_id")
+  userId      String   @map("user_id")
+  sessionId   String?  @map("session_id")
+  title       String
+  content     String
+  type        String   @default("GENERAL") // GENERAL, SESSION, PROGRESS, FEEDBACK
+  isPrivate   Boolean  @default(false) @map("is_private")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  coach       User     @relation("CoachNotes", fields: [coachId], references: [id], onDelete: Cascade)
+  user        User     @relation("UserNotes", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("coach_notes")
+}
+
+model Communication {
+  id          String   @id @default(cuid())
+  coachId     String   @map("coach_id")
+  userId      String?  @map("user_id") // null for broadcast messages
+  type        String   @default("MESSAGE") // MESSAGE, ANNOUNCEMENT, EMAIL
+  subject     String?
+  content     String
+  isRead      Boolean  @default(false) @map("is_read")
+  isArchived  Boolean  @default(false) @map("is_archived")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  coach       User     @relation("CoachCommunications", fields: [coachId], references: [id], onDelete: Cascade)
+  user        User?    @relation("UserCommunications", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("communications")
 }
 
 
