@@ -5,8 +5,8 @@ import type {
   DashboardData, 
   DashboardOverviewResponse
 } from "@/types/dashboard"
-import type { User } from "@/types/auth"
-import type { Profile } from "@/types/profile"
+import type { User } from "@prisma/client"
+import type { Profile } from "@prisma/client"
 
 export async function GET() {
   try {
