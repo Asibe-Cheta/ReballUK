@@ -1,6 +1,6 @@
 "use client"
 
-import { auth } from "@/lib/auth-server"
+import { useSession } from "next-auth/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,8 +14,8 @@ import {
 import { Bell, Settings, LogOut, User } from "lucide-react"
 import Link from "next/link"
 
-export async function CoachHeader() {
-  const session = await auth()
+export function CoachHeader() {
+  const { data: session } = useSession()
 
   return (
     <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">

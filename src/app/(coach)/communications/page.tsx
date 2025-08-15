@@ -48,7 +48,7 @@ export default async function CommunicationsPage({
   // Fetch communications
   const communications = await prisma.communication.findMany({
     where: {
-      coachId: "current-coach-id", // This should be the actual coach ID
+      coachId: session.user.id,
       ...(type && { type: type.toUpperCase() }),
       ...(user && { userId: user })
     },

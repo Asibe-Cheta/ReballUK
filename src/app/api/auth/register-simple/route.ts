@@ -41,8 +41,8 @@ export async function POST(request: NextRequest) {
       
       // Create user with raw SQL using fresh client (unverified)
       const userResult = await freshDb.$queryRaw`
-        INSERT INTO users (id, name, email, password, "emailVerified", "createdAt", "updatedAt")
-        VALUES (gen_random_uuid()::text, ${name}, ${email}, ${hashedPassword}, NULL, NOW(), NOW())
+        INSERT INTO users (id, name, email, password, role, "emailVerified", "createdAt", "updatedAt")
+        VALUES (gen_random_uuid()::text, ${name}, ${email}, ${hashedPassword}, 'USER', NULL, NOW(), NOW())
         RETURNING id, name, email
       `
       console.log("User INSERT successful, result:", userResult)

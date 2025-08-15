@@ -15,6 +15,7 @@ declare module "next-auth" {
     name: string
     email: string
     image?: string
+    role?: string
     position?: PlayerPosition
     trainingLevel?: string
     completedOnboarding?: boolean
@@ -27,6 +28,7 @@ declare module "next-auth" {
       name: string
       email: string
       image?: string
+      role?: string
       position?: PlayerPosition
       trainingLevel?: string
       completedOnboarding?: boolean
@@ -75,7 +77,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         try {
           // Find user by email using fresh client with raw SQL
           const userResult = await freshDb.$queryRaw`
-            SELECT id, name, email, password, "emailVerified"
+            SELECT id, name, email, password, "emailVerified", role
             FROM users 
             WHERE email = ${credentials.email} 
             LIMIT 1
@@ -109,7 +111,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             id: user.id,
             name: user.name,
             email: user.email,
-            image: null
+            image: null,
+            role: user.role || "USER"
           }
         } catch (error) {
           console.error("Credentials authorization error:", error)
@@ -139,7 +142,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const freshDb = getFreshDbClient()
           
           const userResult = await freshDb.$queryRaw`
-            SELECT u.id, u.name, u.email, p.position, p."trainingLevel"
+            SELECT u.id, u.name, u.email, u.role, p.position, p."trainingLevel"
             FROM users u
             LEFT JOIN profiles p ON u.id = p."userId"
             WHERE u.id = ${token.sub}
@@ -156,6 +159,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           } : null)
           
           if (userWithProfile) {
+            session.user.role = userWithProfile.role || "USER"
             session.user.position = userWithProfile.position
             session.user.trainingLevel = userWithProfile.trainingLevel
             session.user.completedOnboarding = false
