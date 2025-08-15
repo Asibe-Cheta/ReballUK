@@ -26,11 +26,12 @@ import Link from "next/link"
 export default async function AnalyticsPage({
   searchParams,
 }: {
-  searchParams: { period?: string; metric?: string }
+  searchParams: Promise<{ period?: string; metric?: string }>
 }) {
   await requireCoach()
 
-  const { period = "30d", metric = "overview" } = searchParams
+  const resolvedSearchParams = await searchParams
+  const { period = "30d", metric = "overview" } = resolvedSearchParams
 
   // Calculate date range based on period
   const getDateRange = (period: string) => {

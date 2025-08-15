@@ -39,11 +39,12 @@ import { formatDistanceToNow } from "date-fns"
 export default async function CommunicationsPage({
   searchParams,
 }: {
-  searchParams: { user?: string; type?: string }
+  searchParams: Promise<{ user?: string; type?: string }>
 }) {
   const session = await requireCoach()
 
-  const { user, type } = searchParams
+  const resolvedSearchParams = await searchParams
+  const { user, type } = resolvedSearchParams
 
   // Fetch communications
   const communications = await prisma.communication.findMany({

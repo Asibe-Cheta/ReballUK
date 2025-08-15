@@ -28,11 +28,12 @@ import { formatDistanceToNow } from "date-fns"
 export default async function UsersPage({
   searchParams,
 }: {
-  searchParams: { search?: string; status?: string; position?: string }
+  searchParams: Promise<{ search?: string; status?: string; position?: string }>
 }) {
   await requireCoach()
 
-  const { search, status, position } = searchParams
+  const resolvedSearchParams = await searchParams
+  const { search, status, position } = resolvedSearchParams
 
   // Build where clause for filtering
   const where: any = {
