@@ -34,7 +34,7 @@ export default function Home() {
         <div className="floating-orb w-20 h-20 bottom-40 left-1/4 opacity-30"></div>
 
         <div className="container text-center relative z-10 mt-20">
-          <AnimatedHeroHeading className="font-marker text-4xl md:text-5xl lg:text-6xl leading-none mb-8">
+          <AnimatedHeroHeading className="font-marker text-4xl md:text-5xl lg:text-6xl leading-none mb-8 text-white drop-shadow-lg">
             Football Training
             Program
           </AnimatedHeroHeading>
@@ -173,8 +173,8 @@ export default function Home() {
             {/* SISW Feature */}
             <div className="glow-card p-8" data-card="sisw">
               <span className="glow"></span>
-              <div className="w-16 h-16 bg-pure-black dark:bg-pure-white rounded-xl flex items-center justify-center mb-6">
-                <Video className="w-8 h-8 text-pure-white dark:text-pure-black" />
+              <div className="w-12 h-12 bg-pure-black dark:bg-pure-white rounded-xl flex items-center justify-center mb-6">
+                <Video className="w-6 h-6 text-pure-white dark:text-pure-black" />
               </div>
               <h3 className="text-2xl font-bold mb-4">SISW Analysis</h3>
               <p className="text-text-gray dark:text-medium-gray mb-6 leading-relaxed">
@@ -189,8 +189,8 @@ export default function Home() {
             {/* TAV Feature */}
             <div className="glow-card p-8" data-card="tav">
               <span className="glow"></span>
-              <div className="w-16 h-16 bg-pure-black dark:bg-pure-white rounded-xl flex items-center justify-center mb-6">
-                <Target className="w-8 h-8 text-pure-white dark:text-pure-black" />
+              <div className="w-12 h-12 bg-pure-black dark:bg-pure-white rounded-xl flex items-center justify-center mb-6">
+                <Target className="w-6 h-6 text-pure-white dark:text-pure-black" />
               </div>
               <h3 className="text-2xl font-bold mb-4">TAV Breakdowns</h3>
               <p className="text-text-gray dark:text-medium-gray mb-6 leading-relaxed">
@@ -205,8 +205,8 @@ export default function Home() {
             {/* 1v1 Training */}
             <div className="glow-card p-8" data-card="mastery">
               <span className="glow"></span>
-              <div className="w-16 h-16 bg-pure-black dark:bg-pure-white rounded-xl flex items-center justify-center mb-6">
-                <TrendingUp className="w-8 h-8 text-pure-white dark:text-pure-black" />
+              <div className="w-12 h-12 bg-pure-black dark:bg-pure-white rounded-xl flex items-center justify-center mb-6">
+                <TrendingUp className="w-6 h-6 text-pure-white dark:text-pure-black" />
               </div>
               <h3 className="text-2xl font-bold mb-4">1v1 Mastery</h3>
               <p className="text-text-gray dark:text-medium-gray mb-6 leading-relaxed">
