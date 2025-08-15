@@ -16,7 +16,10 @@ export async function GET(request: NextRequest) {
     const userId = session.user.id
     const { searchParams } = new URL(request.url)
     const timeframe = searchParams.get("timeframe") || "30d" // 7d, 30d, 90d, 1y
-    const metric = searchParams.get("metric") || "performance" // performance, confidence, success_rate
+    const metricParam = searchParams.get("metric") || "performance" // performance, confidence, success_rate
+    const metric: "confidence" | "success_rate" | "performance" | "skill_level" = (metricParam === "confidence" || metricParam === "success_rate" || metricParam === "performance" || metricParam === "skill_level") 
+      ? metricParam as "confidence" | "success_rate" | "performance" | "skill_level"
+      : "performance"
 
     // Calculate date range based on timeframe
     const now = new Date()
