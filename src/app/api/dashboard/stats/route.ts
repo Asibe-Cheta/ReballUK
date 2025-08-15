@@ -194,8 +194,8 @@ export async function GET() {
         course: {
           id: s.courseId,
           title: s.course.title,
-          level: s.course.level,
-          position: s.course.position,
+          level: s.course.level as "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "PROFESSIONAL",
+          position: s.course.position as "STRIKER" | "WINGER" | "CAM" | "FULLBACK" | "MIDFIELDER" | "DEFENDER" | "GOALKEEPER" | "OTHER",
         }
       }))
       const successRate = dashboardUtils.calculateSuccessRate(sessionData)
