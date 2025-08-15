@@ -170,7 +170,7 @@ model Progress {
   feedback              String?
   lastAccessedAt        DateTime @map("last_accessed_at") @default(now())
   notes                 String?
-  sessionDate           DateTime @map("session_date")
+  sessionDate           DateTime @map("session_date") @default(now())
   createdAt             DateTime @default(now()) @map("created_at")
   updatedAt             DateTime @default(now()) @updatedAt @map("updated_at")
 
