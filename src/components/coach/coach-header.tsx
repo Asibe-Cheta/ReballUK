@@ -1,6 +1,6 @@
 "use client"
 
-import { useSession } from "next-auth/react"
+// Removed NextAuth import - will be replaced with custom auth
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,7 +15,8 @@ import { Bell, Settings, LogOut, User } from "lucide-react"
 import Link from "next/link"
 
 export function CoachHeader() {
-  const { data: session } = useSession()
+  // TODO: Replace with custom auth session
+  const session = { user: { name: "Coach", email: "coach@reball.uk", image: "" } }
 
   return (
     <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
@@ -71,7 +72,7 @@ export function CoachHeader() {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link href="/api/auth/signout">
+                <Link href="#" onClick={(e) => { e.preventDefault(); console.log("Sign out clicked"); }}>
                   <LogOut className="mr-2 h-4 w-4" />
                   Log out
                 </Link>

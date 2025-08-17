@@ -1,5 +1,3 @@
-import { auth } from "@/lib/auth-server";
-import { redirect } from "next/navigation";
 import GlowCardTracker from "@/components/ui/glow-card-tracker";
 import DashboardLayout from "@/components/dashboard/dashboard-layout";
 import { ThemeProvider } from "next-themes";
@@ -9,21 +7,16 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
-  
-  if (!session) {
-    redirect("/login-simple");
-  }
-
+  // TODO: Replace with custom auth check
   const user = {
-    id: session.user.id,
-    name: session.user.name || '',
-    email: session.user.email || '',
+    id: "temp-user-id",
+    name: "Player",
+    email: "player@reball.uk",
     profile: {
-      firstName: session.user.name?.split(' ')[0] || '',
-      lastName: session.user.name?.split(' ').slice(1).join(' ') || '',
-      position: session.user.position || 'GENERAL',
-      trainingLevel: session.user.trainingLevel || 'BEGINNER'
+      firstName: "Player",
+      lastName: "",
+      position: "GENERAL",
+      trainingLevel: "BEGINNER"
     }
   };
 

@@ -3,8 +3,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
-import { AuthSessionProvider } from "@/components/providers/session-provider"
-import { auth } from "@/lib/auth-server"
+// Removed auth imports - will be replaced with custom auth
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -23,7 +22,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.NEXTAUTH_URL || "http://localhost:3000"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
   alternates: {
     canonical: "/",
   },
@@ -70,8 +69,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = await auth()
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -90,10 +87,8 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthSessionProvider session={session}>
-            {children}
-            <Toaster />
-          </AuthSessionProvider>
+          {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

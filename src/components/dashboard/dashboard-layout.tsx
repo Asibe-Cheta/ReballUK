@@ -19,7 +19,7 @@ import {
   Bell,
   Search
 } from "lucide-react"
-import { signOut } from "next-auth/react"
+// Removed NextAuth import - will be replaced with custom auth
 import Link from "next/link"
 
 import ReballLogo from "@/components/ui/reball-logo"
@@ -46,7 +46,8 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
 
 
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/" })
+    // TODO: Implement custom sign out logic
+    console.log("Sign out clicked")
   }
 
   const toggleTheme = () => {
