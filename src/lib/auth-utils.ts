@@ -1,5 +1,5 @@
 import { hash, compare } from "bcryptjs"
-import { prisma } from "@/lib/prisma"
+import { getDbClient } from "@/lib/db-direct"
 import { cookies } from "next/headers"
 import { SignJWT, jwtVerify } from "jose"
 import { NextRequest } from "next/server"
@@ -48,27 +48,19 @@ export async function getUserFromToken(token: string): Promise<User | null> {
   const payload = await verifyToken(token)
   if (!payload?.userId) return null
 
-  const user = await prisma.user.findUnique({
-    where: { id: payload.userId },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      image: true,
-      role: true,
-      emailVerified: true,
-      createdAt: true,
-      profile: {
-        select: {
-          position: true,
-          trainingLevel: true,
-          completedOnboarding: true,
-        }
-      }
-    }
-  })
+  const db = await getDbClient()
+  const usersResult = await db.query(
+    `SELECT u.id, u.name, u.email, u.image, u.role, u."emailVerified", u."createdAt",
+            p.position, p."trainingLevel", p."completedOnboarding"
+     FROM "User" u
+     LEFT JOIN "Profile" p ON u.id = p."userId"
+     WHERE u.id = $1`,
+    [payload.userId]
+  )
 
-  if (!user) return null
+  if (usersResult.rows.length === 0) return null
+
+  const user = usersResult.rows[0]
 
   return {
     id: user.id,
@@ -76,9 +68,9 @@ export async function getUserFromToken(token: string): Promise<User | null> {
     email: user.email,
     image: user.image,
     role: user.role,
-    position: user.profile?.position,
-    trainingLevel: user.profile?.trainingLevel,
-    completedOnboarding: user.profile?.completedOnboarding,
+    position: user.position,
+    trainingLevel: user.trainingLevel,
+    completedOnboarding: user.completedOnboarding,
     emailVerified: user.emailVerified,
     createdAt: user.createdAt,
   }
@@ -113,14 +105,12 @@ export async function createVerificationToken(userId: string): Promise<string> {
     .setExpirationTime("24h") // 24 hours instead of 7 days
     .sign(JWT_SECRET)
   
-  // Store verification token in database
-  await prisma.verificationToken.create({
-    data: {
-      identifier: userId,
-      token: token,
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
-    }
-  })
+  // Store verification token in database using direct connection
+  const db = await getDbClient()
+  await db.query(
+    'INSERT INTO "VerificationToken" (identifier, token, expires) VALUES ($1, $2, $3)',
+    [userId, token, new Date(Date.now() + 24 * 60 * 60 * 1000)]
+  )
   
   return token
 }
@@ -137,13 +127,16 @@ export async function verifyEmailToken(token: string): Promise<boolean> {
     return false
   }
 
-  // Check if token exists in database
-  const verificationToken = await prisma.verificationToken.findFirst({
-    where: {
-      token: token,
-      expires: { gt: new Date() }
-    }
-  })
+  // Check if token exists in database using direct connection
+  const db = await getDbClient()
+  const verificationTokensResult = await db.query(
+    'SELECT identifier, token, expires FROM "VerificationToken" WHERE token = $1 AND expires > NOW()',
+    [token]
+  )
+  
+  const verificationToken = verificationTokensResult.rows.length > 0 
+    ? verificationTokensResult.rows[0] 
+    : null
 
   console.log("Database verification token:", verificationToken ? "Found" : "Not found")
   if (verificationToken) {
@@ -156,16 +149,17 @@ export async function verifyEmailToken(token: string): Promise<boolean> {
     return false
   }
 
-  // Mark user as verified
-  await prisma.user.update({
-    where: { id: payload.userId },
-    data: { emailVerified: true }
-  })
+  // Mark user as verified using direct connection
+  await db.query(
+    'UPDATE "User" SET "emailVerified" = true WHERE id = $1',
+    [payload.userId]
+  )
 
-  // Delete the verification token
-  await prisma.verificationToken.delete({
-    where: { token: verificationToken.token }
-  })
+  // Delete the verification token using direct connection
+  await db.query(
+    'DELETE FROM "VerificationToken" WHERE token = $1',
+    [verificationToken.token]
+  )
 
   console.log("Email verification successful")
   return true

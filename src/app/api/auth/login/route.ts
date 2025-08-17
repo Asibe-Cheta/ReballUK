@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import { getDbClient } from "@/lib/db-direct"
 import { comparePassword, setAuthCookie, getUserFromToken } from "@/lib/auth-utils"
 
 export async function POST(request: NextRequest) {
@@ -14,27 +14,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Find user by email
-    const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase() },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        password: true,
-        role: true,
-        emailVerified: true,
-        image: true,
-        createdAt: true,
-        profile: {
-          select: {
-            position: true,
-            trainingLevel: true,
-            completedOnboarding: true,
-          }
-        }
-      }
-    })
+    // Find user by email using direct database connection
+    const db = await getDbClient()
+    const usersResult = await db.query(
+      `SELECT u.id, u.name, u.email, u.password, u.role, u."emailVerified", u.image, u."createdAt",
+              p.position, p."trainingLevel", p."completedOnboarding"
+       FROM "User" u
+       LEFT JOIN "Profile" p ON u.id = p."userId"
+       WHERE u.email = $1`,
+      [email.toLowerCase()]
+    )
+    
+    const user = usersResult.rows.length > 0 ? usersResult.rows[0] : null
 
     if (!user) {
       return NextResponse.json(
@@ -78,9 +69,9 @@ export async function POST(request: NextRequest) {
       email: user.email,
       image: user.image,
       role: user.role,
-      position: user.profile?.position,
-      trainingLevel: user.profile?.trainingLevel,
-      completedOnboarding: user.profile?.completedOnboarding,
+      position: user.position,
+      trainingLevel: user.trainingLevel,
+      completedOnboarding: user.completedOnboarding,
       emailVerified: user.emailVerified,
       createdAt: user.createdAt,
     }

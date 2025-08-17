@@ -8,46 +8,6 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// Enums
-enum PlayerPosition {
-  STRIKER
-  WINGER
-  CAM
-  FULLBACK
-  MIDFIELDER
-  DEFENDER
-  GOALKEEPER
-  OTHER
-}
-
-enum TrainingLevel {
-  BEGINNER
-  INTERMEDIATE
-  ADVANCED
-  PROFESSIONAL
-}
-
-enum BookingStatus {
-  PENDING
-  CONFIRMED
-  CANCELLED
-  COMPLETED
-  IN_PROGRESS
-}
-
-enum PaymentStatus {
-  PENDING
-  PAID
-  FAILED
-  REFUNDED
-}
-
-enum UserRole {
-  USER
-  COACH
-  ADMIN
-}
-
 model Account {
   id                String  @id @default(cuid())
   userId            String  @map("user_id")
@@ -87,53 +47,48 @@ model VerificationToken {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified Boolean   @default(false) @map("email_verified")
-  image         String?
-  password      String?
-  role          UserRole  @default(USER)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
-  accounts      Account[]
-
-  // Relations
-  profile       Profile?
-  bookings      Booking[]
-  progress      Progress[]
-  videos        Video[]
-  certificates  Certificate[]
-  // Coach relations
-  coachNotes    CoachNote[]    @relation("CoachNotes")
-  userNotes     CoachNote[]    @relation("UserNotes")
+  id                  String          @id @default(cuid())
+  name                String?
+  email               String          @unique
+  emailVerified       Boolean         @default(false) @map("email_verified")
+  image               String?
+  password            String?
+  role                UserRole        @default(USER)
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @default(now()) @updatedAt
+  accounts            Account[]
+  bookings            Booking[]
+  certificates        Certificate[]
+  coachNotes          CoachNote[]     @relation("CoachNotes")
+  userNotes           CoachNote[]     @relation("UserNotes")
   coachCommunications Communication[] @relation("CoachCommunications")
   userCommunications  Communication[] @relation("UserCommunications")
+  profile             Profile?
+  progress            Progress[]
+  videos              Video[]
 
   @@map("users")
 }
 
 model Profile {
-  id                  String         @id @default(cuid())
-  userId              String         @unique @map("user_id")
-  firstName           String?        @map("first_name")
-  lastName            String?        @map("last_name")
+  id                  String          @id @default(cuid())
+  userId              String          @unique @map("user_id")
+  firstName           String?         @map("first_name")
+  lastName            String?         @map("last_name")
   position            PlayerPosition?
-  trainingLevel       TrainingLevel  @map("training_level") @default(BEGINNER)
-  dateOfBirth         DateTime?      @map("date_of_birth")
-  preferredFoot       String?        @map("preferred_foot")
-  height              Int?           // in cm
-  weight              Int?           // in kg
+  trainingLevel       TrainingLevel   @default(BEGINNER) @map("training_level")
+  dateOfBirth         DateTime?       @map("date_of_birth")
+  preferredFoot       String?         @map("preferred_foot")
+  height              Int?
+  weight              Int?
   bio                 String?
-  goals               String[]       @default([])
-  confidenceRating    Int?           @map("confidence_rating")
-  completedOnboarding Boolean        @map("completed_onboarding") @default(false)
-  isActive            Boolean        @default(true) @map("is_active")
-  createdAt           DateTime       @default(now()) @map("created_at")
-  updatedAt           DateTime       @default(now()) @updatedAt @map("updated_at")
-
-  // Relations
-  user                User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goals               String[]        @default([])
+  confidenceRating    Int?            @map("confidence_rating")
+  completedOnboarding Boolean         @default(false) @map("completed_onboarding")
+  isActive            Boolean         @default(true) @map("is_active")
+  createdAt           DateTime        @default(now()) @map("created_at")
+  updatedAt           DateTime        @default(now()) @updatedAt @map("updated_at")
+  user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("profiles")
 }
@@ -153,96 +108,88 @@ model Booking {
   notes         String?
   createdAt     DateTime      @default(now()) @map("created_at")
   updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at")
-
-  // Relations
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   course        Course?       @relation(fields: [courseId], references: [id])
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   videos        Video[]
 
   @@map("bookings")
 }
 
 model Progress {
-  id                    String   @id @default(cuid())
-  userId                String   @map("user_id")
-  courseId              String?  @map("course_id")
-  videoId               String?  @map("video_id")
-  sessionType           String   @map("session_type")
-  position              String?
-  successRate           Float    @map("success_rate")
-  confidence            Int
-  duration              Int
-  timeSpent             Int?     @map("time_spent")
-  rating                Int?
-  completionPercentage  Float?   @map("completion_percentage")
-  isCompleted           Boolean  @default(false) @map("is_completed")
-  feedback              String?
-  lastAccessedAt        DateTime @map("last_accessed_at") @default(now())
-  notes                 String?
-  sessionDate           DateTime @map("session_date") @default(now())
-  createdAt             DateTime @default(now()) @map("created_at")
-  updatedAt             DateTime @default(now()) @updatedAt @map("updated_at")
-
-  // Relations
-  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course                Course?  @relation(fields: [courseId], references: [id])
-  video                 Video?   @relation(fields: [videoId], references: [id])
+  id                   String   @id @default(cuid())
+  userId               String   @map("user_id")
+  courseId             String?  @map("course_id")
+  videoId              String?  @map("video_id")
+  sessionType          String   @map("session_type")
+  position             String?
+  successRate          Float    @map("success_rate")
+  confidence           Int
+  duration             Int
+  timeSpent            Int?     @map("time_spent")
+  rating               Int?
+  completionPercentage Float?   @map("completion_percentage")
+  isCompleted          Boolean  @default(false) @map("is_completed")
+  feedback             String?
+  lastAccessedAt       DateTime @default(now()) @map("last_accessed_at")
+  notes                String?
+  sessionDate          DateTime @default(now()) @map("session_date")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @default(now()) @updatedAt @map("updated_at")
+  course               Course?  @relation(fields: [courseId], references: [id])
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video                Video?   @relation(fields: [videoId], references: [id])
 
   @@unique([userId, courseId, videoId])
   @@map("progress")
 }
 
 model Video {
-  id            String   @id @default(cuid())
-  userId        String   @map("user_id")
-  bookingId     String?  @map("booking_id")
-  courseId      String?  @map("course_id")
-  sessionId     String?  @map("session_id")
-  title         String
-  description   String?
-  videoUrl      String   @map("video_url")
-  thumbnailUrl  String?  @map("thumbnail_url")
-  videoType     String   @map("video_type") // "SISW" or "TAV"
-  analysisType  String?  @map("analysis_type")
-  position      String?
-  tags          String[] @default([])
-  viewCount     Int      @default(0) @map("view_count")
-  publicId      String?  @map("public_id")
-  isActive      Boolean  @default(true) @map("is_active")
-  isPreview     Boolean  @default(false) @map("is_preview")
-  orderIndex    Int?     @map("order_index")
-  duration      Int?
-  uploadDate    DateTime @default(now()) @map("upload_date")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
-
-  // Relations
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  booking       Booking? @relation(fields: [bookingId], references: [id])
-  course        Course?  @relation(fields: [courseId], references: [id])
-  progress      Progress[]
+  id           String     @id @default(cuid())
+  userId       String     @map("user_id")
+  bookingId    String?    @map("booking_id")
+  courseId     String?    @map("course_id")
+  sessionId    String?    @map("session_id")
+  title        String
+  description  String?
+  videoUrl     String     @map("video_url")
+  thumbnailUrl String?    @map("thumbnail_url")
+  videoType    String     @map("video_type")
+  analysisType String?    @map("analysis_type")
+  position     String?
+  tags         String[]   @default([])
+  viewCount    Int        @default(0) @map("view_count")
+  publicId     String?    @map("public_id")
+  isActive     Boolean    @default(true) @map("is_active")
+  isPreview    Boolean    @default(false) @map("is_preview")
+  orderIndex   Int?       @map("order_index")
+  duration     Int?
+  uploadDate   DateTime   @default(now()) @map("upload_date")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @default(now()) @updatedAt @map("updated_at")
+  progress     Progress[]
+  booking      Booking?   @relation(fields: [bookingId], references: [id])
+  course       Course?    @relation(fields: [courseId], references: [id])
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("videos")
 }
 
 model Course {
-  id            String   @id @default(cuid())
-  title         String
-  description   String?
-  position      String?
-  level         String?
-  duration      Int      @default(60)
-  price         Decimal  @default(0)
-  tags          String[] @default([])
-  thumbnailUrl  String?  @map("thumbnail_url")
-  isActive      Boolean  @default(true) @map("is_active")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
-
-  // Relations
-  bookings      Booking[]
-  progress      Progress[]
-  videos        Video[]
+  id           String     @id @default(cuid())
+  title        String
+  description  String?
+  position     String?
+  level        String?
+  duration     Int        @default(60)
+  price        Decimal    @default(0)
+  tags         String[]   @default([])
+  thumbnailUrl String?    @map("thumbnail_url")
+  isActive     Boolean    @default(true) @map("is_active")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @default(now()) @updatedAt @map("updated_at")
+  bookings     Booking[]
+  progress     Progress[]
+  videos       Video[]
 
   @@map("courses")
 }
@@ -256,49 +203,80 @@ model Certificate {
   isActive    Boolean  @default(true) @map("is_active")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
-
-  // Relations
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("certificates")
 }
 
 model CoachNote {
-  id          String   @id @default(cuid())
-  coachId     String   @map("coach_id")
-  userId      String   @map("user_id")
-  sessionId   String?  @map("session_id")
-  title       String
-  content     String
-  type        String   @default("GENERAL") // GENERAL, SESSION, PROGRESS, FEEDBACK
-  isPrivate   Boolean  @default(false) @map("is_private")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
-
-  // Relations
-  coach       User     @relation("CoachNotes", fields: [coachId], references: [id], onDelete: Cascade)
-  user        User     @relation("UserNotes", fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  coachId   String   @map("coach_id")
+  userId    String   @map("user_id")
+  sessionId String?  @map("session_id")
+  title     String
+  content   String
+  type      String   @default("GENERAL")
+  isPrivate Boolean  @default(false) @map("is_private")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  coach     User     @relation("CoachNotes", fields: [coachId], references: [id], onDelete: Cascade)
+  user      User     @relation("UserNotes", fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("coach_notes")
 }
 
 model Communication {
-  id          String   @id @default(cuid())
-  coachId     String   @map("coach_id")
-  userId      String?  @map("user_id") // null for broadcast messages
-  type        String   @default("MESSAGE") // MESSAGE, ANNOUNCEMENT, EMAIL
-  subject     String?
-  content     String
-  isRead      Boolean  @default(false) @map("is_read")
-  isArchived  Boolean  @default(false) @map("is_archived")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
-
-  // Relations
-  coach       User     @relation("CoachCommunications", fields: [coachId], references: [id], onDelete: Cascade)
-  user        User?    @relation("UserCommunications", fields: [userId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  coachId    String   @map("coach_id")
+  userId     String?  @map("user_id")
+  type       String   @default("MESSAGE")
+  subject    String?
+  content    String
+  isRead     Boolean  @default(false) @map("is_read")
+  isArchived Boolean  @default(false) @map("is_archived")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
+  coach      User     @relation("CoachCommunications", fields: [coachId], references: [id], onDelete: Cascade)
+  user       User?    @relation("UserCommunications", fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("communications")
 }
 
+enum PlayerPosition {
+  STRIKER
+  WINGER
+  CAM
+  FULLBACK
+  MIDFIELDER
+  DEFENDER
+  GOALKEEPER
+  OTHER
+}
 
+enum TrainingLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  PROFESSIONAL
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  IN_PROGRESS
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum UserRole {
+  USER
+  COACH
+  ADMIN
+}

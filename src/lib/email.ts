@@ -6,12 +6,22 @@ if (process.env.SENDGRID_API_KEY) {
 }
 
 export async function sendVerificationEmail(email: string, name: string, token: string) {
+  console.log('SendGrid API Key available:', !!process.env.SENDGRID_API_KEY)
+  console.log('SendGrid From Email:', process.env.SENDGRID_FROM_EMAIL)
+  console.log('NEXT_PUBLIC_APP_URL:', process.env.NEXT_PUBLIC_APP_URL)
+  
+  // For development, log the verification URL instead of sending email
+  const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/verify-email?token=${token}`
+  console.log('=== VERIFICATION EMAIL (DEVELOPMENT) ===')
+  console.log('To:', email)
+  console.log('Subject: Verify your REBALL account')
+  console.log('Verification URL:', verificationUrl)
+  console.log('========================================')
+  
   if (!process.env.SENDGRID_API_KEY) {
     console.warn('SendGrid API key not configured, skipping email send')
     return
   }
-
-  const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/verify-email?token=${token}`
 
   const msg = {
     to: email,
