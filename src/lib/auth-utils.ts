@@ -106,7 +106,12 @@ export async function comparePassword(password: string, hashedPassword: string):
 
 // Create verification token
 export async function createVerificationToken(userId: string): Promise<string> {
-  const token = await createToken({ userId, type: "email-verification" })
+  // Create a JWT token with 24-hour expiration for email verification
+  const token = await new SignJWT({ userId, type: "email-verification" })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("24h") // 24 hours instead of 7 days
+    .sign(JWT_SECRET)
   
   // Store verification token in database
   await prisma.verificationToken.create({
@@ -122,8 +127,15 @@ export async function createVerificationToken(userId: string): Promise<string> {
 
 // Verify email token
 export async function verifyEmailToken(token: string): Promise<boolean> {
+  console.log("Verifying email token...")
+  
   const payload = await verifyToken(token)
-  if (!payload?.userId || payload?.type !== "email-verification") return false
+  console.log("JWT payload:", payload)
+  
+  if (!payload?.userId || payload?.type !== "email-verification") {
+    console.log("Invalid payload or type:", { userId: payload?.userId, type: payload?.type })
+    return false
+  }
 
   // Check if token exists in database
   const verificationToken = await prisma.verificationToken.findFirst({
@@ -133,7 +145,16 @@ export async function verifyEmailToken(token: string): Promise<boolean> {
     }
   })
 
-  if (!verificationToken) return false
+  console.log("Database verification token:", verificationToken ? "Found" : "Not found")
+  if (verificationToken) {
+    console.log("Token expires at:", verificationToken.expires)
+    console.log("Current time:", new Date())
+  }
+
+  if (!verificationToken) {
+    console.log("Token not found in database or expired")
+    return false
+  }
 
   // Mark user as verified
   await prisma.user.update({
@@ -143,9 +164,10 @@ export async function verifyEmailToken(token: string): Promise<boolean> {
 
   // Delete the verification token
   await prisma.verificationToken.delete({
-    where: { id: verificationToken.id }
+    where: { token: verificationToken.token }
   })
 
+  console.log("Email verification successful")
   return true
 }
 
