@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { auth } from "@/lib/auth-utils"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { Client } from "pg"
 import type { 
   DashboardData, 
@@ -10,15 +10,15 @@ import type { Profile } from "@prisma/client"
 
 export async function GET() {
   try {
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
       )
     }
 
-    const userId = session.user.id
+    const userId = user.id
 
     // Use raw PostgreSQL client to avoid prepared statement conflicts
     const pgClient = new Client({

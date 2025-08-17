@@ -1,253 +1,142 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Loader2, CheckCircle, XCircle, Mail, ArrowLeft } from "lucide-react"
+import { CheckCircle, XCircle, Loader2, Mail } from "lucide-react"
+import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
 
-interface VerificationState {
-  status: "loading" | "success" | "error" | "resend"
-  message: string
-  user?: {
-    id: string
-    name: string
-    email: string
-  }
-}
-
 export default function VerifyEmailPage() {
+  const [isVerifying, setIsVerifying] = useState(false)
+  const [verificationStatus, setVerificationStatus] = useState<'pending' | 'success' | 'error'>('pending')
+  const [errorMessage, setErrorMessage] = useState<string>('')
+
   const router = useRouter()
   const searchParams = useSearchParams()
-  const token = searchParams.get('token')
-  
-  const [state, setState] = useState<VerificationState>({
-    status: "loading",
-    message: "Verifying your email..."
-  })
-  const [resendEmail, setResendEmail] = useState("")
-  const [isResending, setIsResending] = useState(false)
+  const { verifyEmail } = useAuth()
 
   useEffect(() => {
+    const token = searchParams.get('token')
+    
     if (token) {
-      verifyEmail(token)
+      verifyEmailToken(token)
     } else {
-      setState({
-        status: "error",
-        message: "No verification token provided"
-      })
+      setVerificationStatus('error')
+      setErrorMessage('No verification token found')
     }
-  }, [token])
+  }, [searchParams])
 
-  const verifyEmail = async (verificationToken: string) => {
+  const verifyEmailToken = async (token: string) => {
+    setIsVerifying(true)
     try {
-      const response = await fetch(`/api/auth/verify-email?token=${verificationToken}`)
-      const data = await response.json()
-
-      if (data.success) {
-        setState({
-          status: "success",
-          message: data.message,
-          user: data.user
-        })
-        toast.success("Email verified successfully!")
-      } else {
-        setState({
-          status: "error",
-          message: data.error || "Verification failed"
-        })
-        toast.error(data.error || "Verification failed")
-      }
-    } catch (error) {
-      console.error("Verification error:", error)
-      setState({
-        status: "error",
-        message: "Failed to verify email. Please try again."
-      })
-      toast.error("Failed to verify email")
-    }
-  }
-
-  const handleResendEmail = async () => {
-    if (!resendEmail) {
-      toast.error("Please enter your email address")
-      return
-    }
-
-    setIsResending(true)
-    try {
-      const response = await fetch("/api/auth/verify-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email: resendEmail })
-      })
-
-      const data = await response.json()
-
-      if (data.success) {
-        toast.success("Verification email sent successfully!")
-        setState({
-          status: "success",
-          message: "Verification email sent! Please check your inbox and click the verification link."
+      const result = await verifyEmail(token)
+      
+      if (result.success) {
+        setVerificationStatus('success')
+        toast.success("Email verified successfully!", {
+          description: "You can now sign in to your account.",
         })
       } else {
-        toast.error(data.error || "Failed to send verification email")
+        setVerificationStatus('error')
+        setErrorMessage(result.error || 'Verification failed')
+        toast.error("Verification failed", {
+          description: result.error,
+        })
       }
     } catch (error) {
-      console.error("Resend error:", error)
-      toast.error("Failed to send verification email")
+      setVerificationStatus('error')
+      setErrorMessage('An unexpected error occurred')
+      toast.error("Verification failed", {
+        description: "An unexpected error occurred.",
+      })
     } finally {
-      setIsResending(false)
+      setIsVerifying(false)
     }
   }
 
   const renderContent = () => {
-    switch (state.status) {
-      case "loading":
-        return (
-          <div className="text-center">
-            <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
-            <h2 className="text-xl font-semibold mb-2">Verifying Your Email</h2>
-            <p className="text-muted-foreground">{state.message}</p>
-          </div>
-        )
+    if (isVerifying) {
+      return (
+        <div className="text-center space-y-4">
+          <Loader2 className="w-12 h-12 text-blue-500 animate-spin mx-auto" />
+          <h2 className="text-xl font-semibold text-gray-900">Verifying your email...</h2>
+          <p className="text-gray-600">Please wait while we verify your email address.</p>
+        </div>
+      )
+    }
 
-      case "success":
-        return (
-          <div className="text-center">
-            <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2 text-green-600">Email Verified Successfully!</h2>
-            <p className="text-muted-foreground mb-6">{state.message}</p>
-            
-            {state.user && (
-              <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg mb-6">
-                <p className="text-sm text-green-700 dark:text-green-300">
-                  Welcome, <strong>{state.user.name}</strong>! Your account is now ready.
-                </p>
-              </div>
-            )}
-            
-            <Button onClick={() => router.push("/login-simple")} className="w-full">
-              Continue to Login
+    if (verificationStatus === 'success') {
+      return (
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+            <CheckCircle className="w-8 h-8 text-green-600" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900">Email Verified!</h2>
+          <p className="text-gray-600">
+            Your email has been successfully verified. You can now sign in to your REBALL account.
+          </p>
+          <Button
+            onClick={() => router.push('/login')}
+            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+          >
+            Sign In Now
+          </Button>
+        </div>
+      )
+    }
+
+    if (verificationStatus === 'error') {
+      return (
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+            <XCircle className="w-8 h-8 text-red-600" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900">Verification Failed</h2>
+          <p className="text-gray-600">
+            {errorMessage || 'We couldn\'t verify your email address. The link may be expired or invalid.'}
+          </p>
+          <div className="space-y-3">
+            <Button
+              onClick={() => router.push('/login')}
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+            >
+              Go to Sign In
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => router.push('/register')}
+              className="w-full"
+            >
+              Create New Account
             </Button>
           </div>
-        )
-
-      case "error":
-        return (
-          <div className="text-center">
-            <XCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2 text-red-600">Verification Failed</h2>
-            <p className="text-muted-foreground mb-6">{state.message}</p>
-            
-            <Alert className="mb-6">
-              <Mail className="h-4 w-4" />
-              <AlertDescription>
-                Don&apos;t see the verification email? Check your spam folder or request a new one.
-              </AlertDescription>
-            </Alert>
-            
-            <div className="space-y-4">
-              <Button 
-                variant="outline" 
-                onClick={() => setState({ status: "resend", message: "Request new verification email" })}
-                className="w-full"
-              >
-                Request New Verification Email
-              </Button>
-              <Button 
-                variant="ghost" 
-                onClick={() => router.push("/login-simple")}
-                className="w-full"
-              >
-                Back to Login
-              </Button>
-            </div>
-          </div>
-        )
-
-      case "resend":
-        return (
-          <div className="text-center">
-            <Mail className="h-12 w-12 text-blue-500 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Request Verification Email</h2>
-            <p className="text-muted-foreground mb-6">
-              Enter your email address and we&apos;ll send you a new verification link.
-            </p>
-            
-            <div className="space-y-4">
-              <div className="text-left">
-                <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={resendEmail}
-                  onChange={(e) => setResendEmail(e.target.value)}
-                  className="mt-1"
-                />
-              </div>
-              
-              <Button 
-                onClick={handleResendEmail} 
-                disabled={isResending}
-                className="w-full"
-              >
-                {isResending ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    Sending...
-                  </>
-                ) : (
-                  "Send Verification Email"
-                )}
-              </Button>
-              
-              <Button 
-                variant="ghost" 
-                onClick={() => router.push("/login-simple")}
-                className="w-full"
-              >
-                Back to Login
-              </Button>
-            </div>
-          </div>
-        )
-
-      default:
-        return null
+        </div>
+      )
     }
+
+    return null
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <Card>
-          <CardHeader className="text-center">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.push("/login-simple")}
-              className="absolute left-4 top-4"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
-            
-            <div className="mt-8">
-              <h1 className="text-2xl font-bold">Email Verification</h1>
-              <CardDescription>
-                Verify your email address to access your REBALL account
-              </CardDescription>
+        <Card className="shadow-xl border-0">
+          <CardHeader className="text-center pb-6">
+            <div className="mx-auto mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                <Mail className="w-8 h-8 text-white" />
+              </div>
             </div>
+            <CardTitle className="text-2xl font-bold text-gray-900">Email Verification</CardTitle>
+            <CardDescription className="text-gray-600">
+              Verifying your email address
+            </CardDescription>
           </CardHeader>
-          
+
           <CardContent>
             {renderContent()}
           </CardContent>

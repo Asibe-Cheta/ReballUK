@@ -3,10 +3,26 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import AnimatedHeroHeading from "@/components/ui/animated-hero-heading";
+import { ProfileDropdown } from "@/components/navbar/profile-dropdown";
 
 export default function Home() {
   return (
     <div className="min-h-screen">
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-sm border-b border-white/10">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                <span className="text-white text-sm font-bold">R</span>
+              </div>
+              <span className="text-white font-bold text-xl">REBALL</span>
+            </Link>
+            <ProfileDropdown />
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
       <section className="hero min-h-screen flex items-center justify-center relative overflow-hidden">
         {/* Video Background */}

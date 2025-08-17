@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/providers/theme-provider"
+import { AuthProvider } from "@/lib/auth-context"
 import { Toaster } from "@/components/ui/sonner"
-// Removed auth imports - will be replaced with custom auth
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -87,8 +87,10 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
-          <Toaster />
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
