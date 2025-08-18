@@ -38,11 +38,21 @@ export async function storeVerificationToken(userId: string, token: string, expi
   try {
     const tokenHash = hashVerificationToken(token)
     
-    await db.user.update({
-      where: { id: userId },
-      data: {
-        verificationToken: tokenHash,
-        verificationExpires: expires
+    // Store verification token in the VerificationToken model
+    await db.verificationToken.upsert({
+      where: { 
+        identifier_token: {
+          identifier: userId,
+          token: tokenHash
+        }
+      },
+      update: {
+        expires
+      },
+      create: {
+        identifier: userId,
+        token: tokenHash,
+        expires
       }
     })
     
@@ -58,26 +68,22 @@ export async function storeVerificationToken(userId: string, token: string, expi
  */
 export async function getVerificationToken(userId: string): Promise<{ token: string; expires: Date } | null> {
   try {
-    const user = await db.user.findUnique({
-      where: { id: userId },
-      select: {
-        verificationToken: true,
-        verificationExpires: true
-      }
+    const verificationToken = await db.verificationToken.findFirst({
+      where: { identifier: userId }
     })
     
-    if (!user?.verificationToken || !user?.verificationExpires) {
+    if (!verificationToken) {
       return null
     }
     
     // Check if token has expired
-    if (new Date() > user.verificationExpires) {
+    if (new Date() > verificationToken.expires) {
       return null
     }
     
     return {
-      token: user.verificationToken,
-      expires: user.verificationExpires
+      token: verificationToken.token,
+      expires: verificationToken.expires
     }
   } catch (error) {
     console.error('Failed to get verification token:', error)
@@ -90,12 +96,8 @@ export async function getVerificationToken(userId: string): Promise<{ token: str
  */
 export async function clearVerificationToken(userId: string): Promise<boolean> {
   try {
-    await db.user.update({
-      where: { id: userId },
-      data: {
-        verificationToken: null,
-        verificationExpires: null
-      }
+    await db.verificationToken.deleteMany({
+      where: { identifier: userId }
     })
     
     return true
@@ -113,10 +115,13 @@ export async function markEmailAsVerified(userId: string): Promise<boolean> {
     await db.user.update({
       where: { id: userId },
       data: {
-        emailVerified: true,
-        verificationToken: null,
-        verificationExpires: null
+        emailVerified: true
       }
+    })
+    
+    // Clear verification tokens
+    await db.verificationToken.deleteMany({
+      where: { identifier: userId }
     })
     
     return true
