@@ -53,9 +53,9 @@ export const profileUpdateSchema = z.object({
     WINGER: "WINGER", 
     CAM: "CAM",
     FULLBACK: "FULLBACK",
-    GOALKEEPER: "GOALKEEPER",
-    DEFENDER: "DEFENDER",
     MIDFIELDER: "MIDFIELDER",
+    DEFENDER: "DEFENDER",
+    GOALKEEPER: "GOALKEEPER",
     OTHER: "OTHER",
   }).optional().nullable(),
   trainingLevel: z.nativeEnum({
@@ -82,11 +82,11 @@ export const onboardingSchema = z.object({
   position: z.nativeEnum({
     STRIKER: "STRIKER",
     WINGER: "WINGER",
-    CAM: "CAM", 
+    CAM: "CAM",
     FULLBACK: "FULLBACK",
-    GOALKEEPER: "GOALKEEPER",
-    DEFENDER: "DEFENDER",
     MIDFIELDER: "MIDFIELDER",
+    DEFENDER: "DEFENDER",
+    GOALKEEPER: "GOALKEEPER",
     OTHER: "OTHER",
   }),
   trainingLevel: z.nativeEnum({
