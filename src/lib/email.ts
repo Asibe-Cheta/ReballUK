@@ -8,10 +8,10 @@ if (process.env.SENDGRID_API_KEY) {
 export async function sendVerificationEmail(email: string, name: string, token: string) {
   console.log('SendGrid API Key available:', !!process.env.SENDGRID_API_KEY)
   console.log('SendGrid From Email:', process.env.SENDGRID_FROM_EMAIL)
-  console.log('NEXT_PUBLIC_APP_URL:', process.env.NEXT_PUBLIC_APP_URL)
+  console.log('NEXTAUTH_URL:', process.env.NEXTAUTH_URL)
   
   // For development, log the verification URL instead of sending email
-  const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/verify-email?token=${token}`
+  const verificationUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/verify-email?token=${token}`
   console.log('=== VERIFICATION EMAIL (DEVELOPMENT) ===')
   console.log('To:', email)
   console.log('Subject: Verify your REBALL account')
@@ -130,7 +130,7 @@ export async function sendWelcomeEmail(email: string, name: string) {
           </div>
           
           <div style="text-align: center; margin: 40px 0;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}" 
+            <a href="${process.env.NEXTAUTH_URL || 'http://localhost:3000'}" 
                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
                       color: white; 
                       padding: 15px 30px; 
