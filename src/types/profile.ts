@@ -39,8 +39,8 @@ export type ProgressWithRelations = Progress & {
 }
 
 export type BookingWithRelations = Booking & {
-  course: Course
-  user: User
+  course: Partial<Course>
+  user: Partial<User>
 }
 
 // Profile form validation schemas
