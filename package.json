@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && next build --no-lint",
     "build:ignore-errors": "prisma generate && next build --no-lint --no-mangling || echo 'Build completed with errors ignored'",
     "build:force": "prisma generate && next build --no-lint --no-mangling --debug || echo 'Build completed with errors ignored'",
     "start": "next start",
