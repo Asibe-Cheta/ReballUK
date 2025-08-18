@@ -476,7 +476,7 @@ export const bookingOperations = {
   ): Promise<BookingWithRelations[]> {
     const where: Prisma.BookingWhereInput = {
       userId,
-      ...(status && { status: status as string }),
+      ...(status && { status: status as any }),
     }
 
     return withRetry(async () => {
@@ -519,7 +519,7 @@ export const bookingOperations = {
             userId, // Ensure user owns this booking
           },
           data: {
-            status: status as string,
+            status: status as any,
             updatedAt: new Date(),
             ...(status === 'COMPLETED' && { completedAt: new Date() }),
           },
