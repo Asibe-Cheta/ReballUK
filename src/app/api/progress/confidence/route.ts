@@ -115,6 +115,10 @@ export async function POST(request: NextRequest) {
       data: {
         userId: user.id,
         courseId: "mock-confidence-course", // You might want to create a dedicated course for confidence ratings
+        sessionType: "confidence-assessment",
+        successRate: 0.0,
+        confidence: Math.round(ratings.reduce((sum: number, rating: Record<string, unknown>) => sum + (rating.rating as number), 0) / ratings.length),
+        duration: 0,
         completionPercentage: 100,
         timeSpent: 0,
         isCompleted: true,

@@ -14,8 +14,8 @@ export default function ProgressChart({
   className,
   isLoading = false,
 }: ProgressChartProps) {
-  const [activeTimeframe, setActiveTimeframe] = useState(config.timeframe)
-  const [activeMetric, setActiveMetric] = useState(config.metric)
+  const [activeTimeframe, setActiveTimeframe] = useState<"7d" | "30d" | "90d" | "1y">(config.timeframe)
+  const [activeMetric, setActiveMetric] = useState<"performance" | "confidence" | "success_rate" | "skill_level">(config.metric)
 
   if (isLoading) {
     return (
@@ -48,8 +48,8 @@ export default function ProgressChart({
   }))
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload, label }: Record<string, unknown>) => {
-    if (active && payload && payload.length) {
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && Array.isArray(payload) && payload.length) {
       const data = payload[0].payload
       return (
         <div className="bg-pure-white dark:bg-dark-gray border border-light-gray dark:border-charcoal rounded-lg p-3 shadow-lg">
@@ -103,7 +103,7 @@ export default function ProgressChart({
                 key={option.value}
                 variant="ghost"
                 size="sm"
-                onClick={() => setActiveMetric(option.value as string)}
+                onClick={() => setActiveMetric(option.value as "performance" | "confidence" | "success_rate" | "skill_level")}
                 className={cn(
                   "text-xs px-3 py-1 h-auto",
                   activeMetric === option.value
@@ -123,7 +123,7 @@ export default function ProgressChart({
                 key={option.value}
                 variant="ghost"
                 size="sm"
-                onClick={() => setActiveTimeframe(option.value as string)}
+                onClick={() => setActiveTimeframe(option.value as "7d" | "30d" | "90d" | "1y")}
                 className={cn(
                   "text-xs px-3 py-1 h-auto",
                   activeTimeframe === option.value
@@ -265,6 +265,6 @@ function getMaxValue(metric: string): number {
     case "skill_level":
       return 100
     default:
-      return "dataMax"
+      return 100
   }
 }

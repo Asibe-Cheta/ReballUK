@@ -1,14 +1,15 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/lib/auth-context"
 import type { OnboardingData } from "@/lib/onboarding"
 
 export function useOnboarding(): OnboardingData & {
   checkOnboardingStatus: () => Promise<void>
   clearOnboardingData: () => void
 } {
-  const { user, isAuthenticated } = useAuth()
+  const { user } = useAuth()
+  const isAuthenticated = !!user
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     needsOnboarding: false,
     isComplete: true,

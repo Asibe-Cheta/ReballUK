@@ -67,11 +67,17 @@ export const userProfileOperations = {
           where: { userId },
           update: {
             ...profileData,
+            position: profileData.position as any,
+            trainingLevel: profileData.trainingLevel as any,
+            goals: profileData.goals ? [profileData.goals] : [],
             updatedAt: new Date(),
           },
           create: {
             userId,
             ...profileData,
+            position: profileData.position as any,
+            trainingLevel: profileData.trainingLevel as any,
+            goals: profileData.goals ? [profileData.goals] : [],
           },
           include: {
             user: {
@@ -107,12 +113,18 @@ export const userProfileOperations = {
           where: { userId },
           update: {
             ...onboardingData,
+            position: onboardingData.position as any,
+            trainingLevel: onboardingData.trainingLevel as any,
+            goals: onboardingData.goals ? [onboardingData.goals] : [],
             completedOnboarding: true,
             updatedAt: new Date(),
           },
           create: {
             userId,
             ...onboardingData,
+            position: onboardingData.position as any,
+            trainingLevel: onboardingData.trainingLevel as any,
+            goals: onboardingData.goals ? [onboardingData.goals] : [],
             completedOnboarding: true,
           },
           include: {
@@ -334,6 +346,10 @@ export const progressOperations = {
             userId,
             courseId,
             videoId,
+            sessionType: "video-progress",
+            successRate: 0.0,
+            confidence: 0,
+            duration: data.timeSpent,
             completionPercentage: data.completionPercentage,
             timeSpent: data.timeSpent,
             feedback: data.feedback,

@@ -13,7 +13,7 @@ import {
 import { TrainingGoal, TRAINING_GOAL_LABELS } from "@/types/welcome"
 
 interface TrainingGoalsProps {
-  form: Record<string, unknown>
+  form: any
   name: string
   label?: string
   description?: string
@@ -171,8 +171,8 @@ export default function TrainingGoals({
                               "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300",
                               {
                                 "bg-pure-black dark:bg-pure-white border-pure-black dark:border-pure-white": selected,
-                                "border-light-gray dark:border-charcoal": !selected && !disabled,
-                                "border-light-gray dark:border-charcoal": disabled,
+                                                              "border-light-gray dark:border-charcoal": !selected && !disabled,
+                              "border-light-gray dark:border-charcoal opacity-50": disabled,
                               }
                             )}>
                               {selected ? (

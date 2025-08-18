@@ -37,11 +37,13 @@ export async function POST(request: NextRequest) {
     const video = await prisma.video.create({
       data: {
         userId: user.id,
+        courseId: null, // Videos can be standalone
         title,
         description: description || "",
         videoUrl,
         thumbnailUrl: thumbnailUrl || "",
         duration: duration || 0,
+        videoType: analysisType || "SISW",
         analysisType: analysisType || "SISW",
         position: position || "OTHER",
         tags: tags || [],

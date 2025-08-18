@@ -190,7 +190,7 @@ export default function SkillBreakdown({ detailed = false, className }: SkillBre
                   borderRadius: "8px",
                   boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
                 }}
-                formatter={(value: unknown, name: unknown) => [`${value}%`, name]}
+                formatter={(value: unknown, name: unknown) => [`${value}%`, name as string]}
               />
               <Radar
                 name="Current Level"

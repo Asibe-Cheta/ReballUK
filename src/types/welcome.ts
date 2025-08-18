@@ -95,21 +95,15 @@ export const personalInfoSchema = z.object({
 })
 
 export const positionInfoSchema = z.object({
-  position: z.nativeEnum(PlayerPosition, {
-    errorMap: () => ({ message: "Please select your playing position" })
-  }).optional(),
+  position: z.nativeEnum(PlayerPosition).optional(),
   alternativePositions: z.array(z.nativeEnum(PlayerPosition)).optional(),
-  preferredFoot: z.enum(["left", "right", "both"], {
-    errorMap: () => ({ message: "Please select your preferred foot" })
-  }),
+  preferredFoot: z.enum(["left", "right", "both"]),
   height: z.number().min(140).max(220).optional(), // cm
   weight: z.number().min(40).max(150).optional(),  // kg
 })
 
 export const experienceInfoSchema = z.object({
-  trainingLevel: z.nativeEnum(TrainingLevel, {
-    errorMap: () => ({ message: "Please select your experience level" })
-  }).optional(),
+  trainingLevel: z.nativeEnum(TrainingLevel).optional(),
   yearsPlaying: z.number().min(0).max(30).optional(),
   currentClub: z.string().max(100, "Club name too long").optional(),
   previousExperience: z.string().max(500, "Description too long").optional(),
@@ -135,15 +129,9 @@ export const confidenceInfoSchema = z.object({
 export const preferencesInfoSchema = z.object({
   availableDays: z.array(z.enum(TRAINING_DAYS)).min(1, "Please select at least one day").optional(),
   preferredTimes: z.array(z.enum(TIME_SLOTS)).min(1, "Please select at least one time slot").optional(),
-  sessionFrequency: z.enum(["once-week", "twice-week", "three-times-week", "daily"], {
-    errorMap: () => ({ message: "Please select training frequency" })
-  }),
-  sessionDuration: z.enum(["30-min", "45-min", "60-min", "90-min"], {
-    errorMap: () => ({ message: "Please select session duration" })
-  }),
-  trainingIntensity: z.enum(["low", "moderate", "high", "very-high"], {
-    errorMap: () => ({ message: "Please select training intensity" })
-  }),
+  sessionFrequency: z.enum(["once-week", "twice-week", "three-times-week", "daily"]),
+  sessionDuration: z.enum(["30-min", "45-min", "60-min", "90-min"]),
+  trainingIntensity: z.enum(["low", "moderate", "high", "very-high"]),
   groupTraining: z.boolean().default(false),
   oneOnOneTraining: z.boolean().default(true),
 })
@@ -402,7 +390,7 @@ export const welcomeUtils = {
       if (error instanceof z.ZodError) {
         return {
           isValid: false,
-          errors: error.errors.map(err => err.message)
+          errors: error.issues.map(err => err.message)
         }
       }
       return { isValid: false, errors: ["Validation failed"] }

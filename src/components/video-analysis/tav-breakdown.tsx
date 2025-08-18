@@ -110,6 +110,13 @@ export default function TAVBreakdown({ video }: TAVBreakdownProps) {
   const [selectedMoment, setSelectedMoment] = useState<KeyMoment | null>(null)
   const [drawingMode, setDrawingMode] = useState<"arrow" | "circle" | "line" | "box" | null>(null)
 
+  const toggleMute = () => {
+    setIsMuted(!isMuted)
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted
+    }
+  }
+
   // Mock data for demonstration
   const tacticalOverlays: TacticalOverlay[] = [
     {

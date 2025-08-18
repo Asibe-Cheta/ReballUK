@@ -9,7 +9,6 @@ export async function getDbClient(): Promise<Client> {
       client = new Client({
         connectionString: process.env.DATABASE_URL,
         connectionTimeoutMillis: 5000, // 5 seconds
-        idleTimeoutMillis: 10000, // 10 seconds
       })
       await client.connect()
       console.log('Database connected successfully')
@@ -36,7 +35,6 @@ export async function getDbClient(): Promise<Client> {
     client = new Client({
       connectionString: process.env.DATABASE_URL,
       connectionTimeoutMillis: 5000,
-      idleTimeoutMillis: 10000,
     })
     
     await client.connect()

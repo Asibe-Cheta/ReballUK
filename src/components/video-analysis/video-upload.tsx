@@ -28,15 +28,17 @@ interface VideoUploadProps {
   onUploadComplete: (uploadData: Record<string, unknown>) => void
 }
 
+type UploadStatus = "idle" | "uploading" | "processing" | "completed" | "error"
+
 interface UploadProgress {
-  status: "idle" | "uploading" | "processing" | "completed" | "error"
+  status: UploadStatus
   progress: number
   message: string
 }
 
 export default function VideoUpload({ onUploadComplete }: VideoUploadProps) {
   const [uploadProgress, setUploadProgress] = useState<UploadProgress>({
-    status: "idle",
+    status: "idle" as UploadStatus,
     progress: 0,
     message: "Ready to upload"
   })
@@ -454,10 +456,10 @@ export default function VideoUpload({ onUploadComplete }: VideoUploadProps) {
             <div className="flex gap-4 pt-4">
               <Button
                 onClick={handleUpload}
-                disabled={!videoTitle.trim() || uploadProgress.status === "uploading"}
+                disabled={!videoTitle.trim() || uploadProgress.status === ("uploading" as UploadStatus)}
                 className="flex-1"
               >
-                {uploadProgress.status === "uploading" ? (
+                {uploadProgress.status === ("uploading" as UploadStatus) ? (
                   <>
                     <Clock className="mr-2 h-4 w-4 animate-spin" />
                     Uploading...
@@ -489,15 +491,15 @@ export default function VideoUpload({ onUploadComplete }: VideoUploadProps) {
           <CardContent className="space-y-4">
             <div className="flex items-center gap-4">
               <div className="flex-1">
-                <h4 className="font-medium">{uploadedVideo.title}</h4>
-                <p className="text-sm text-muted-foreground">
-                  {uploadedVideo.description}
-                </p>
+                <h4 className="font-medium">{uploadedVideo.title as string}</h4>
+                                  <p className="text-sm text-muted-foreground">
+                    {uploadedVideo.description as string}
+                  </p>
                 <div className="flex items-center gap-2 mt-2">
-                  <Badge variant="outline">{uploadedVideo.analysisType}</Badge>
-                  {uploadedVideo.position && (
-                    <Badge variant="secondary">{uploadedVideo.position}</Badge>
-                  )}
+                  <Badge variant="outline">{uploadedVideo.analysisType as string}</Badge>
+                                      {uploadedVideo.position && (
+                      <Badge variant="secondary">{uploadedVideo.position as string}</Badge>
+                    )}
                 </div>
               </div>
               <Button variant="outline" onClick={resetUpload}>

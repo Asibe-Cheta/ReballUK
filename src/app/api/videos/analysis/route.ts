@@ -30,12 +30,19 @@ export async function GET(request: NextRequest) {
         userId: user.id
       },
       include: {
-        session: {
+        booking: {
           select: {
             id: true,
             sessionType: true,
             position: true,
-            scheduledAt: true
+            scheduledFor: true
+          }
+        },
+        course: {
+          select: {
+            id: true,
+            title: true,
+            position: true
           }
         }
       }
@@ -155,7 +162,8 @@ export async function GET(request: NextRequest) {
         duration: video.duration,
         analysisType: video.analysisType,
         position: video.position,
-        session: video.session
+                 booking: video.booking,
+         course: video.course
       },
       analysis: analysisData
     })
@@ -213,15 +221,14 @@ export async function POST(request: NextRequest) {
 
     // In a production environment, you would save this analysis data to a separate table
     // For now, we'll just return success
-    console.log("Analysis data received:", {
-      videoId,
-      analysisType,
-      performanceMarkers,
-      voiceovers,
-      tacticalOverlays,
-      keyMoments,
-      expertCommentary
-    })
+         console.log("Analysis data received:", {
+       videoId,
+       performanceMarkers,
+       voiceovers,
+       tacticalOverlays,
+       keyMoments,
+       expertCommentary
+     })
 
     return NextResponse.json({
       success: true,

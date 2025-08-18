@@ -39,8 +39,8 @@ export async function GET() {
       date: session.date,
       sessionType: session.session_type || "Training Session",
       position: session.position || "General",
-      successRate: Math.round(session.success_rate || 0),
-      confidence: Math.round(session.confidence || 0),
+      successRate: Math.round(Number(session.success_rate) || 0),
+      confidence: Math.round(Number(session.confidence) || 0),
       duration: session.duration || 60,
       notes: session.notes || ""
     })) : []

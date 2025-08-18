@@ -26,7 +26,7 @@ export type UserWithRelations = User & {
 }
 
 export type CourseWithRelations = Course & {
-  videos?: Video[]
+  videos?: Partial<Video>[]
   _count?: {
     bookings: number
     progress: number
@@ -34,8 +34,8 @@ export type CourseWithRelations = Course & {
 }
 
 export type ProgressWithRelations = Progress & {
-  course: Course
-  video?: Video | null
+  course: Partial<Course>
+  video?: Partial<Video> | null
 }
 
 export type BookingWithRelations = Booking & {
