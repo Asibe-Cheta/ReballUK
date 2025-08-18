@@ -70,9 +70,6 @@ export const profileUpdateSchema = z.object({
   weight: z.number().min(30).max(200).optional().nullable(), // kg
   bio: z.string().max(500, "Bio too long").optional().nullable(),
   goals: z.string().max(1000, "Goals too long").optional().nullable(),
-  phoneNumber: z.string().max(20, "Phone number too long").optional().nullable(),
-  emergencyContact: z.string().max(100, "Emergency contact too long").optional().nullable(),
-  medicalInfo: z.string().max(500, "Medical info too long").optional().nullable(),
 })
 
 export const onboardingSchema = z.object({

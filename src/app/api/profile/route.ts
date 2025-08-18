@@ -108,9 +108,6 @@ export async function PUT(request: Request) {
           weight: profileData.weight,
           bio: profileData.bio,
           goals: profileData.goals ? [profileData.goals] : [],
-          phoneNumber: profileData.phoneNumber,
-          emergencyContact: profileData.emergencyContact,
-          medicalInfo: profileData.medicalInfo,
           completedOnboarding: true, // Mark onboarding as complete
           updatedAt: new Date(),
         },
@@ -127,9 +124,6 @@ export async function PUT(request: Request) {
           weight: profileData.weight,
           bio: profileData.bio,
           goals: profileData.goals ? [profileData.goals] : [],
-          phoneNumber: profileData.phoneNumber,
-          emergencyContact: profileData.emergencyContact,
-          medicalInfo: profileData.medicalInfo,
           completedOnboarding: true,
         },
         include: {
