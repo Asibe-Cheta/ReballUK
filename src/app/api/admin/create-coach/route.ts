@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
         email,
         password: hashedPassword,
         role: "COACH",
-        emailVerified: new Date(), // Auto-verify coach accounts
+        emailVerified: true, // Auto-verify coach accounts
         profile: {
           create: {
             firstName: name.split(' ')[0] || name,

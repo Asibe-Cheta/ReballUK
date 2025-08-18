@@ -113,7 +113,7 @@ export async function markEmailAsVerified(userId: string): Promise<boolean> {
     await db.user.update({
       where: { id: userId },
       data: {
-        emailVerified: new Date(),
+        emailVerified: true,
         verificationToken: null,
         verificationExpires: null
       }
