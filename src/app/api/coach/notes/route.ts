@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     // Build where clause
     const where: any = {
-      coachId: session.user.id
+      coachId: session.id
     }
 
     if (userId) {
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
     // Create note
     const note = await prisma.coachNote.create({
       data: {
-        coachId: session.user.id,
+        coachId: session.id,
         userId,
         sessionId,
         title,

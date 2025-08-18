@@ -49,7 +49,7 @@ export default async function CommunicationsPage({
   // Fetch communications
   const communications = await prisma.communication.findMany({
     where: {
-      coachId: session.user.id,
+      coachId: session.id,
       ...(type && { type: type.toUpperCase() }),
       ...(user && { userId: user })
     },

@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 
     // Build where clause
     const where: any = {
-      coachId: session.user.id
+      coachId: session.id
     }
 
     if (type) {
@@ -84,24 +84,24 @@ export async function POST(request: NextRequest) {
         select: { id: true }
       })
 
-      communications = await Promise.all(
-        users.map(user =>
-          prisma.communication.create({
-            data: {
-              coachId: session.user.id,
-              userId: user.id,
-              type: type.toUpperCase(),
-              subject,
-              content
-            }
-          })
-        )
-      )
+                communications = await Promise.all(
+            users.map(user =>
+              prisma.communication.create({
+                data: {
+                  coachId: session.id,
+                  userId: user.id,
+                  type: type.toUpperCase(),
+                  subject,
+                  content
+                }
+              })
+            )
+          )
     } else if (userId) {
       // Send to specific user
       const communication = await prisma.communication.create({
         data: {
-          coachId: session.user.id,
+          coachId: session.id,
           userId,
           type: type.toUpperCase(),
           subject,
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
       // Broadcast message (no specific user)
       const communication = await prisma.communication.create({
         data: {
-          coachId: session.user.id,
+          coachId: session.id,
           type: type.toUpperCase(),
           subject,
           content
