@@ -439,11 +439,12 @@ export const bookingOperations = {
           data: {
             userId,
             courseId,
-            status: 'PENDING',
+            sessionType: 'course-booking',
+            position: 'general',
             scheduledFor: data.scheduledFor,
             notes: data.notes,
             paymentStatus: 'PENDING',
-            amount: 0,
+            price: 0,
           },
           include: {
             course: true,
