@@ -115,8 +115,6 @@ export async function POST(request: Request) {
           firstName: profileData.firstName,
           lastName: profileData.lastName,
           dateOfBirth: profileData.dateOfBirth,
-          phoneNumber: profileData.phoneNumber,
-          emergencyContact: profileData.emergencyContact,
           
           // Position and physical
           position: profileData.position,
@@ -133,6 +131,8 @@ export async function POST(request: Request) {
             currentClub: profileData.currentClub,
             previousExperience: profileData.previousExperience,
             coachingExperience: profileData.coachingExperience,
+            phoneNumber: profileData.phoneNumber,
+            emergencyContact: profileData.emergencyContact,
             goals: profileData.goals,
             confidence: profileData.confidence,
             preferences: profileData.preferences,
@@ -155,8 +155,6 @@ export async function POST(request: Request) {
           firstName: profileData.firstName,
           lastName: profileData.lastName,
           dateOfBirth: profileData.dateOfBirth,
-          phoneNumber: profileData.phoneNumber,
-          emergencyContact: profileData.emergencyContact,
           
           // Position and physical
           position: profileData.position,
@@ -173,6 +171,8 @@ export async function POST(request: Request) {
             currentClub: profileData.currentClub,
             previousExperience: profileData.previousExperience,
             coachingExperience: profileData.coachingExperience,
+            phoneNumber: profileData.phoneNumber,
+            emergencyContact: profileData.emergencyContact,
             goals: profileData.goals,
             confidence: profileData.confidence,
             preferences: profileData.preferences,
