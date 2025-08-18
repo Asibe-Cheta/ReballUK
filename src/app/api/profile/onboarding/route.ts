@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth-utils"
 import { db, withRetry } from "@/lib/db"
 import { onboardingSchema } from "@/types/profile"
+import { PlayerPosition, TrainingLevel } from "@prisma/client"
 
 // POST /api/profile/onboarding - Complete user onboarding
 export async function POST(request: NextRequest) {
@@ -38,34 +39,32 @@ export async function POST(request: NextRequest) {
 
     const onboardingData = validationResult.data
 
-    // Check if user already has a profile
-    const existingProfile = await db.profile.findUnique({
-      where: { userId: user.id }
-    })
-
-    if (existingProfile?.completedOnboarding) {
-      return NextResponse.json(
-        { 
-          success: false, 
-          error: "Onboarding already completed",
-          data: existingProfile
-        },
-        { status: 400 }
-      )
-    }
-
     // Create or update profile with onboarding data
     const profile = await withRetry(async () => {
       return await db.profile.upsert({
         where: { userId: user.id },
         update: {
-          ...onboardingData,
+          firstName: onboardingData.firstName,
+          lastName: onboardingData.lastName,
+          dateOfBirth: onboardingData.dateOfBirth,
+          position: onboardingData.position as PlayerPosition,
+          trainingLevel: onboardingData.trainingLevel as TrainingLevel,
+          confidenceRating: onboardingData.confidenceRating,
+          preferredFoot: onboardingData.preferredFoot,
+          ...(onboardingData.goals ? { goals: [onboardingData.goals] } : {}),
           completedOnboarding: true,
           updatedAt: new Date(),
         },
         create: {
           userId: user.id,
-          ...onboardingData,
+          firstName: onboardingData.firstName,
+          lastName: onboardingData.lastName,
+          dateOfBirth: onboardingData.dateOfBirth,
+          position: onboardingData.position as PlayerPosition,
+          trainingLevel: onboardingData.trainingLevel as TrainingLevel,
+          confidenceRating: onboardingData.confidenceRating,
+          preferredFoot: onboardingData.preferredFoot,
+          ...(onboardingData.goals ? { goals: [onboardingData.goals] } : {}),
           completedOnboarding: true,
         },
         include: {
@@ -144,6 +143,7 @@ export async function GET() {
         needsOnboarding: !isOnboardingComplete || !requiredFieldsComplete,
       },
     })
+
   } catch (error) {
     console.error("Error checking onboarding status:", error)
     return NextResponse.json(
