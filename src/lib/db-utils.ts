@@ -442,6 +442,8 @@ export const bookingOperations = {
             status: 'PENDING',
             scheduledFor: data.scheduledFor,
             notes: data.notes,
+            paymentStatus: 'PENDING',
+            amount: 0,
           },
           include: {
             course: true,
