@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth-utils"
 import { db, withRetry } from "@/lib/db"
 import { profileUpdateSchema } from "@/types/profile"
+import { PlayerPosition, TrainingLevel } from "@prisma/client"
 
 // GET /api/profile - Get user profile
 export async function GET() {
@@ -96,13 +97,43 @@ export async function PUT(request: Request) {
       return await db.profile.upsert({
         where: { userId: user.id },
         update: {
-          ...profileData,
+          firstName: profileData.firstName,
+          lastName: profileData.lastName,
+          dateOfBirth: profileData.dateOfBirth,
+          position: profileData.position as PlayerPosition,
+          trainingLevel: profileData.trainingLevel as TrainingLevel,
+          confidenceRating: profileData.confidenceRating,
+          preferredFoot: profileData.preferredFoot,
+          height: profileData.height,
+          weight: profileData.weight,
+          currentClub: profileData.currentClub,
+          previousExperience: profileData.previousExperience,
+          coachingExperience: profileData.coachingExperience,
+          goals: profileData.goals,
+          confidence: profileData.confidence,
+          preferences: profileData.preferences,
+          medicalInfo: profileData.medicalInfo,
           completedOnboarding: true, // Mark onboarding as complete
           updatedAt: new Date(),
         },
         create: {
           userId: user.id,
-          ...profileData,
+          firstName: profileData.firstName,
+          lastName: profileData.lastName,
+          dateOfBirth: profileData.dateOfBirth,
+          position: profileData.position as PlayerPosition,
+          trainingLevel: profileData.trainingLevel as TrainingLevel,
+          confidenceRating: profileData.confidenceRating,
+          preferredFoot: profileData.preferredFoot,
+          height: profileData.height,
+          weight: profileData.weight,
+          currentClub: profileData.currentClub,
+          previousExperience: profileData.previousExperience,
+          coachingExperience: profileData.coachingExperience,
+          goals: profileData.goals,
+          confidence: profileData.confidence,
+          preferences: profileData.preferences,
+          medicalInfo: profileData.medicalInfo,
           completedOnboarding: true,
         },
         include: {
