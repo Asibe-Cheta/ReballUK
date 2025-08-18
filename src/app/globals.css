@@ -440,36 +440,7 @@
     height: 2rem;
   }
 
-  /* Navigation Styles */
-  .navbar-transparent {
-    background: transparent;
-    color: var(--pure-white);
-  }
 
-  .navbar-solid {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    color: var(--dark-text);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  }
-
-  .dark .navbar-solid {
-    background: rgba(26, 26, 26, 0.9);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--pure-white);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  }
-
-  .nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
 
   /* Hero Heading Animations */
   .hero-heading-animated {

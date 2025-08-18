@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { auth } from "@/lib/auth-utils"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { db, withRetry } from "@/lib/db"
 import { profileUpdateSchema } from "@/types/profile"
 
@@ -7,8 +7,8 @@ import { profileUpdateSchema } from "@/types/profile"
 export async function GET() {
   try {
     // Authenticate user
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -18,7 +18,7 @@ export async function GET() {
     // Get user with profile
     const userWithProfile = await withRetry(async () => {
       return await db.user.findUnique({
-        where: { id: session.user.id },
+        where: { id: user.id },
         include: {
           profile: true,
           _count: {
@@ -60,8 +60,8 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     // Authenticate user
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -94,14 +94,14 @@ export async function PUT(request: Request) {
     // Update or create profile
     const updatedProfile = await withRetry(async () => {
       return await db.profile.upsert({
-        where: { userId: session.user.id },
+        where: { userId: user.id },
         update: {
           ...profileData,
           completedOnboarding: true, // Mark onboarding as complete
           updatedAt: new Date(),
         },
         create: {
-          userId: session.user.id,
+          userId: user.id,
           ...profileData,
           completedOnboarding: true,
         },
@@ -164,8 +164,8 @@ export async function PUT(request: Request) {
 export async function DELETE() {
   try {
     // Authenticate user
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -175,7 +175,7 @@ export async function DELETE() {
     // Soft delete profile
     const updatedProfile = await withRetry(async () => {
       return await db.profile.update({
-        where: { userId: session.user.id },
+        where: { userId: user.id },
         data: {
           isActive: false,
           updatedAt: new Date(),

@@ -1,19 +1,19 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth-server"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { db, withRetry } from "@/lib/db"
 import type { SessionData, DashboardSessionsResponse } from "@/types/dashboard"
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
       )
     }
 
-    const userId = session.user.id
+    const userId = user.id
     const { searchParams } = new URL(request.url)
     const limit = parseInt(searchParams.get("limit") || "10")
     const offset = parseInt(searchParams.get("offset") || "0")
@@ -138,8 +138,8 @@ export async function GET(request: NextRequest) {
 // POST /api/dashboard/sessions - Add feedback to a session
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -161,7 +161,7 @@ export async function POST(request: NextRequest) {
       return await db.progress.update({
         where: { 
           id: progressId,
-          userId: session.user.id, // Ensure user owns this progress
+          userId: user.id, // Ensure user owns this progress
         },
         data: {
           rating: rating ? Math.max(1, Math.min(5, rating)) : undefined,

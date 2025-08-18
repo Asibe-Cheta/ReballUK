@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth-server"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { v2 as cloudinary } from 'cloudinary'
 
 // Configure Cloudinary
@@ -12,8 +12,8 @@ cloudinary.config({
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -45,8 +45,8 @@ export async function POST(request: NextRequest) {
       folder: 'reball-videos',
       resource_type: 'video',
       transformation: 'f_auto,q_auto',
-      context: `analysis_type=${analysisType}|position=${position}|tags=${tags.join(",")}|user_id=${session.user.id}`,
-      public_id: `reball-videos/${session.user.id}/${Date.now()}_${filename.replace(/\.[^/.]+$/, "")}`
+      context: `analysis_type=${analysisType}|position=${position}|tags=${tags.join(",")}|user_id=${user.id}`,
+      public_id: `reball-videos/${user.id}/${Date.now()}_${filename.replace(/\.[^/.]+$/, "")}`
     }
 
     // Generate signature using Cloudinary

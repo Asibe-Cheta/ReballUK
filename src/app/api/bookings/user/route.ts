@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth-utils"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { prisma } from "@/lib/prisma"
 
 export async function GET(request: NextRequest) {
   try {
     // Check authentication
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 
                     // Build where clause
                 const whereClause: Record<string, unknown> = {
-                  userId: session.user.id
+                  userId: user.id
                 }
 
     if (status) {
@@ -80,8 +80,8 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     // Check authentication
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -101,7 +101,7 @@ export async function PUT(request: NextRequest) {
     const booking = await prisma.booking.findFirst({
       where: {
         id: bookingId,
-        userId: session.user.id
+        userId: user.id
       }
     })
 

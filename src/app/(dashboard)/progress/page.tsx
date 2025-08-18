@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -60,7 +60,7 @@ export default function ProgressPage() {
 }
 
 function ProgressContent() {
-  const { user, isLoading } = useAuth()
+  const { user, loading: isLoading } = useAuth()
   const router = useRouter()
   const [timeRange, setTimeRange] = useState("month")
   const [stats, setStats] = useState<ProgressStats | null>(null)
@@ -69,7 +69,7 @@ function ProgressContent() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/login-simple")
+      router.push("/login")
     }
   }, [user, isLoading, router])
 

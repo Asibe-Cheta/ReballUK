@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server"
-import { auth } from "@/lib/auth-server"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { getFreshDbClient } from "@/lib/db"
 
 export async function GET() {
   try {
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -21,7 +21,7 @@ export async function GET() {
         MAX(p.created_at) as last_attempt
       FROM progress p
       LEFT JOIN courses c ON p.course_id = c.id
-      WHERE p.user_id = ${session.user.id}
+      WHERE p.user_id = ${user.id}
         AND p.completion_percentage > 0
       GROUP BY c.tags
       ORDER BY avg_completion DESC

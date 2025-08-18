@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -34,7 +34,7 @@ export default function BookingsPage() {
 }
 
 function BookingsContent() {
-  const { isAuthenticated, isLoading: authLoading } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const router = useRouter()
   
   // Booking state
@@ -46,8 +46,8 @@ function BookingsContent() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Redirect if not authenticated
-  if (!authLoading && !isAuthenticated) {
-    router.push("/login-simple?callbackUrl=/bookings")
+  if (!authLoading && !user) {
+    router.push("/login?callbackUrl=/bookings")
     return null
   }
 

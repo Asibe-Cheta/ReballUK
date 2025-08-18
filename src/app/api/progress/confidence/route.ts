@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth-server"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { getFreshDbClient } from "@/lib/db"
 
 export async function GET() {
   try {
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -20,7 +20,7 @@ export async function GET() {
         c.title as scenario
       FROM progress p
       LEFT JOIN courses c ON p.course_id = c.id
-      WHERE p.user_id = ${session.user.id}
+      WHERE p.user_id = ${user.id}
         AND p.rating IS NOT NULL
       ORDER BY p.created_at DESC
       LIMIT 50
@@ -99,8 +99,8 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
     // For now, we'll create a mock entry since we don't have a dedicated confidence table
     await freshDb.progress.create({
       data: {
-        userId: session.user.id,
+        userId: user.id,
         courseId: "mock-confidence-course", // You might want to create a dedicated course for confidence ratings
         completionPercentage: 100,
         timeSpent: 0,

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth-server"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { getFreshDbClient } from "@/lib/db"
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     const profileResult = await freshDb.$queryRaw`
       SELECT p.position, p.training_level
       FROM profiles p
-      WHERE p.user_id = ${session.user.id}
+      WHERE p.user_id = ${user.id}
       LIMIT 1
     `
 
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
         COUNT(CASE WHEN status = 'COMPLETED' THEN 1 END) as completed_sessions,
         SUM(CASE WHEN status = 'COMPLETED' THEN 1 ELSE 0 END) * 60 as total_minutes
       FROM bookings b
-      WHERE b.user_id = ${session.user.id}
+      WHERE b.user_id = ${user.id}
         AND b.booked_at >= ${startDate}
     `
 
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
         AVG(rating) as avg_rating,
         COUNT(*) as total_progress_entries
       FROM progress p
-      WHERE p.user_id = ${session.user.id}
+      WHERE p.user_id = ${user.id}
         AND p.created_at >= ${startDate}
     `
 

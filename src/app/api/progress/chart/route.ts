@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth-server"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { getFreshDbClient } from "@/lib/db"
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
         COUNT(*) as sessions,
         AVG(p.rating) as confidence
       FROM progress p
-      WHERE p.user_id = ${session.user.id}
+      WHERE p.user_id = ${user.id}
         AND p.created_at >= ${startDate}
       GROUP BY DATE(p.created_at)
       ORDER BY date ASC

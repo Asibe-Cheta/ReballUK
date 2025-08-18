@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth-server"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { getFreshDbClient } from "@/lib/db"
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth()
+    const user = await getCurrentUser()
     
-    if (!session?.user?.id) {
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
 
                     // Build where clause
                 const where: Record<string, unknown> = {
-                  userId: session.user.id
+                  userId: user.id
                 }
 
     if (analysisType) {
@@ -47,17 +47,7 @@ export async function GET(request: NextRequest) {
     // Fetch videos with pagination
     const videos = await prisma.video.findMany({
       where,
-      orderBy,
-      include: {
-        session: {
-          select: {
-            id: true,
-            sessionType: true,
-            position: true,
-            scheduledAt: true
-          }
-        }
-      }
+      orderBy
     })
 
     // Transform videos for frontend
@@ -72,13 +62,7 @@ export async function GET(request: NextRequest) {
       position: video.position,
       tags: video.tags,
       viewCount: video.viewCount,
-      createdAt: video.createdAt,
-      session: video.session ? {
-        id: video.session.id,
-        sessionType: video.session.sessionType,
-        position: video.session.position,
-        scheduledAt: video.session.scheduledAt
-      } : null
+      createdAt: video.createdAt
     }))
 
     return NextResponse.json({
@@ -97,9 +81,9 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const session = await auth()
+    const user = await getCurrentUser()
     
-    if (!session?.user?.id) {
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -119,7 +103,7 @@ export async function PUT(request: NextRequest) {
     const updatedVideo = await prisma.video.update({
       where: {
         id: videoId,
-        userId: session.user.id // Ensure user owns the video
+        userId: user.id // Ensure user owns the video
       },
       data: {
         viewCount: viewCount ? { increment: 1 } : undefined
@@ -145,9 +129,9 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const session = await auth()
+    const user = await getCurrentUser()
     
-    if (!session?.user?.id) {
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -167,7 +151,7 @@ export async function DELETE(request: NextRequest) {
     await prisma.video.delete({
       where: {
         id: videoId,
-        userId: session.user.id // Ensure user owns the video
+        userId: user.id // Ensure user owns the video
       }
     })
 

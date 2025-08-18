@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { auth } from "@/lib/auth-server"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { db, withRetry } from "@/lib/db"
 import { z } from "zod"
 
@@ -58,8 +58,8 @@ const profileCreationSchema = z.object({
 export async function POST(request: Request) {
   try {
     // Authenticate user
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -92,7 +92,7 @@ export async function POST(request: Request) {
 
     // Check if user already has a profile
     const existingProfile = await db.profile.findUnique({
-      where: { userId: session.user.id }
+      where: { userId: user.id }
     })
 
     if (existingProfile?.completedOnboarding) {
@@ -109,7 +109,7 @@ export async function POST(request: Request) {
     // Create or update profile with comprehensive data
     const profile = await withRetry(async () => {
       return await db.profile.upsert({
-        where: { userId: session.user.id },
+        where: { userId: user.id },
         update: {
           // Personal info
           firstName: profileData.firstName,
@@ -149,7 +149,7 @@ export async function POST(request: Request) {
           updatedAt: new Date(),
         },
         create: {
-          userId: session.user.id,
+          userId: user.id,
           
           // Personal info
           firstName: profileData.firstName,
@@ -205,7 +205,7 @@ export async function POST(request: Request) {
     try {
       await db.$executeRaw`
         INSERT INTO user_stats (user_id, total_sessions, completed_sessions, total_watch_time, created_at, updated_at)
-        VALUES (${session.user.id}, 0, 0, 0, NOW(), NOW())
+        VALUES (${user.id}, 0, 0, 0, NOW(), NOW())
         ON CONFLICT (user_id) DO NOTHING
       `
     } catch (error) {
@@ -216,7 +216,7 @@ export async function POST(request: Request) {
     // Send welcome notification (optional)
     try {
       // Here you could trigger welcome email, push notification, etc.
-      console.log(`Welcome email should be sent to: ${session.user.email}`)
+      console.log(`Welcome email should be sent to: ${user.email}`)
     } catch (error) {
       console.warn("Could not send welcome notification:", error)
     }
@@ -278,8 +278,8 @@ export async function POST(request: Request) {
 export async function GET() {
   try {
     // Authenticate user
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -288,7 +288,7 @@ export async function GET() {
 
     // Check existing profile
     const existingProfile = await db.profile.findUnique({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
       select: {
         id: true,
         completedOnboarding: true,
@@ -308,10 +308,10 @@ export async function GET() {
         canCreateProfile,
         existingProfile: existingProfile || null,
         user: {
-          id: session.user.id,
-          name: session.user.name,
-          email: session.user.email,
-          image: session.user.image,
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.image,
         }
       },
     })

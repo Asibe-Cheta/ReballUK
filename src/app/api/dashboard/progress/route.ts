@@ -1,19 +1,19 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth-server"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { db, withRetry } from "@/lib/db"
 import type { ProgressData, ProgressPoint, DashboardProgressResponse } from "@/types/dashboard"
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
       )
     }
 
-    const userId = session.user.id
+    const userId = user.id
     const { searchParams } = new URL(request.url)
     const timeframe = searchParams.get("timeframe") || "30d" // 7d, 30d, 90d, 1y
     const metricParam = searchParams.get("metric") || "performance" // performance, confidence, success_rate
@@ -244,8 +244,8 @@ export async function GET(request: NextRequest) {
 // POST /api/dashboard/progress - Record new progress entry
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -274,7 +274,7 @@ export async function POST(request: NextRequest) {
       return await db.progress.upsert({
         where: {
           userId_courseId_videoId: {
-            userId: session.user.id,
+            userId: user.id,
             courseId,
             videoId: videoId || null,
           }
@@ -289,7 +289,7 @@ export async function POST(request: NextRequest) {
           updatedAt: new Date(),
         },
         create: {
-          userId: session.user.id,
+          userId: user.id,
           courseId,
           videoId: videoId || null,
           sessionType: "PRACTICE",

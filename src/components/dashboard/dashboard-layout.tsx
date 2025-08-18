@@ -17,7 +17,9 @@ import {
   Users,
   PlayCircle,
   Bell,
-  Search
+  Search,
+  Menu,
+  X
 } from "lucide-react"
 // Removed NextAuth import - will be replaced with custom auth
 import Link from "next/link"
@@ -42,6 +44,7 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children, user }: DashboardLayoutProps) {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { theme, setTheme } = useTheme()
 
 
@@ -68,8 +71,18 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Mobile sidebar overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 ${sidebarCollapsed ? "w-16" : "w-64"} bg-white dark:bg-gray-800 shadow-lg transition-all duration-300`}>
+      <div className={`fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      } ${sidebarCollapsed ? "w-16" : "w-64"} bg-white dark:bg-gray-800 shadow-lg`}>
         {/* Sidebar Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
           {!sidebarCollapsed && (
@@ -78,20 +91,28 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
           {sidebarCollapsed && (
             <ReballLogo size="sm" className="mx-auto" />
           )}
-          {!sidebarCollapsed && (
+          <div className="flex items-center space-x-2">
+            {/* Mobile close button */}
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="lg:hidden p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            >
+              <X className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            </button>
+            {/* Desktop collapse button */}
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="hidden lg:block p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               <ChevronDown 
                 className={`w-5 h-5 text-gray-600 dark:text-gray-400 transition-transform ${sidebarCollapsed ? "rotate-90" : ""}`} 
               />
             </button>
-          )}
+          </div>
         </div>
 
         {/* Navigation */}
-        <nav className="mt-6 px-3">
+        <nav className="mt-6 px-3 overflow-y-auto h-[calc(100vh-80px)]">
           {!sidebarCollapsed && (
             <div className="mb-6">
               <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -105,6 +126,7 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
               <Link
                 key={item.name}
                 href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
                 className={`group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                   item.current
                     ? "bg-black dark:bg-white text-white dark:text-black"
@@ -150,12 +172,20 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
       </div>
 
       {/* Main Content */}
-      <div className={`${sidebarCollapsed ? "ml-16" : "ml-64"} transition-all duration-300`}>
+      <div className={`${sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"} transition-all duration-300`}>
         {/* Top Header */}
         <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center justify-between px-4 lg:px-6 py-4">
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            >
+              <Menu className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            </button>
+
             {/* Search Bar */}
-            <div className="flex-1 max-w-lg">
+            <div className="flex-1 max-w-lg mx-4 lg:mx-0">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
@@ -167,7 +197,7 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
             </div>
 
             {/* Right Side */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 lg:space-x-4">
               {/* Notifications */}
               <button className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                 <Bell className="w-5 h-5 text-gray-600 dark:text-gray-400" />
@@ -178,14 +208,14 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
               <div className="relative">
                 <button
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                  className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  className="flex items-center space-x-2 lg:space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
                   <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                     <span className="text-white font-semibold text-sm">
                       {userDisplayName.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <div className="text-left">
+                  <div className="hidden lg:block text-left">
                     <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {userDisplayName}
                     </div>
@@ -272,12 +302,12 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
         </header>
 
         {/* Page Content */}
-        <main className="p-6">
+        <main className="p-4 lg:p-6">
           {children}
         </main>
       </div>
 
-      {/* Mobile overlay */}
+      {/* Mobile overlay for dropdowns */}
       {profileDropdownOpen && (
         <div
           className="fixed inset-0 z-40 lg:hidden"

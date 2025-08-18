@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -41,7 +41,7 @@ interface Booking {
 }
 
 export default function MyBookingsPage() {
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const router = useRouter()
   
   const [bookings, setBookings] = useState<Booking[]>([])
@@ -49,15 +49,15 @@ export default function MyBookingsPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push("/login-simple?callbackUrl=/my-bookings")
+    if (!authLoading && !user) {
+      router.push("/login?callbackUrl=/my-bookings")
       return
     }
     
-    if (isAuthenticated && user?.id) {
+    if (user?.id) {
       fetchBookings()
     }
-  }, [authLoading, isAuthenticated, user?.id, router])
+  }, [authLoading, user?.id, router])
 
   const fetchBookings = async () => {
     try {

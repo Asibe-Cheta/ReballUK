@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth-server"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { generateUploadSignature } from "@/lib/cloudinary"
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth()
+    const user = await getCurrentUser()
     
-    if (!session?.user?.id) {
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 

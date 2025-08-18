@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server"
-import { auth } from "@/lib/auth-server"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { getFreshDbClient } from "@/lib/db"
 
 export async function GET() {
   try {
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -25,7 +25,7 @@ export async function GET() {
       FROM bookings b
       LEFT JOIN courses c ON b.course_id = c.id
       LEFT JOIN progress p ON b.course_id = p.course_id AND b.user_id = p.user_id
-      WHERE b.user_id = ${session.user.id}
+      WHERE b.user_id = ${user.id}
         AND b.status IN ('COMPLETED', 'IN_PROGRESS')
       ORDER BY b.booked_at DESC
       LIMIT 10

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { auth } from "@/lib/auth-server"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { db, withRetry } from "@/lib/db"
 import type { PlayerStats } from "@/types/profile"
 
@@ -7,8 +7,8 @@ import type { PlayerStats } from "@/types/profile"
 export async function GET() {
   try {
     // Authenticate user
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -29,26 +29,26 @@ export async function GET() {
       ] = await Promise.all([
         // Total courses booked
         db.booking.count({
-          where: { userId: session.user.id }
+          where: { userId: user.id }
         }),
         
         // Completed courses
         db.booking.count({
           where: { 
-            userId: session.user.id,
+            userId: user.id,
             status: "COMPLETED"
           }
         }),
         
         // Total progress entries
         db.progress.count({
-          where: { userId: session.user.id }
+          where: { userId: user.id }
         }),
         
         // Completed progress entries
         db.progress.count({
           where: { 
-            userId: session.user.id,
+            userId: user.id,
             isCompleted: true
           }
         }),
@@ -56,19 +56,19 @@ export async function GET() {
         // Certificates earned
         db.certificate.count({
           where: { 
-            userId: session.user.id,
+            userId: user.id,
             isActive: true
           }
         }),
         
         // User profile
         db.profile.findUnique({
-          where: { userId: session.user.id }
+          where: { userId: user.id }
         }),
         
         // Progress data for calculations
         db.progress.findMany({
-          where: { userId: session.user.id },
+          where: { userId: user.id },
           select: {
             timeSpent: true,
             rating: true,

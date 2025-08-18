@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -51,7 +51,7 @@ export default function VideoAnalysisPage() {
 }
 
 function VideoAnalysisContent() {
-  const { user, isLoading } = useAuth()
+  const { user, loading: isLoading } = useAuth()
   const router = useRouter()
   const [videos, setVideos] = useState<VideoData[]>([])
   const [selectedVideo, setSelectedVideo] = useState<VideoData | null>(null)
@@ -61,7 +61,7 @@ function VideoAnalysisContent() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/login-simple")
+      router.push("/login")
       return
     }
 

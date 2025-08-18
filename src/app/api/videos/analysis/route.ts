@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth-server"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { getFreshDbClient } from "@/lib/db"
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth()
+    const user = await getCurrentUser()
     
-    if (!session?.user?.id) {
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     const video = await prisma.video.findFirst({
       where: {
         id: videoId,
-        userId: session.user.id
+        userId: user.id
       },
       include: {
         session: {
@@ -171,9 +171,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth()
+    const user = await getCurrentUser()
     
-    if (!session?.user?.id) {
+    if (!user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -200,7 +200,7 @@ export async function POST(request: NextRequest) {
     const video = await prisma.video.findFirst({
       where: {
         id: videoId,
-        userId: session.user.id
+        userId: user.id
       }
     })
 

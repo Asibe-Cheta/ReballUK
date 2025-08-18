@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth-utils"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { prisma } from "@/lib/prisma"
 
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     // Create the booking
     const booking = await prisma.booking.create({
       data: {
-        userId: session.user.id,
+        userId: user.id,
         courseId: course.id,
         sessionType: sessionType,
         position: position,

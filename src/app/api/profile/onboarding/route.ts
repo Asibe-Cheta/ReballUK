@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth-server"
+import { getCurrentUser } from "@/lib/auth-utils"
 import { db, withRetry } from "@/lib/db"
 import { onboardingSchema } from "@/types/profile"
 
@@ -7,8 +7,8 @@ import { onboardingSchema } from "@/types/profile"
 export async function POST(request: NextRequest) {
   try {
     // Authenticate user
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     // Validate input
     const validationResult = onboardingSchema.safeParse(body)
     if (!validationResult.success) {
-      const errors = validationResult.error.errors.map(err => ({
+      const errors = validationResult.error.issues.map(err => ({
         field: err.path.join('.'),
         message: err.message,
       }))
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
     // Check if user already has a profile
     const existingProfile = await db.profile.findUnique({
-      where: { userId: session.user.id }
+      where: { userId: user.id }
     })
 
     if (existingProfile?.completedOnboarding) {
@@ -57,14 +57,14 @@ export async function POST(request: NextRequest) {
     // Create or update profile with onboarding data
     const profile = await withRetry(async () => {
       return await db.profile.upsert({
-        where: { userId: session.user.id },
+        where: { userId: user.id },
         update: {
           ...onboardingData,
           completedOnboarding: true,
           updatedAt: new Date(),
         },
         create: {
-          userId: session.user.id,
+          userId: user.id,
           ...onboardingData,
           completedOnboarding: true,
         },
@@ -103,8 +103,8 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     // Authenticate user
-    const session = await auth()
-    if (!session?.user?.id) {
+    const user = await getCurrentUser()
+    if (!user?.id) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -113,7 +113,7 @@ export async function GET() {
 
     // Get user profile
     const profile = await db.profile.findUnique({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
       select: {
         id: true,
         completedOnboarding: true,
