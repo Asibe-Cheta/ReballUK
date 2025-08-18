@@ -22,7 +22,7 @@ export async function GET() {
         totalBookings,
         completedBookings,
         totalProgress,
-
+        completedProgress,
         certificates,
         profile,
         progressData,
@@ -97,8 +97,8 @@ export async function GET() {
       const currentStreak = calculateStreak(lastActive)
 
       // Calculate overall progress percentage
-      const progressPercentage = totalProgress > 0
-        ? progressData.reduce((sum, p) => sum + p.completionPercentage, 0) / totalProgress
+      const progressPercentage = completedProgress > 0
+        ? progressData.reduce((sum, p) => sum + (p.completionPercentage || 0), 0) / completedProgress
         : 0
 
       const playerStats: PlayerStats = {
