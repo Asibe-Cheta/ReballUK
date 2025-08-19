@@ -13,7 +13,7 @@ export default function TermsPage() {
   return (
     <div className="min-h-screen pt-20 bg-background dark:bg-background">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <section className="py-20 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-black dark:to-gray-800">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <AnimatedHeroHeading className="font-marker text-4xl md:text-5xl lg:text-6xl mb-6 text-gray-900 dark:text-white">
@@ -33,7 +33,7 @@ export default function TermsPage() {
       </section>
 
       {/* Terms Content */}
-      <section className="py-20 bg-white dark:bg-gray-900">
+      <section className="py-20 bg-white dark:bg-black">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             

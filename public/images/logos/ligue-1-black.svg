@@ -1,0 +1,6 @@
+<svg width="128" height="80" viewBox="0 0 128 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="128" height="80" fill="transparent"/>
+  <text x="64" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="black">LIGUE 1</text>
+  <text x="64" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="black">FRANCE</text>
+  <circle cx="64" cy="70" r="2" fill="black"/>
+</svg>

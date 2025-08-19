@@ -70,7 +70,7 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
   const userDisplayName = user.profile?.firstName || user.name || "Player"
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-black">
       {/* Mobile sidebar overlay */}
       {mobileMenuOpen && (
         <div 

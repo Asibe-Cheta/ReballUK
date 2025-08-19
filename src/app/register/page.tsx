@@ -190,7 +190,7 @@ export default function RegisterPage() {
       </div>
 
       {/* Form Container - Right Side (Desktop) / Full Width (Mobile) */}
-      <div className="w-full lg:w-1/2 min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center p-8 relative z-20 lg:ml-auto">
+      <div className="w-full lg:w-1/2 min-h-screen bg-white dark:bg-black flex items-center justify-center p-8 relative z-20 lg:ml-auto">
         {/* Auth Card */}
         <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
           {/* Logo - Centered */}

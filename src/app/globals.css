@@ -103,7 +103,7 @@
 }
 
 .dark {
-  --background: var(--charcoal);
+  --background: var(--pure-black);
   --foreground: var(--pure-white);
   --card: rgba(26, 26, 26, 0.25);
   --card-foreground: var(--pure-white);
@@ -125,7 +125,7 @@
   --chart-2: var(--text-gray);
   --chart-3: var(--medium-gray);
   --chart-4: var(--dark-gray);
-  --chart-5: var(--charcoal);
+  --chart-5: var(--pure-black);
   --sidebar: rgba(26, 26, 26, 0.25);
   --sidebar-foreground: var(--pure-white);
   --sidebar-primary: var(--pure-white);
@@ -155,7 +155,7 @@
 
   body.dark {
     color: var(--pure-white);
-    background-color: var(--dark-gray);
+    background-color: var(--pure-black);
   }
 
   html {
@@ -760,5 +760,23 @@
         0 0 20px rgba(0, 0, 0, 0.5);
       -webkit-text-stroke: 1px rgba(0, 0, 0, 0.3);
     }
+  }
+
+  /* Logo Carousel Animation */
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  
+  .animate-scroll {
+    animation: scroll 30s linear infinite;
+  }
+  
+  .animate-scroll:hover {
+    animation-play-state: paused;
   }
 }
