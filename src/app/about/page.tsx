@@ -246,16 +246,16 @@ export default function AboutPage() {
               </p>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {values.map((value) => {
                 const IconComponent = value.icon;
                 return (
-                  <div key={value.id} className="bg-white dark:bg-gray-800 p-8 rounded-2xl text-center group shadow-xl border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300">
-                    <div className="w-16 h-16 bg-black dark:bg-white rounded-xl flex items-center justify-center mx-auto mb-6">
-                      <IconComponent className="w-8 h-8 text-white dark:text-black" />
+                  <div key={value.id} className="bg-white dark:bg-gray-800 p-6 rounded-xl text-center group shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
+                    <div className="w-10 h-10 border-2 border-black dark:border-white rounded-lg flex items-center justify-center mx-auto mb-4">
+                      <IconComponent className="w-5 h-5 text-black dark:text-white" />
                     </div>
-                    <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">{value.title}</h3>
-                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white">{value.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">
                       {value.description}
                     </p>
                   </div>

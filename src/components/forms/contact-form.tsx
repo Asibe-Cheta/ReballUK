@@ -80,14 +80,14 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-semibold">
+                <FormLabel className="text-sm font-semibold text-gray-900 dark:text-white">
                   Full Name *
                 </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Enter your full name"
                     {...field}
-                    className="h-12"
+                    className="h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-black dark:focus:border-white"
                   />
                 </FormControl>
                 <FormMessage />
@@ -101,7 +101,7 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-semibold">
+                <FormLabel className="text-sm font-semibold text-gray-900 dark:text-white">
                   Email Address *
                 </FormLabel>
                 <FormControl>
@@ -109,7 +109,7 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
                     type="email"
                     placeholder="Enter your email address"
                     {...field}
-                    className="h-12"
+                    className="h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-black dark:focus:border-white"
                   />
                 </FormControl>
                 <FormMessage />
@@ -123,7 +123,7 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-semibold">
+                <FormLabel className="text-sm font-semibold text-gray-900 dark:text-white">
                   Phone Number (Optional)
                 </FormLabel>
                 <FormControl>
@@ -131,7 +131,7 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
                     type="tel"
                     placeholder="Enter your phone number"
                     {...field}
-                    className="h-12"
+                    className="h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-black dark:focus:border-white"
                   />
                 </FormControl>
                 <FormMessage />
@@ -145,18 +145,18 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
             name="trainingInterest"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-semibold">
+                <FormLabel className="text-sm font-semibold text-gray-900 dark:text-white">
                   Training Interest *
                 </FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger className="h-12">
+                    <SelectTrigger className="h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:border-black dark:focus:border-white">
                       <SelectValue placeholder="Select your training interest" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectContent className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
                     {trainingInterests.map((interest) => (
-                      <SelectItem key={interest.value} value={interest.value}>
+                      <SelectItem key={interest.value} value={interest.value} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                         {interest.label}
                       </SelectItem>
                     ))}
@@ -173,13 +173,13 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
             name="message"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-semibold">
+                <FormLabel className="text-sm font-semibold text-gray-900 dark:text-white">
                   Message *
                 </FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="Tell us about your football goals and how we can help..."
-                    className="min-h-[120px] resize-none"
+                    className="min-h-[120px] resize-none bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-black dark:focus:border-white"
                     {...field}
                   />
                 </FormControl>
@@ -192,7 +192,7 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full h-12 text-base font-semibold"
+            className="w-full h-12 text-base font-semibold bg-black hover:bg-gray-800 text-white border border-white hover:border-gray-300"
             size="lg"
           >
             {isSubmitting ? (
@@ -209,7 +209,7 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
           </Button>
 
           {/* Privacy Notice */}
-          <p className="text-xs text-text-gray dark:text-medium-gray text-center">
+          <p className="text-xs text-gray-600 dark:text-gray-300 text-center">
             By submitting this form, you agree to our privacy policy. We&apos;ll only use your information to respond to your inquiry.
           </p>
         </form>
