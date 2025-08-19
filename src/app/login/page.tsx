@@ -96,17 +96,17 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <Card className="shadow-xl border-0">
+        <Card className="shadow-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
           <CardHeader className="text-center pb-6">
             <div className="mx-auto mb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-2xl font-bold">R</span>
+              <div className="w-16 h-16 bg-black dark:bg-white rounded-full flex items-center justify-center">
+                <span className="text-white dark:text-black text-2xl font-bold">R</span>
               </div>
             </div>
             <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">Welcome Back</CardTitle>
-            <CardDescription className="text-gray-600 dark:text-gray-400">
+            <CardDescription className="text-gray-600 dark:text-gray-300">
               Sign in to your REBALL account
             </CardDescription>
           </CardHeader>
@@ -114,9 +114,9 @@ function LoginForm() {
           <CardContent className="space-y-6">
             {/* Success Message */}
             {message && (
-              <Alert className="border-green-200 bg-green-50">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                <AlertDescription className="text-green-800">
+              <Alert className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20">
+                <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                <AlertDescription className="text-green-800 dark:text-green-200">
                   {message}
                 </AlertDescription>
               </Alert>
@@ -125,7 +125,7 @@ function LoginForm() {
             {/* Google Sign In Button */}
             <Button
               variant="outline"
-              className="w-full h-12 text-base font-medium"
+              className="w-full h-12 text-base font-medium border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
               onClick={handleGoogleSignIn}
               disabled={isGoogleLoading}
             >
@@ -180,12 +180,12 @@ function LoginForm() {
                     id="email"
                     type="email"
                     placeholder="Enter your email"
-                    className="pl-10 h-12"
+                    className="pl-10 h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-black dark:focus:border-white"
                     {...register("email")}
                   />
                 </div>
                 {errors.email && (
-                  <p className="text-sm text-red-600">
+                  <p className="text-sm text-red-600 dark:text-red-400">
                     {errors.email.message}
                   </p>
                 )}
@@ -202,19 +202,19 @@ function LoginForm() {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
-                    className="pl-10 pr-10 h-12"
+                    className="pl-10 pr-10 h-12 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-black dark:focus:border-white"
                     {...register("password")}
                   />
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-sm text-red-600">
+                  <p className="text-sm text-red-600 dark:text-red-400">
                     {errors.password.message}
                   </p>
                 )}
@@ -222,7 +222,7 @@ function LoginForm() {
 
               {/* Forgot Password Link */}
               <div className="text-right">
-                <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
+                <Link href="/forgot-password" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
                   Forgot your password?
                 </Link>
               </div>
@@ -230,7 +230,7 @@ function LoginForm() {
               {/* Submit Button */}
               <Button
                 type="submit"
-                className="w-full h-12 text-base font-medium bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                className="w-full h-12 text-base font-medium bg-black hover:bg-gray-800 text-white border border-white hover:border-gray-300"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -246,9 +246,9 @@ function LoginForm() {
 
             {/* Register Link */}
             <div className="text-center">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 Don&apos;t have an account?{" "}
-                <Link href="/register" className="text-blue-600 hover:underline font-medium">
+                <Link href="/register" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
                   Sign up
                 </Link>
               </p>

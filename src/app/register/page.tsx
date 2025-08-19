@@ -134,20 +134,23 @@ export default function RegisterPage() {
   }
 
   return (
-    <div 
-      className="min-h-screen flex flex-row relative bg-background dark:bg-background"
-    >
+    <div className="min-h-screen flex flex-row relative bg-background dark:bg-background">
       {/* Desktop Background Image - Left Side */}
-      <div 
-        className="fixed top-0 left-0 w-1/2 h-screen bg-cover bg-center bg-no-repeat z-10 hidden lg:block"
-        style={{
-          backgroundImage: 'url(/images/register/login-img.jpg)'
-        }}
-      >
+      <div className="fixed top-0 left-0 w-1/2 h-screen bg-cover bg-center bg-no-repeat z-10 hidden lg:block">
+        <Image
+          src="/images/register/login-img.jpg"
+          alt="Football training"
+          fill
+          className="object-cover"
+          priority
+          sizes="50vw"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.style.display = 'none';
+          }}
+        />
         {/* Overlay for better text readability */}
-        <div 
-          className="absolute inset-0 bg-gradient-to-br from-black/30 to-black/40 flex items-center justify-center p-8"
-        >
+        <div className="absolute inset-0 bg-gradient-to-br from-black/30 to-black/40 flex items-center justify-center p-8">
           <div className="text-center text-white">
             <h1 className="text-4xl font-bold mb-4">
               REBALL
@@ -159,41 +162,50 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* Form Container - Right Side */}
-      <div 
-        className="w-full lg:w-1/2 min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-8 relative z-20"
-      >
-        {/* Auth Card */}
-        <div 
-          style={{
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(0, 0, 0, 0.1)',
-            borderRadius: '20px',
-            padding: '3rem',
-            width: '100%',
-            maxWidth: '500px',
-            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)'
+      {/* Mobile Background Image - Top Banner */}
+      <div className="lg:hidden absolute top-0 left-0 w-full h-48 bg-cover bg-center bg-no-repeat z-10">
+        <Image
+          src="/images/register/login-img.jpg"
+          alt="Football training"
+          fill
+          className="object-cover"
+          priority
+          sizes="100vw"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.style.display = 'none';
           }}
-        >
+        />
+        {/* Overlay for mobile */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/40 flex items-center justify-center p-4">
+          <div className="text-center text-white">
+            <h1 className="text-2xl font-bold mb-2">
+              REBALL
+            </h1>
+            <p className="text-sm opacity-90">
+              Join REBALL and start your football training journey
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Form Container - Right Side (Desktop) / Full Width (Mobile) */}
+      <div className="w-full lg:w-1/2 min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center p-8 relative z-20 lg:ml-auto">
+        {/* Auth Card */}
+        <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
           {/* Logo - Centered */}
-          <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-            <Image
-              src={theme === 'dark' ? "/logos/logo-white.svg" : "/logos/logo-main.svg"}
-              alt="REBALL Logo"
-              width={64}
-              height={64}
-              priority
-              style={{ height: 'auto' }}
-            />
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 bg-black dark:bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-white dark:text-black text-2xl font-bold">R</span>
+            </div>
           </div>
 
           {/* Header */}
-          <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-            <h2 style={{ fontSize: '2rem', fontWeight: '700', color: '#000', marginBottom: '0.5rem' }}>
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
               Create Account
             </h2>
-            <p style={{ color: '#666', fontSize: '1rem' }}>
+            <p className="text-gray-600 dark:text-gray-300">
               Join REBALL and start your football training journey
             </p>
           </div>
@@ -202,7 +214,7 @@ export default function RegisterPage() {
           <button
             onClick={handleGoogleSignIn}
             disabled={isGoogleLoading}
-            className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl p-4 text-gray-700 dark:text-gray-200 cursor-pointer transition-all duration-300 text-base font-medium mb-6 opacity-100 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl p-4 text-gray-700 dark:text-gray-200 cursor-pointer transition-all duration-300 text-base font-medium mb-6 hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isGoogleLoading ? (
               <>
@@ -254,11 +266,11 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="Enter your full name"
                   {...register("name")}
-                  className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl py-4 px-4 pl-12 text-gray-700 dark:text-gray-200 text-base transition-all duration-300 outline-none focus:border-black dark:focus:border-white"
+                  className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl py-4 px-4 pl-12 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 text-base transition-all duration-300 outline-none focus:border-black dark:focus:border-white"
                 />
               </div>
               {errors.name && (
-                <p className="text-red-600 text-sm mt-2 flex items-center gap-1">
+                <p className="text-red-600 dark:text-red-400 text-sm mt-2 flex items-center gap-1">
                   <XCircle className="w-4 h-4" />
                   {errors.name.message}
                 </p>
@@ -276,11 +288,11 @@ export default function RegisterPage() {
                   type="email"
                   placeholder="Enter your email"
                   {...register("email")}
-                  className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl py-4 px-4 pl-12 text-gray-700 dark:text-gray-200 text-base transition-all duration-300 outline-none focus:border-black dark:focus:border-white"
+                  className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl py-4 px-4 pl-12 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 text-base transition-all duration-300 outline-none focus:border-black dark:focus:border-white"
                 />
               </div>
               {errors.email && (
-                <p className="text-red-600 text-sm mt-2 flex items-center gap-1">
+                <p className="text-red-600 dark:text-red-400 text-sm mt-2 flex items-center gap-1">
                   <XCircle className="w-4 h-4" />
                   {errors.email.message}
                 </p>
@@ -300,18 +312,18 @@ export default function RegisterPage() {
                   {...register("password", {
                     onChange: (e) => checkPasswordStrength(e.target.value)
                   })}
-                  className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl py-4 px-4 pl-12 text-gray-700 dark:text-gray-200 text-base transition-all duration-300 outline-none focus:border-black dark:focus:border-white"
+                  className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl py-4 px-4 pl-12 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 text-base transition-all duration-300 outline-none focus:border-black dark:focus:border-white"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
               {errors.password && (
-                <p className="text-red-600 text-sm mt-2 flex items-center gap-1">
+                <p className="text-red-600 dark:text-red-400 text-sm mt-2 flex items-center gap-1">
                   <XCircle className="w-4 h-4" />
                   {errors.password.message}
                 </p>
@@ -333,7 +345,7 @@ export default function RegisterPage() {
                               : level <= 4
                               ? 'bg-blue-500'
                               : 'bg-green-500'
-                            : 'bg-gray-200 dark:bg-gray-700'
+                            : 'bg-gray-200 dark:bg-gray-600'
                         }`}
                       />
                     ))}
@@ -371,18 +383,18 @@ export default function RegisterPage() {
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirm your password"
                   {...register("confirmPassword")}
-                  className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl py-4 px-4 pl-12 text-gray-700 dark:text-gray-200 text-base transition-all duration-300 outline-none focus:border-black dark:focus:border-white"
+                  className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl py-4 px-4 pl-12 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 text-base transition-all duration-300 outline-none focus:border-black dark:focus:border-white"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
                 >
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
               {errors.confirmPassword && (
-                <p className="text-red-600 text-sm mt-2 flex items-center gap-1">
+                <p className="text-red-600 dark:text-red-400 text-sm mt-2 flex items-center gap-1">
                   <XCircle className="w-4 h-4" />
                   {errors.confirmPassword.message}
                 </p>
@@ -393,20 +405,11 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-black hover:bg-gray-800 text-white border-none py-4 px-4 rounded-xl cursor-pointer font-semibold text-base transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed mb-6"
+              className="w-full bg-black hover:bg-gray-800 text-white border border-white hover:border-gray-300 py-4 px-4 rounded-xl cursor-pointer font-semibold text-base transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed mb-6"
             >
               {isLoading ? (
                 <>
-                  <div style={{
-                    width: '20px',
-                    height: '20px',
-                    border: '2px solid rgba(255, 255, 255, 0.3)',
-                    borderRadius: '50%',
-                    borderTopColor: 'white',
-                    animation: 'spin 1s linear infinite',
-                    marginRight: '0.5rem',
-                    display: 'inline-block'
-                  }}></div>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin inline-block mr-2"></div>
                   Creating Account...
                 </>
               ) : (
@@ -418,11 +421,11 @@ export default function RegisterPage() {
           {/* Terms and Privacy */}
           <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
             By creating an account, you agree to our{' '}
-            <Link href="/terms" className="text-gray-700 dark:text-gray-200 font-medium">
+            <Link href="/terms" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
               Terms of Service
             </Link>
             {' '}and{' '}
-            <Link href="/privacy" className="text-gray-700 dark:text-gray-200 font-medium">
+            <Link href="/privacy" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
               Privacy Policy
             </Link>
           </p>
@@ -432,43 +435,13 @@ export default function RegisterPage() {
             Already have an account?{' '}
             <Link 
               href="/login"
-              className="text-gray-700 dark:text-gray-200 font-medium"
+              className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
             >
               Sign in
             </Link>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-        
-        /* Desktop styles */
-        @media (min-width: 1024px) {
-          .desktop-bg {
-            display: block !important;
-          }
-          
-          .form-container {
-            width: 50% !important;
-            margin-left: 50%;
-          }
-        }
-        
-        /* Mobile styles */
-        @media (max-width: 1023px) {
-          .desktop-bg {
-            display: none !important;
-          }
-          
-          .form-container {
-            width: 100% !important;
-            margin-left: 0;
-          }
-        }
-      `}</style>
     </div>
   )
 }
