@@ -96,7 +96,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <Card className="shadow-xl border-0">
           <CardHeader className="text-center pb-6">
@@ -105,8 +105,8 @@ function LoginForm() {
                 <span className="text-white text-2xl font-bold">R</span>
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold text-gray-900">Welcome Back</CardTitle>
-            <CardDescription className="text-gray-600">
+            <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">Welcome Back</CardTitle>
+            <CardDescription className="text-gray-600 dark:text-gray-400">
               Sign in to your REBALL account
             </CardDescription>
           </CardHeader>
@@ -161,17 +161,17 @@ function LoginForm() {
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-300" />
+                <span className="w-full border-t border-gray-300 dark:border-gray-600" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="bg-white px-2 text-gray-500">Or continue with email</span>
+                <span className="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400">Or continue with email</span>
               </div>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {/* Email Field */}
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-200">
                   Email Address
                 </Label>
                 <div className="relative">
@@ -193,7 +193,7 @@ function LoginForm() {
 
               {/* Password Field */}
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-200">
                   Password
                 </Label>
                 <div className="relative">
@@ -246,8 +246,8 @@ function LoginForm() {
 
             {/* Register Link */}
             <div className="text-center">
-              <p className="text-sm text-gray-600">
-                Don't have an account?{" "}
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Don&apos;t have an account?{" "}
                 <Link href="/register" className="text-blue-600 hover:underline font-medium">
                   Sign up
                 </Link>

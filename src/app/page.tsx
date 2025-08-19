@@ -3,14 +3,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import AnimatedHeroHeading from "@/components/ui/animated-hero-heading";
-import MainHeader from "@/components/header/main-header";
+import MainNavbar from "@/components/navbar/main-navbar";
 // import MobileHeader from "@/components/header/mobile-header";
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background dark:bg-background">
       {/* Headers */}
-      <MainHeader />
+      <MainNavbar />
       {/* <MobileHeader /> */}
 
       {/* Hero Section */}
@@ -44,25 +44,22 @@ export default function Home() {
             For tactical football training and technical information you need to instantly increase your 1v1 success in the exact scenarios you face
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mb-8 sm:mb-12 max-w-lg mx-auto">
-            <Button 
-              asChild 
-              size="default" 
-              className="bg-black hover:bg-gray-800 text-white border border-white hover:border-gray-300 text-sm px-6 py-3 w-full sm:w-auto font-medium transition-all duration-300 hover:scale-105 shadow-sm"
-            >
-              <Link href="#">Start Training Now</Link>
-            </Button>
-            <Button 
-              asChild 
-              variant="outline" 
-              size="default" 
-              className="bg-white/10 backdrop-blur-sm border border-white text-white hover:bg-white hover:text-black text-sm px-6 py-3 w-full sm:w-auto font-medium transition-all duration-300 hover:scale-105 shadow-sm"
-            >
-              <Link href="#" className="flex items-center gap-2">
-                <Play className="w-4 h-4" />
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8 sm:mb-12 max-w-3xl mx-auto">
+            {/* Primary CTA Button */}
+            <button className="group relative overflow-hidden bg-black hover:bg-gray-900 text-white border-2 border-white hover:border-gray-300 text-lg px-10 py-5 w-full sm:w-auto font-bold transition-all duration-500 hover:scale-105 shadow-2xl rounded-xl min-w-[250px] transform hover:-translate-y-1">
+              <span className="relative z-10">Start Training Now</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+            </button>
+            
+            {/* Secondary CTA Button */}
+            <button className="group relative overflow-hidden bg-white/10 backdrop-blur-md border-2 border-white text-white hover:bg-white hover:text-black text-lg px-10 py-5 w-full sm:w-auto font-bold transition-all duration-500 hover:scale-105 shadow-2xl rounded-xl min-w-[250px] transform hover:-translate-y-1">
+              <span className="relative z-10 flex items-center justify-center gap-3">
+                <Play className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" />
                 Watch Demo
-              </Link>
-            </Button>
+              </span>
+              <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+            </button>
           </div>
 
           {/* Key Features Pills */}
@@ -157,9 +154,15 @@ export default function Home() {
                   </div>
 
                   {/* Actions */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button size="sm" className="py-1 sm:py-2 text-xs sm:text-sm">Book Session</Button>
-                    <Button variant="outline" size="sm" className="py-1 sm:py-2 text-xs sm:text-sm">View Analysis</Button>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button className="group relative overflow-hidden bg-black hover:bg-gray-800 text-white text-sm font-semibold py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 transform hover:-translate-y-0.5">
+                      <span className="relative z-10">Book Session</span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </button>
+                    <button className="group relative overflow-hidden bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white hover:text-black text-sm font-semibold py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 transform hover:-translate-y-0.5">
+                      <span className="relative z-10">View Analysis</span>
+                      <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -172,7 +175,7 @@ export default function Home() {
       <div className="section-divider"></div>
 
       {/* What Makes REBALL Different Section */}
-      <section className="section gradient-bg">
+      <section className="section bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <div className="container px-4 sm:px-6">
           <div className="section-header">
             <h2 className="section-title font-marker text-2xl sm:text-3xl md:text-4xl">What Makes REBALL Different</h2>
@@ -181,48 +184,45 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
             {/* SISW Feature */}
-            <div className="glow-card p-6 sm:p-8" data-card="sisw">
-              <span className="glow"></span>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pure-black dark:bg-pure-white rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                <Video className="w-5 h-5 sm:w-6 sm:h-6 text-pure-white dark:text-pure-black" />
+            <div className="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black dark:bg-white rounded-xl flex items-center justify-center mb-4 sm:mb-6">
+                <Video className="w-5 h-5 sm:w-6 sm:h-6 text-white dark:text-black" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">SISW Analysis</h3>
-              <p className="text-text-gray dark:text-medium-gray mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-gray-900 dark:text-white">SISW Analysis</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
                 Session in Slow-motion with Voiceover - detailed breakdown of your performance with expert commentary
               </p>
-              <Link href="#" className="inline-flex items-center gap-2 font-semibold hover:opacity-70 transition-opacity text-sm sm:text-base">
+              <Link href="#" className="inline-flex items-center gap-2 font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors text-sm sm:text-base">
                 Learn more
                 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
               </Link>
             </div>
 
             {/* TAV Feature */}
-            <div className="glow-card p-6 sm:p-8" data-card="tav">
-              <span className="glow"></span>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pure-black dark:bg-pure-white rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                <Target className="w-5 h-5 sm:w-6 sm:h-6 text-pure-white dark:text-pure-black" />
+            <div className="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black dark:bg-white rounded-xl flex items-center justify-center mb-4 sm:mb-6">
+                <Target className="w-5 h-5 sm:w-6 sm:h-6 text-white dark:text-black" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">TAV Breakdowns</h3>
-              <p className="text-text-gray dark:text-medium-gray mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-gray-900 dark:text-white">TAV Breakdowns</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
                 Technical Analysis Videos with Match of the Day style analysis of key tactical moments
               </p>
-              <Link href="#" className="inline-flex items-center gap-2 font-semibold hover:opacity-70 transition-opacity text-sm sm:text-base">
+              <Link href="#" className="inline-flex items-center gap-2 font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors text-sm sm:text-base">
                 Learn more
                 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
               </Link>
             </div>
 
             {/* 1v1 Training */}
-            <div className="glow-card p-6 sm:p-8" data-card="mastery">
-              <span className="glow"></span>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pure-black dark:bg-pure-white rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-pure-white dark:text-pure-black" />
+            <div className="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black dark:bg-white rounded-xl flex items-center justify-center mb-4 sm:mb-6">
+                <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-white dark:text-black" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">1v1 Mastery</h3>
-              <p className="text-text-gray dark:text-medium-gray mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-gray-900 dark:text-white">1v1 Mastery</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
                 Specialized training for the moments that decide games - attacking and defending 1v1 scenarios
               </p>
-              <Link href="#" className="inline-flex items-center gap-2 font-semibold hover:opacity-70 transition-opacity text-sm sm:text-base">
+              <Link href="#" className="inline-flex items-center gap-2 font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors text-sm sm:text-base">
                 Learn more
                 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
               </Link>
@@ -244,61 +244,57 @@ export default function Home() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             {/* Strikers */}
-            <div className="glow-card p-4 sm:p-6" data-card="strikers">
-              <span className="glow"></span>
-              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Strikers</h3>
+            <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
+              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-gray-900 dark:text-white">Strikers</h3>
               <ul className="space-y-2 sm:space-y-3">
                 <li className="flex items-center gap-2">
                   <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-xs sm:text-sm">1v1 Attacking Finishing</span>
+                  <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-200">1v1 Attacking Finishing</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-xs sm:text-sm">1v1 with Keeper</span>
+                  <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-200">1v1 with Keeper</span>
                 </li>
               </ul>
             </div>
 
             {/* Wingers */}
-            <div className="glow-card p-4 sm:p-6" data-card="wingers">
-              <span className="glow"></span>
-              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Wingers</h3>
+            <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
+              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-gray-900 dark:text-white">Wingers</h3>
               <ul className="space-y-2 sm:space-y-3">
                 <li className="flex items-center gap-2">
                   <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-xs sm:text-sm">1v1 Attacking Finishing</span>
+                  <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-200">1v1 Attacking Finishing</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-xs sm:text-sm">1v1 Attacking Crossing</span>
+                  <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-200">1v1 Attacking Crossing</span>
                 </li>
               </ul>
             </div>
 
             {/* CAM */}
-            <div className="glow-card p-4 sm:p-6" data-card="cam">
-              <span className="glow"></span>
-              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">CAM</h3>
+            <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
+              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-gray-900 dark:text-white">CAM</h3>
               <ul className="space-y-2 sm:space-y-3">
                 <li className="flex items-center gap-2">
                   <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-xs sm:text-sm">1v1 Attacking Finishing</span>
+                  <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-200">1v1 Attacking Finishing</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-xs sm:text-sm">1v1 Attacking Crossing</span>
+                  <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-200">1v1 Attacking Crossing</span>
                 </li>
               </ul>
             </div>
 
             {/* Full-backs */}
-            <div className="glow-card p-4 sm:p-6" data-card="fullbacks">
-              <span className="glow"></span>
-              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Full-backs</h3>
+            <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
+              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-gray-900 dark:text-white">Full-backs</h3>
               <ul className="space-y-2 sm:space-y-3">
                 <li className="flex items-center gap-2">
                   <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-xs sm:text-sm">1v1 Attacking Crossing</span>
+                  <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-200">1v1 Attacking Crossing</span>
                 </li>
               </ul>
             </div>
@@ -310,34 +306,41 @@ export default function Home() {
       <div className="section-divider"></div>
 
       {/* Meet Harry Section */}
-      <section className="section gradient-bg">
+      <section className="section bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <div className="container px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-8 sm:gap-16 items-center">
             <div>
               <h2 className="section-title font-marker text-left mb-6 sm:mb-8 text-2xl sm:text-3xl md:text-4xl">Meet Harry</h2>
-              <p className="text-lg sm:text-xl text-text-gray dark:text-medium-gray mb-4 sm:mb-6 leading-relaxed">
-                Founder of REBALL and passionate football coach dedicated to revolutionizing 1v1 training through innovative video analysis and tactical expertise.
+              <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-200 mb-4 sm:mb-6 leading-relaxed">
+                Founder of REBALL
               </p>
-              <p className="text-text-gray dark:text-medium-gray mb-6 sm:mb-8 leading-relaxed">
-                With years of experience in professional football training, Harry identified the gap in specific 1v1 scenario coaching and created REBALL to fill that void. His unique SISW and TAV methodologies have helped hundreds of players improve their game.
+              <p className="text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 leading-relaxed">
+                From my experience of working in 3 Premier League Academies, I can tell you that you are not being prepared effectively for the scenarios you face in the game. This is because of two main reasons; firstly, you are never coached in the exact scenarios you face in the game. Secondly, the information you are being coached is either incomplete or inaccurate. This is because football coaches only coach and consider technical and tactical information. They rarely consider movement information - such as the position and movement mechanics of defenders and attackers.
               </p>
-              <Link href="mailto:harry@reball.uk" className="inline-flex items-center gap-2 font-semibold hover:opacity-70 transition-opacity text-sm sm:text-base">
+              <p className="text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 leading-relaxed">
+                This would be like learning to drive a car with an instructor in an empty car park. Then without any experience of driving outside the empty carpark, you were thrown into the deep end of your test. You would encounter scenarios you&apos;ve never learnt about before; different types of roundabouts, crossroads and motorways, all while driving around other unpredictable vehicles.
+              </p>
+              <p className="text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 leading-relaxed">
+                This is why I started REBALL, unlike other individual development coaches we don&apos;t coach you incomplete or inaccurate information in unrealistic game scenarios. Instead, we identify every exact scenario you face in the game according to the position and movement mechanics of defenders and attackers. We then coach you the specific tactical, movement and technical information you need to instantly increase your success in the exact scenarios you face in the game.
+              </p>
+              <Link href="mailto:harry@reball.uk" className="inline-flex items-center gap-2 font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors text-sm sm:text-base">
                 Contact Harry: harry@reball.uk
                 <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
               </Link>
             </div>
             <div className="flex justify-center">
-              <div className="glow-card p-3 sm:p-4 rounded-3xl max-w-xs sm:max-w-sm relative" data-card="harry-founder">
-                <span className="glow"></span>
-                <Image 
-                  src="/images/about/harry-founder.jpg"
-                  alt="Harry - REBALL Founder"
-                  width={320}
-                  height={320}
-                  className="object-cover rounded-2xl"
-                />
-                <div className="absolute -bottom-2 sm:-bottom-4 -right-2 sm:-right-4 bg-pure-black dark:bg-pure-white text-pure-white dark:text-pure-black px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-semibold">
-                  Founder & Coach
+              <div className="relative max-w-xs sm:max-w-sm">
+                <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
+                  <Image 
+                    src="/images/about/harry-founder.jpg"
+                    alt="Harry - REBALL Founder"
+                    width={320}
+                    height={320}
+                    className="object-cover rounded-2xl w-full h-auto"
+                  />
+                  <div className="absolute -bottom-2 sm:-bottom-4 -right-2 sm:-right-4 bg-black dark:bg-white text-white dark:text-black px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-semibold shadow-lg">
+                    Founder & Coach
+                  </div>
                 </div>
               </div>
             </div>
@@ -354,13 +357,19 @@ export default function Home() {
           <div className="text-center max-w-4xl mx-auto">
             <h2 className="section-title font-marker mb-6 sm:mb-8 text-2xl sm:text-3xl md:text-4xl">Ready to Level Up?</h2>
             <p className="section-subtitle mb-8 sm:mb-12 text-base sm:text-lg">Join hundreds of players who have transformed their 1v1 game with REBALL</p>
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
-              <Button asChild size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto">
-                <Link href="#">Start Your Journey</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto">
-                <Link href="#">Book a Consultation</Link>
-              </Button>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center max-w-3xl mx-auto">
+              {/* Primary CTA Button */}
+              <button className="group relative overflow-hidden bg-black hover:bg-gray-900 text-white border-2 border-white hover:border-gray-300 text-lg px-10 py-5 w-full sm:w-auto font-bold transition-all duration-500 hover:scale-105 shadow-2xl rounded-xl min-w-[250px] transform hover:-translate-y-1">
+                <span className="relative z-10">Start Your Journey</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              </button>
+              
+              {/* Secondary CTA Button */}
+              <button className="group relative overflow-hidden bg-white/10 backdrop-blur-md border-2 border-white text-white hover:bg-white hover:text-black text-lg px-10 py-5 w-full sm:w-auto font-bold transition-all duration-500 hover:scale-105 shadow-2xl rounded-xl min-w-[250px] transform hover:-translate-y-1">
+                <span className="relative z-10">Book a Consultation</span>
+                <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              </button>
             </div>
           </div>
         </div>

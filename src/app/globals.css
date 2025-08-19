@@ -313,6 +313,11 @@
 
   .section {
     padding: 8rem 0;
+    background-color: var(--background);
+  }
+
+  .dark .section {
+    background-color: var(--background);
   }
 
   .section-header {
@@ -733,8 +738,18 @@
     transition: border-color 0.3s ease;
   }
 
+  .dark .simple-card {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(26, 26, 26, 0.3);
+    backdrop-filter: blur(10px);
+  }
+
   .simple-card:hover {
     border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .dark .simple-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
   }
 
   /* Mobile-specific hero text improvements */

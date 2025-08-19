@@ -103,19 +103,19 @@ const faqs = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-20 bg-background dark:bg-background">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-b from-pure-white to-light-gray dark:from-dark-gray dark:to-charcoal">
+      <section className="py-20 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <AnimatedHeroHeading className="font-marker text-4xl md:text-5xl lg:text-6xl mb-6">
+            <AnimatedHeroHeading className="font-marker text-4xl md:text-5xl lg:text-6xl mb-6 text-gray-900 dark:text-white">
               About Us
             </AnimatedHeroHeading>
-            <p className="text-xl md:text-2xl text-text-gray dark:text-medium-gray mb-8 leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-8 leading-relaxed">
               Revolutionizing football training through innovative 1v1 scenario analysis 
               and personalized video coaching methodologies.
             </p>
-            <Button asChild size="lg" className="text-lg px-8 py-6">
+            <Button asChild size="lg" className="text-lg px-8 py-6 bg-black hover:bg-gray-800 text-white border border-white hover:border-gray-300">
               <Link href="/contact">Get In Touch</Link>
             </Button>
           </div>
@@ -123,24 +123,24 @@ export default function AboutPage() {
       </section>
 
       {/* Our Story Section */}
-      <section className="py-20">
+      <section className="py-20 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="font-marker text-4xl md:text-5xl mb-6">Our Story</h2>
+                <h2 className="font-marker text-4xl md:text-5xl mb-6 text-gray-900 dark:text-white">Our Story</h2>
                 <div className="space-y-6 text-lg leading-relaxed">
-                  <p className="text-text-gray dark:text-medium-gray">
+                  <p className="text-gray-700 dark:text-gray-200">
                     REBALL was born from a simple observation: the moments that decide football matches 
                     happen in 1v1 scenarios, yet traditional training often overlooks these crucial situations.
                   </p>
-                  <p className="text-text-gray dark:text-medium-gray">
-                                      Our founder Harry recognized that players needed more than just generic drills - they 
-                  needed specific, targeted training that prepared them for the exact scenarios they&apos;d 
-                  face on the pitch. This insight led to the development of our revolutionary SISW and 
+                  <p className="text-gray-700 dark:text-gray-200">
+                    Our founder Harry recognized that players needed more than just generic drills - they 
+                    needed specific, targeted training that prepared them for the exact scenarios they&apos;d 
+                    face on the pitch. This insight led to the development of our revolutionary SISW and 
                     TAV methodologies.
                   </p>
-                  <p className="text-text-gray dark:text-medium-gray">
+                  <p className="text-gray-700 dark:text-gray-200">
                     Today, REBALL continues to push the boundaries of football training, combining 
                     cutting-edge video analysis with proven coaching techniques to help players master 
                     their 1v1 game and achieve their full potential.
@@ -148,25 +148,24 @@ export default function AboutPage() {
                 </div>
               </div>
               <div className="lg:order-first">
-                <div className="glow-card p-8 rounded-3xl" data-card="mission">
-                  <span className="glow"></span>
-                  <h3 className="font-marker text-2xl mb-4">Our Mission</h3>
-                  <p className="text-text-gray dark:text-medium-gray mb-6">
+                <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700">
+                  <h3 className="font-marker text-2xl mb-4 text-gray-900 dark:text-white">Our Mission</h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-6">
                     To provide every football player with the specific tactical, movement, and technical 
                     information they need to instantly increase their game success in the exact scenarios they face.
                   </p>
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-pure-black dark:bg-pure-white rounded-full"></div>
-                      <span className="text-sm">Personalized 1v1 training programs</span>
+                      <div className="w-2 h-2 bg-black dark:bg-white rounded-full"></div>
+                      <span className="text-sm text-gray-700 dark:text-gray-200">Personalized 1v1 training programs</span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-pure-black dark:bg-pure-white rounded-full"></div>
-                      <span className="text-sm">Innovative video analysis methodologies</span>
+                      <div className="w-2 h-2 bg-black dark:bg-white rounded-full"></div>
+                      <span className="text-sm text-gray-700 dark:text-gray-200">Innovative video analysis methodologies</span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-pure-black dark:bg-pure-white rounded-full"></div>
-                      <span className="text-sm">Position-specific scenario training</span>
+                      <div className="w-2 h-2 bg-black dark:bg-white rounded-full"></div>
+                      <span className="text-sm text-gray-700 dark:text-gray-200">Position-specific scenario training</span>
                     </div>
                   </div>
                 </div>
@@ -177,20 +176,19 @@ export default function AboutPage() {
       </section>
 
       {/* Meet Harry Section */}
-      <section id="meet-harry" className="py-20 bg-gradient-to-b from-light-gray to-pure-white dark:from-charcoal dark:to-dark-gray">
+      <section id="meet-harry" className="py-20 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="font-marker text-4xl md:text-5xl mb-4">Meet Harry</h2>
-              <p className="text-xl text-text-gray dark:text-medium-gray">
+              <h2 className="font-marker text-4xl md:text-5xl mb-4 text-gray-900 dark:text-white">Meet Harry</h2>
+              <p className="text-xl text-gray-700 dark:text-gray-200">
                 Founder & Head Coach
               </p>
             </div>
             
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="flex justify-center">
-                <div className="relative glow-card p-4 rounded-3xl" data-card="harry-photo">
-                  <span className="glow"></span>
+                <div className="relative bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
                   <Image 
                     src="/images/about/harry-founder.jpg"
                     alt="Harry - REBALL Founder"
@@ -198,7 +196,7 @@ export default function AboutPage() {
                     height={400}
                     className="object-cover rounded-2xl"
                   />
-                  <div className="absolute -bottom-4 -right-4 bg-pure-black dark:bg-pure-white text-pure-white dark:text-pure-black px-6 py-3 rounded-2xl font-semibold">
+                  <div className="absolute -bottom-4 -right-4 bg-black dark:bg-white text-white dark:text-black px-6 py-3 rounded-2xl font-semibold shadow-lg">
                     Founder & Coach
                   </div>
                 </div>
@@ -206,34 +204,28 @@ export default function AboutPage() {
               
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-2xl font-bold mb-4">Passionate Football Coach & Innovator</h3>
-                  <div className="space-y-4 text-lg text-text-gray dark:text-medium-gray leading-relaxed">
+                  <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Founder of REBALL</h3>
+                  <div className="space-y-4 text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
                     <p>
-                      Harry&apos;s journey in football began on the local pitches, where he quickly realized 
-                      that the difference between good and great players wasn&apos;t just talent - it was 
-                      preparation for the specific moments that mattered most.
+                      From my experience of working in 3 Premier League Academies, I can tell you that you are not being prepared effectively for the scenarios you face in the game. This is because of two main reasons; firstly, you are never coached in the exact scenarios you face in the game. Secondly, the information you are being coached is either incomplete or inaccurate. This is because football coaches only coach and consider technical and tactical information. They rarely consider movement information - such as the position and movement mechanics of defenders and attackers.
                     </p>
                     <p>
-                      With years of experience in professional football training and a keen eye for 
-                      tactical innovation, Harry identified a critical gap in traditional coaching: 
-                      the lack of specific 1v1 scenario preparation.
+                      This would be like learning to drive a car with an instructor in an empty car park. Then without any experience of driving outside the empty carpark, you were thrown into the deep end of your test. You would encounter scenarios you&apos;ve never learnt about before; different types of roundabouts, crossroads and motorways, all while driving around other unpredictable vehicles.
                     </p>
                     <p>
-                      This observation led to the creation of REBALL&apos;s unique SISW and TAV methodologies, 
-                      which have helped hundreds of players improve their game through targeted, 
-                      scenario-specific training.
+                      This is why I started REBALL, unlike other individual development coaches we don&apos;t coach you incomplete or inaccurate information in unrealistic game scenarios. Instead, we identify every exact scenario you face in the game according to the position and movement mechanics of defenders and attackers. We then coach you the specific tactical, movement and technical information you need to instantly increase your success in the exact scenarios you face in the game.
                     </p>
                   </div>
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button asChild variant="outline" className="flex items-center gap-2">
+                  <Button asChild variant="outline" className="flex items-center gap-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
                     <Link href="mailto:harry@reball.uk">
                       <Mail className="w-4 h-4" />
                       harry@reball.uk
                     </Link>
                   </Button>
-                  <Button asChild>
+                  <Button asChild className="bg-black hover:bg-gray-800 text-white border border-white hover:border-gray-300">
                     <Link href="/contact">Book a Consultation</Link>
                   </Button>
                 </div>
@@ -244,12 +236,12 @@ export default function AboutPage() {
       </section>
 
       {/* Company Values Section */}
-      <section id="values" className="py-20">
+      <section id="values" className="py-20 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="font-marker text-4xl md:text-5xl mb-4">Our Values</h2>
-              <p className="text-xl text-text-gray dark:text-medium-gray max-w-3xl mx-auto">
+              <h2 className="font-marker text-4xl md:text-5xl mb-4 text-gray-900 dark:text-white">Our Values</h2>
+              <p className="text-xl text-gray-700 dark:text-gray-200 max-w-3xl mx-auto">
                 The principles that guide everything we do at REBALL, from training design to player development.
               </p>
             </div>
@@ -258,13 +250,12 @@ export default function AboutPage() {
               {values.map((value) => {
                 const IconComponent = value.icon;
                 return (
-                  <div key={value.id} className="glow-card p-8 rounded-2xl text-center group" data-card={value.id}>
-                    <span className="glow"></span>
-                    <div className="w-16 h-16 bg-pure-black dark:bg-pure-white rounded-xl flex items-center justify-center mx-auto mb-6">
-                      <IconComponent className="w-8 h-8 text-pure-white dark:text-pure-black" />
+                  <div key={value.id} className="bg-white dark:bg-gray-800 p-8 rounded-2xl text-center group shadow-xl border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300">
+                    <div className="w-16 h-16 bg-black dark:bg-white rounded-xl flex items-center justify-center mx-auto mb-6">
+                      <IconComponent className="w-8 h-8 text-white dark:text-black" />
                     </div>
-                    <h3 className="text-xl font-bold mb-4">{value.title}</h3>
-                    <p className="text-text-gray dark:text-medium-gray leading-relaxed">
+                    <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">{value.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                       {value.description}
                     </p>
                   </div>
@@ -276,25 +267,24 @@ export default function AboutPage() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-20 bg-gradient-to-b from-pure-white to-light-gray dark:from-dark-gray dark:to-charcoal">
+      <section id="faq" className="py-20 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="font-marker text-4xl md:text-5xl mb-4">Frequently Asked Questions</h2>
-              <p className="text-xl text-text-gray dark:text-medium-gray">
+              <h2 className="font-marker text-4xl md:text-5xl mb-4 text-gray-900 dark:text-white">Frequently Asked Questions</h2>
+              <p className="text-xl text-gray-700 dark:text-gray-200">
                 Everything you need to know about REBALL training programs and methodologies.
               </p>
             </div>
             
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq) => (
-                <div key={faq.id} className="glow-card rounded-xl" data-card={`faq-${faq.id}`}>
-                  <span className="glow"></span>
+                <div key={faq.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
                   <AccordionItem value={faq.id} className="px-6 border-none">
-                    <AccordionTrigger className="text-left py-6 hover:no-underline">
+                    <AccordionTrigger className="text-left py-6 hover:no-underline text-gray-900 dark:text-white">
                       <span className="font-semibold pr-4">{faq.question}</span>
                     </AccordionTrigger>
-                    <AccordionContent className="pb-6 text-text-gray dark:text-medium-gray leading-relaxed">
+                    <AccordionContent className="pb-6 text-gray-600 dark:text-gray-300 leading-relaxed">
                       {faq.answer}
                     </AccordionContent>
                   </AccordionItem>
@@ -306,18 +296,18 @@ export default function AboutPage() {
       </section>
 
       {/* Contact CTA Section */}
-      <section className="py-20">
+      <section className="py-20 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="font-marker text-4xl md:text-5xl mb-6">Ready to Start Your Journey?</h2>
-            <p className="text-xl text-text-gray dark:text-medium-gray mb-8 leading-relaxed">
+            <h2 className="font-marker text-4xl md:text-5xl mb-6 text-gray-900 dark:text-white">Ready to Start Your Journey?</h2>
+            <p className="text-xl text-gray-700 dark:text-gray-200 mb-8 leading-relaxed">
               Join hundreds of players who have transformed their 1v1 game with REBALL&apos;s innovative training methods.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="text-lg px-8 py-6">
+              <Button asChild size="lg" className="text-lg px-8 py-6 bg-black hover:bg-gray-800 text-white border border-white hover:border-gray-300">
                 <Link href="/contact">Get Started Today</Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
+              <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
                 <Link href="mailto:harry@reball.uk">Contact Harry Directly</Link>
               </Button>
             </div>
