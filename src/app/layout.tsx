@@ -4,6 +4,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { AuthProvider } from "@/lib/auth-context"
 import { Toaster } from "@/components/ui/sonner"
+import MainLayout from "@/components/layout/main-layout"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -88,7 +89,9 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            {children}
+            <MainLayout>
+              {children}
+            </MainLayout>
             <Toaster />
           </AuthProvider>
         </ThemeProvider>

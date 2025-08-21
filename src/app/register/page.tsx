@@ -1,9 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -41,6 +40,10 @@ export default function RegisterPage() {
   const router = useRouter()
   const { register: registerUser, googleSignIn } = useAuth()
   const { theme } = useTheme()
+
+  useEffect(() => {
+    // Component mounted successfully
+  }, [])
 
   const {
     register,
@@ -134,69 +137,45 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-row relative bg-background dark:bg-background">
-      {/* Desktop Background Image - Left Side */}
-      <div className="fixed top-0 left-0 w-1/2 h-screen bg-cover bg-center bg-no-repeat z-10 hidden lg:block">
-        <Image
-          src="/images/register/login-img.jpg"
-          alt="Football training"
-          fill
-          className="object-cover"
-          priority
-          sizes="50vw"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.style.display = 'none';
-          }}
-        />
-        {/* Overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-br from-black/30 to-black/40 flex items-center justify-center p-8">
-          <div className="text-center text-white">
-            <h1 className="text-4xl font-bold mb-4">
-              REBALL
-            </h1>
-            <p className="text-xl opacity-90 max-w-md">
-              Join REBALL and start your football training journey
-            </p>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen flex bg-background dark:bg-background">
+      {/* Left Side - Image */}
+      <div className="w-1/2 bg-cover bg-center bg-no-repeat relative" style={{ backgroundImage: 'url(/images/register/login-img.jpg)' }}>
+         {/* Overlay for better text readability */}
+         <div className="absolute inset-0 bg-gradient-to-br from-black/30 to-black/40 flex items-center justify-center p-8">
+           <div className="text-center text-white">
+             <h1 className="text-4xl font-bold mb-4">
+               REBALL
+             </h1>
+             <p className="text-xl opacity-90 max-w-md">
+               Join REBALL and start your football training journey
+             </p>
+           </div>
+         </div>
+       </div>
 
-      {/* Mobile Background Image - Top Banner */}
-      <div className="lg:hidden absolute top-0 left-0 w-full h-48 bg-cover bg-center bg-no-repeat z-10">
-        <Image
-          src="/images/register/login-img.jpg"
-          alt="Football training"
-          fill
-          className="object-cover"
-          priority
-          sizes="100vw"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.style.display = 'none';
-          }}
-        />
-        {/* Overlay for mobile */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/40 flex items-center justify-center p-4">
-          <div className="text-center text-white">
-            <h1 className="text-2xl font-bold mb-2">
-              REBALL
-            </h1>
-            <p className="text-sm opacity-90">
-              Join REBALL and start your football training journey
-            </p>
-          </div>
-        </div>
-      </div>
+             
 
-      {/* Form Container - Right Side (Desktop) / Full Width (Mobile) */}
-      <div className="w-full lg:w-1/2 min-h-screen bg-white dark:bg-black flex items-center justify-center p-8 relative z-20 lg:ml-auto">
+      {/* Right Side - Form */}
+      <div className="w-1/2 min-h-screen bg-white dark:bg-black flex items-center justify-center p-8">
         {/* Auth Card */}
         <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
           {/* Logo - Centered */}
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-black dark:bg-white rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-white dark:text-black text-2xl font-bold">R</span>
+            <div className="w-16 h-16 mx-auto mb-4">
+                             <img
+                 src={theme === 'dark' ? '/logos/logo-white.svg' : '/logos/logo-main.svg'}
+                 alt="REBALL Logo"
+                 className="w-full h-full object-contain"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  // Fallback to "R" if logo fails to load
+                  const fallback = document.createElement('div');
+                  fallback.className = 'w-16 h-16 bg-black dark:bg-white rounded-full flex items-center justify-center';
+                  fallback.innerHTML = '<span class="text-white dark:text-black text-2xl font-bold">R</span>';
+                  target.parentNode?.appendChild(fallback);
+                }}
+              />
             </div>
           </div>
 
@@ -247,10 +226,15 @@ export default function RegisterPage() {
           </button>
 
           {/* Divider */}
-          <div className="flex items-center my-6 text-gray-500 dark:text-gray-400">
-            <div className="flex-1 h-px bg-gray-300 dark:bg-gray-600"></div>
-            <span className="px-4 text-sm">or continue with email</span>
-            <div className="flex-1 h-px bg-gray-300 dark:bg-gray-600"></div>
+          <div className="relative text-center text-sm my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400">
+                or continue with email
+              </span>
+            </div>
           </div>
 
           {/* Form */}

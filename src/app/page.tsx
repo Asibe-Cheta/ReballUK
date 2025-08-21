@@ -7,15 +7,17 @@ import { Button } from "@/components/ui/button";
 import AnimatedHeroHeading from "@/components/ui/animated-hero-heading";
 import MainNavbar from "@/components/navbar/main-navbar";
 import LogoCarousel from "@/components/ui/logo-carousel";
+import TestimonialsSection from "@/components/ui/testimonials-section";
 import { useState, useRef } from "react";
 // import MobileHeader from "@/components/header/mobile-header";
 
 export default function Home() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleVideoClick = async () => {
-    if (videoRef.current) {
+    if (videoRef.current && !videoError) {
       try {
         if (isVideoPlaying) {
           videoRef.current.pause();
@@ -26,9 +28,14 @@ export default function Home() {
         }
       } catch (error) {
         console.error('Video playback error:', error);
-        // Fallback: show an alert or handle the error gracefully
+        setVideoError(true);
       }
     }
+  };
+
+  const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+    console.error('Video loading error:', e);
+    setVideoError(true);
   };
 
   return (
@@ -160,39 +167,51 @@ export default function Home() {
               <div className="relative">
                 <div className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-6 shadow-2xl">
                   <div className="relative aspect-video bg-gradient-to-br from-black/20 to-black/40 dark:from-white/20 dark:to-white/40 rounded-2xl overflow-hidden group">
-                    {/* Actual Video */}
-                    <video
-                      ref={videoRef}
-                      className="w-full h-full object-cover cursor-pointer"
-                      loop
-                      playsInline
-                      poster="/images/hero/video-poster.jpeg"
-                      onClick={handleVideoClick}
-                      onError={(e) => {
-                        console.error('Video loading error:', e);
-                      }}
-                    >
-                      <source src="/videos/demo/demo-video.mp4" type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                    
-                    {/* Play Button Overlay */}
-                    <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${isVideoPlaying ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'}`}>
-                      <button 
+                    {/* Video or Fallback Image */}
+                    {!videoError ? (
+                      <video
+                        ref={videoRef}
+                        className="w-full h-full object-cover cursor-pointer"
+                        loop
+                        playsInline
+                        poster="/images/hero/video-poster.jpeg"
                         onClick={handleVideoClick}
-                        className="relative group/play"
+                        onError={handleVideoError}
+                        preload="metadata"
                       >
-                        <div className="w-16 h-16 bg-white dark:bg-black rounded-full flex items-center justify-center shadow-2xl group-hover/play:scale-110 transition-transform duration-300">
-                          <Play className="w-8 h-8 text-black dark:text-white ml-1" />
+                        <source src="/videos/demo/demo-video.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center">
+                        <div className="text-center">
+                          <Video className="w-16 h-16 text-gray-500 dark:text-gray-400 mx-auto mb-4" />
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">Video preview unavailable</p>
                         </div>
-                        <div className="absolute inset-0 w-16 h-16 bg-white dark:bg-black rounded-full opacity-20 group-hover/play:scale-150 transition-transform duration-500"></div>
-                      </button>
-                    </div>
+                      </div>
+                    )}
                     
-                    {/* Progress Bar Overlay */}
-                    <div className={`absolute bottom-0 left-0 right-0 h-1 bg-black/20 dark:bg-white/20 transition-opacity duration-300 ${isVideoPlaying ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'}`}>
-                      <div className="h-full bg-white dark:bg-black transition-all duration-100" style={{ width: '0%' }}></div>
-                    </div>
+                    {/* Play Button Overlay - Only show if video is available */}
+                    {!videoError && (
+                      <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${isVideoPlaying ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'}`}>
+                        <button 
+                          onClick={handleVideoClick}
+                          className="relative group/play"
+                        >
+                          <div className="w-16 h-16 bg-white dark:bg-black rounded-full flex items-center justify-center shadow-2xl group-hover/play:scale-110 transition-transform duration-300">
+                            <Play className="w-8 h-8 text-black dark:text-white ml-1" />
+                          </div>
+                          <div className="absolute inset-0 w-16 h-16 bg-white dark:bg-black rounded-full opacity-20 group-hover/play:scale-150 transition-transform duration-500"></div>
+                        </button>
+                      </div>
+                    )}
+                    
+                    {/* Progress Bar Overlay - Only show if video is playing */}
+                    {!videoError && (
+                      <div className={`absolute bottom-0 left-0 right-0 h-1 bg-black/20 dark:bg-white/20 transition-opacity duration-300 ${isVideoPlaying ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'}`}>
+                        <div className="h-full bg-white dark:bg-black transition-all duration-100" style={{ width: '0%' }}></div>
+                      </div>
+                    )}
                     
                     {/* Overlay Text */}
                     <div className={`absolute bottom-4 left-4 right-4 transition-opacity duration-300 ${isVideoPlaying ? 'opacity-0' : 'opacity-100'}`}>
@@ -216,6 +235,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Testimonials Section */}
+      <TestimonialsSection />
     </div>
   );
 }
