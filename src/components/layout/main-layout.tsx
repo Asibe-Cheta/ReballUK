@@ -1,6 +1,7 @@
 "use client"
 
 import { usePathname } from "next/navigation"
+import MainNavbar from "@/components/navbar/main-navbar"
 import Footer from "./footer"
 
 interface MainLayoutProps {
@@ -17,6 +18,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <MainNavbar />
       <main className="flex-1">
         {children}
       </main>

@@ -5,16 +5,54 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import AnimatedHeroHeading from "@/components/ui/animated-hero-heading";
-import MainNavbar from "@/components/navbar/main-navbar";
 import LogoCarousel from "@/components/ui/logo-carousel";
 import TestimonialsSection from "@/components/ui/testimonials-section";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 // import MobileHeader from "@/components/header/mobile-header";
 
 export default function Home() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [videoError, setVideoError] = useState(false);
+  const [videoLoading, setVideoLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Set a timeout to handle video loading issues
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (videoLoading && !videoError) {
+        console.warn('Video loading timeout - falling back to error state');
+        setVideoError(true);
+        setVideoLoading(false);
+      }
+    }, 10000); // 10 second timeout
+
+    return () => clearTimeout(timeout);
+  }, [videoLoading, videoError]);
+
+  const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+    const target = e.target as HTMLVideoElement;
+    const error = target.error;
+    
+    if (error) {
+      console.error('Video error details:', {
+        code: error.code,
+        message: error.message,
+        MEDIA_ERR_ABORTED: error.MEDIA_ERR_ABORTED,
+        MEDIA_ERR_NETWORK: error.MEDIA_ERR_NETWORK,
+        MEDIA_ERR_DECODE: error.MEDIA_ERR_DECODE,
+        MEDIA_ERR_SRC_NOT_SUPPORTED: error.MEDIA_ERR_SRC_NOT_SUPPORTED
+      });
+    } else {
+      console.error('Video loading failed - no error details available');
+    }
+    
+    setVideoError(true);
+    setVideoLoading(false);
+  };
+
+  const handleVideoLoad = () => {
+    setVideoLoading(false);
+  };
 
   const handleVideoClick = async () => {
     if (videoRef.current && !videoError) {
@@ -33,15 +71,9 @@ export default function Home() {
     }
   };
 
-  const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
-    console.error('Video loading error:', e);
-    setVideoError(true);
-  };
-
   return (
     <div className="min-h-screen bg-background dark:bg-background">
       {/* Headers */}
-      <MainNavbar />
       {/* <MobileHeader /> */}
 
       {/* Hero Section */}
@@ -177,9 +209,10 @@ export default function Home() {
                         poster="/images/hero/video-poster.jpeg"
                         onClick={handleVideoClick}
                         onError={handleVideoError}
+                        onLoadedData={handleVideoLoad}
                         preload="metadata"
                       >
-                        <source src="/videos/demo/demo-video.mp4" type="video/mp4" />
+                        <source src="/videos/hero/hero-training.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                       </video>
                     ) : (
@@ -191,8 +224,18 @@ export default function Home() {
                       </div>
                     )}
                     
+                    {/* Loading State */}
+                    {videoLoading && !videoError && (
+                      <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                        <div className="text-center">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600 dark:border-gray-300 mx-auto mb-2"></div>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">Loading video...</p>
+                        </div>
+                      </div>
+                    )}
+                    
                     {/* Play Button Overlay - Only show if video is available */}
-                    {!videoError && (
+                    {!videoError && !videoLoading && (
                       <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${isVideoPlaying ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'}`}>
                         <button 
                           onClick={handleVideoClick}
@@ -207,7 +250,7 @@ export default function Home() {
                     )}
                     
                     {/* Progress Bar Overlay - Only show if video is playing */}
-                    {!videoError && (
+                    {!videoError && !videoLoading && (
                       <div className={`absolute bottom-0 left-0 right-0 h-1 bg-black/20 dark:bg-white/20 transition-opacity duration-300 ${isVideoPlaying ? 'opacity-0 group-hover:opacity-100' : 'opacity-0'}`}>
                         <div className="h-full bg-white dark:bg-black transition-all duration-100" style={{ width: '0%' }}></div>
                       </div>
