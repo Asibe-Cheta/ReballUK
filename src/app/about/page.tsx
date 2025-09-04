@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
+
   return (
     <div className="min-h-screen bg-background dark:bg-background">
       {/* Hero Section */}
@@ -35,9 +36,10 @@ export default function AboutPage() {
       {/* About Content Section */}
       <section className="py-20 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="flex justify-center">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-12 items-start">
+              {/* Image Section - Fixed Position */}
+              <div className="flex justify-center lg:sticky lg:top-20">
                 <div className="relative bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
                   <Image 
                     src="/images/about/harry-founder.jpg"
@@ -52,6 +54,7 @@ export default function AboutPage() {
                 </div>
               </div>
               
+              {/* Text Section */}
               <div className="space-y-6">
                 <div className="space-y-4 text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
                   <p>

@@ -128,22 +128,51 @@ export default function MainNavbar() {
               
               <div className="relative group">
                 <Link 
-                  href="#" 
+                  href="/programs" 
                   className={`font-medium transition-all duration-300 hover:opacity-70 flex items-center gap-1 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 ${
                     isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
                   }`}
                 >
-                  Resources
+                  Programs
                   <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
                 </Link>
-                <div className={`absolute top-full left-0 mt-2 w-48 backdrop-blur-md rounded-2xl p-2 transform -translate-y-2 opacity-0 invisible group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 shadow-lg border ${
+                <div className={`absolute top-full left-0 mt-2 w-64 backdrop-blur-md rounded-2xl p-2 transform -translate-y-2 opacity-0 invisible group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 shadow-lg border ${
                   isScrolled ? 'bg-white/95 border-gray-200 dark:bg-black/95 dark:border-gray-800' : 'bg-white/10 border-white/20 dark:bg-black/20 dark:border-white/10'
                 }`}>
-                  <Link href="#" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
-                    isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
-                  }`}>REBALL Academy</Link>
+                  <div className="grid grid-cols-2 gap-1">
+                    <Link href="/programs?position=strikers" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
+                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                    }`}>Strikers</Link>
+                    <Link href="/programs?position=wingers" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
+                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                    }`}>Wingers</Link>
+                    <Link href="/programs?position=cam" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
+                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                    }`}>CAM</Link>
+                    <Link href="/programs?position=cm" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
+                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                    }`}>CM</Link>
+                    <Link href="/programs?position=cdm" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
+                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                    }`}>CDM</Link>
+                    <Link href="/programs?position=fb" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
+                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                    }`}>Full-back</Link>
+                    <Link href="/programs?position=cb" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
+                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                    }`}>Centre-back</Link>
+                  </div>
                 </div>
               </div>
+              
+              <Link 
+                href="/services" 
+                className={`font-medium transition-all duration-300 hover:opacity-70 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 ${
+                  isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                }`}
+              >
+                Services
+              </Link>
               
               <Link 
                 href="#contact" 
