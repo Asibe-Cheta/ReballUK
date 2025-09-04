@@ -53,7 +53,7 @@ export default function ServicesPage() {
               <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                    <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    <Users className="w-3 h-3 text-blue-600 dark:text-blue-400" />
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                     Small Group Sessions
@@ -63,25 +63,25 @@ export default function ServicesPage() {
                   <p>
                     Join our weekly small group sessions with prearranged training courses. Sizes are kept to a maximum of 4 players per session to ensure you receive the attention you deserve!
                   </p>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span>Maximum 4 players per session</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span>Prearranged training courses</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span>Weekly sessions</span>
-                  </div>
+                                      <div className="flex items-center gap-2">
+                      <CheckCircle className="w-2.5 h-2.5 text-green-500" />
+                      <span>Maximum 4 players per session</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-2.5 h-2.5 text-green-500" />
+                      <span>Prearranged training courses</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-2.5 h-2.5 text-green-500" />
+                      <span>Weekly sessions</span>
+                    </div>
                 </div>
               </div>
 
               <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center">
-                    <Target className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                    <Target className="w-3 h-3 text-purple-600 dark:text-purple-400" />
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                     1v1 Sessions
@@ -92,15 +92,15 @@ export default function ServicesPage() {
                     Choose your training course and receive all the attention you can get with our personalized 1v1 sessions. Perfect for focused development.
                   </p>
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <CheckCircle className="w-2.5 h-2.5 text-green-500" />
                     <span>Choose your training course</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <CheckCircle className="w-2.5 h-2.5 text-green-500" />
                     <span>Complete individual attention</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <CheckCircle className="w-2.5 h-2.5 text-green-500" />
                     <span>Flexible scheduling</span>
                   </div>
                 </div>
@@ -110,7 +110,7 @@ export default function ServicesPage() {
             {/* Training Priority */}
             <div className="bg-orange-50 dark:bg-orange-900/20 rounded-2xl p-8 mb-16">
               <div className="flex items-start gap-4">
-                <Clock className="w-8 h-8 text-orange-500 flex-shrink-0 mt-1" />
+                <Clock className="w-4 h-4 text-orange-500 flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                     Training Priority System
@@ -120,19 +120,19 @@ export default function ServicesPage() {
                   </p>
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-orange-500" />
+                      <CheckCircle className="w-2.5 h-2.5 text-orange-500" />
                       <span className="text-gray-700 dark:text-gray-300">Previous training experience</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-orange-500" />
+                      <CheckCircle className="w-2.5 h-2.5 text-orange-500" />
                       <span className="text-gray-700 dark:text-gray-300">Your playing level</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-orange-500" />
+                      <CheckCircle className="w-2.5 h-2.5 text-orange-500" />
                       <span className="text-gray-700 dark:text-gray-300">Time to sign up</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-orange-500" />
+                      <CheckCircle className="w-2.5 h-2.5 text-orange-500" />
                       <span className="text-gray-700 dark:text-gray-300">Reasons for training</span>
                     </div>
                   </div>
@@ -171,11 +171,11 @@ export default function ServicesPage() {
                     You can watch this video back at any time, and any place. So you may not need that notepad after all..
                   </p>
                   <div className="flex items-center gap-2">
-                    <Video className="w-5 h-5 text-blue-500" />
+                    <Video className="w-2.5 h-2.5 text-blue-500" />
                     <span>Session summary videos</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Video className="w-5 h-5 text-blue-500" />
+                    <Video className="w-2.5 h-2.5 text-blue-500" />
                     <span>Watch anytime, anywhere</span>
                   </div>
                 </div>
@@ -187,7 +187,7 @@ export default function ServicesPage() {
               <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
-                    <Trophy className="w-6 h-6 text-green-600 dark:text-green-400" />
+                    <Trophy className="w-3 h-3 text-green-600 dark:text-green-400" />
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                     Post-Training Recovery
@@ -201,7 +201,7 @@ export default function ServicesPage() {
               <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center">
-                    <BookOpen className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                    <BookOpen className="w-3 h-3 text-purple-600 dark:text-purple-400" />
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                     SISW & Training Analysis
@@ -216,7 +216,7 @@ export default function ServicesPage() {
             {/* Course Completion Benefits */}
             <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 mb-16">
               <div className="text-center mb-8">
-                <Trophy className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+                <Trophy className="w-8 h-8 text-yellow-500 mx-auto mb-4" />
                 <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                   Course Completion Benefits
                 </h3>
@@ -235,15 +235,15 @@ export default function ServicesPage() {
                   </p>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-yellow-500" />
+                      <Star className="w-2.5 h-2.5 text-yellow-500" />
                       <span className="text-gray-700 dark:text-gray-300">Discounts on REBALL collaborations</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-yellow-500" />
+                      <Star className="w-2.5 h-2.5 text-yellow-500" />
                       <span className="text-gray-700 dark:text-gray-300">Skip the queue for future courses</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-yellow-500" />
+                      <Star className="w-2.5 h-2.5 text-yellow-500" />
                       <span className="text-gray-700 dark:text-gray-300">Priority booking access</span>
                     </div>
                   </div>

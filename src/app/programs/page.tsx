@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import AnimatedHeroHeading from "@/components/ui/animated-hero-heading";
-import { Target, Users, Trophy, Star, CheckCircle, Clock } from "lucide-react";
+import { Target, Users, Trophy, Star, CheckCircle, Clock, ChevronDown } from "lucide-react";
 import type { Metadata } from "next";
 
 // Course data structure
@@ -620,6 +620,7 @@ const positions: Position[] = [
 export default function ProgramsPage() {
   const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useState<URLSearchParams | null>(null);
+  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -632,10 +633,16 @@ export default function ProgramsPage() {
 
   const handlePositionSelect = (positionId: string) => {
     setSelectedPosition(positionId);
+    setShowScrollIndicator(true);
     // Update URL without page reload
     const url = new URL(window.location.href);
     url.searchParams.set('position', positionId);
     window.history.pushState({}, '', url.toString());
+    
+    // Hide scroll indicator after 5 seconds
+    setTimeout(() => {
+      setShowScrollIndicator(false);
+    }, 5000);
   };
 
   const selectedPositionData = selectedPosition 
@@ -703,6 +710,22 @@ export default function ProgramsPage() {
           </div>
         </div>
       </section>
+
+      {/* Scroll Down Indicator */}
+      {showScrollIndicator && (
+        <section className="py-8 bg-gradient-to-b from-white to-gray-50 dark:from-black dark:to-gray-900">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="flex flex-col items-center gap-4 animate-bounce">
+                <div className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                  Scroll down to proceed
+                </div>
+                <ChevronDown className="w-8 h-8 text-gray-500 dark:text-gray-400" />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Course Display */}
       {selectedPositionData && (
