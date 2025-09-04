@@ -580,19 +580,19 @@ const positions: Position[] = [
       {
         id: "cb-1v1-defending-essential",
         title: "Essential 1v1 Defending Course",
-        description: "Coming Soon",
+        description: "Learn the specific essential tactical, movement and technical information you need to instantly improve your defending in the exact 8 1v1 scenarios you face in the game",
         level: "Essential",
         type: "1v1 Defending",
-        available: false,
+        available: true,
         positions: ["Centre-back"]
       },
       {
         id: "cb-1v1-defending-advanced",
         title: "Advanced 1v1 Defending Course",
-        description: "Coming Soon",
+        description: "Learn the specific advanced tactical, movement and technical information you need to become an unstoppable defender in the exact 8 1v1 scenarios you face in the game",
         level: "Advanced",
         type: "1v1 Defending",
-        available: false,
+        available: true,
         positions: ["Centre-back"]
       },
       {
