@@ -175,7 +175,7 @@ export default function MainNavbar() {
               </Link>
               
               <Link 
-                href="#contact" 
+                href="/contact" 
                 className={`font-medium transition-all duration-300 hover:opacity-70 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 ${
                   isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
                 }`}
@@ -358,7 +358,7 @@ export default function MainNavbar() {
               </Link>
               
               <Link 
-                href="#contact" 
+                href="/contact" 
                 className={`block px-3 py-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-md transition-colors duration-200 ${
                   isScrolled ? 'text-gray-700 dark:text-white/70' : 'text-white/70'
                 } hover:text-gray-900 dark:hover:text-white`}

@@ -2,6 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import TestimonialsSection from "@/components/ui/testimonials-section";
 // import MobileHeader from "@/components/header/mobile-header";
 
@@ -49,11 +50,9 @@ export default function Home() {
 
           <div className="flex justify-center items-center mb-8 sm:mb-12 max-w-3xl mx-auto">
             {/* Primary CTA Button */}
-            <Link href="/register" className="group relative overflow-hidden bg-black hover:bg-gray-900 text-white border-2 border-white hover:border-gray-300 text-lg px-10 py-5 w-full sm:w-auto font-bold transition-all duration-500 hover:scale-105 shadow-2xl rounded-xl min-w-[250px] transform hover:-translate-y-1 inline-block text-center">
-              <span className="relative z-10">Register Now</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-            </Link>
+            <Button asChild size="lg" className="text-lg px-8 py-6 bg-black hover:bg-gray-800 text-white border border-white hover:border-gray-300">
+              <Link href="/register">Register Now</Link>
+            </Button>
           </div>
         </div>
 
