@@ -628,6 +628,16 @@ export default function ProgramsPage() {
     const position = params.get('position');
     if (position) {
       setSelectedPosition(position);
+      // Scroll to course details if position is selected via URL
+      setTimeout(() => {
+        const courseSection = document.getElementById('course-details');
+        if (courseSection) {
+          courseSection.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }, 300);
     }
   }, []);
 
@@ -638,6 +648,17 @@ export default function ProgramsPage() {
     const url = new URL(window.location.href);
     url.searchParams.set('position', positionId);
     window.history.pushState({}, '', url.toString());
+    
+    // Scroll to course details section after a short delay to allow state update
+    setTimeout(() => {
+      const courseSection = document.getElementById('course-details');
+      if (courseSection) {
+        courseSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }, 100);
     
     // Hide scroll indicator after 5 seconds
     setTimeout(() => {
@@ -729,7 +750,7 @@ export default function ProgramsPage() {
 
       {/* Course Display */}
       {selectedPositionData && (
-        <section className="py-16 bg-gray-50 dark:bg-gray-900">
+        <section id="course-details" className="py-16 bg-gray-50 dark:bg-gray-900">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12">
