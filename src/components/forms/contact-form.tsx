@@ -47,19 +47,27 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call - replace with actual endpoint
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      
-      // Here you would typically send the data to your backend
-      console.log("Form data:", data);
-      
-      // Show success toast
-      toast.success("Message sent successfully!", {
-        description: "We&apos;ll get back to you within 24 hours.",
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       });
       
-      // Reset form
-      form.reset();
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
+        // Show success toast
+        toast.success("Message sent successfully!", {
+          description: "We&apos;ll get back to you within 24 hours.",
+        });
+        
+        // Reset form
+        form.reset();
+      } else {
+        throw new Error(result.message || 'Failed to send message');
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Failed to send message", {
