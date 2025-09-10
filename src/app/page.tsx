@@ -4,6 +4,8 @@ import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import TestimonialsSection from "@/components/ui/testimonials-section";
+import TrainingSessionsSection from "@/components/ui/training-sessions-section";
+import FinalCTASection from "@/components/ui/final-cta-section";
 // import MobileHeader from "@/components/header/mobile-header";
 
 export default function Home() {
@@ -65,6 +67,12 @@ export default function Home() {
 
       {/* Testimonials Section */}
       <TestimonialsSection />
+
+      {/* Training Sessions Section */}
+      <TrainingSessionsSection />
+
+      {/* Final Call to Action Section */}
+      <FinalCTASection />
     </div>
   );
 }

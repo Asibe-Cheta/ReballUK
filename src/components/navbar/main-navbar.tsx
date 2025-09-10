@@ -112,16 +112,16 @@ export default function MainNavbar() {
                   <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
                 </Link>
                 <div className={`absolute top-full left-0 mt-2 w-48 backdrop-blur-md rounded-2xl p-2 transform -translate-y-2 opacity-0 invisible group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 shadow-lg border ${
-                  isScrolled ? 'bg-white/95 border-gray-200 dark:bg-black/95 dark:border-gray-800' : 'bg-white/10 border-white/20 dark:bg-black/20 dark:border-white/10'
+                  isScrolled ? 'bg-white/95 border-gray-200 dark:bg-black/95 dark:border-gray-800' : 'bg-white/95 border-gray-200 dark:bg-black/20 dark:border-white/10'
                 }`}>
-                  <Link href="/about#faq" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
-                    isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                  <Link href="/about#faq" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black ${
+                    isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                   }`}>FAQs</Link>
-                  <Link href="/about#meet-harry" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
-                    isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                  <Link href="/about#meet-harry" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black ${
+                    isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                   }`}>Meet Harry</Link>
-                  <Link href="/about#values" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
-                    isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                  <Link href="/about#values" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black ${
+                    isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                   }`}>Our Values</Link>
                 </div>
               </div>
@@ -137,29 +137,29 @@ export default function MainNavbar() {
                   <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
                 </Link>
                 <div className={`absolute top-full left-0 mt-2 w-64 backdrop-blur-md rounded-2xl p-2 transform -translate-y-2 opacity-0 invisible group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 shadow-lg border ${
-                  isScrolled ? 'bg-white/98 border-gray-200 dark:bg-black/98 dark:border-gray-800' : 'bg-white/95 border-white/30 dark:bg-black/95 dark:border-white/30'
+                  isScrolled ? 'bg-white/98 border-gray-200 dark:bg-black/98 dark:border-gray-800' : 'bg-white/95 border-gray-200 dark:bg-black/95 dark:border-white/30'
                 }`}>
                   <div className="grid grid-cols-1 gap-1">
-                    <Link href="/programs/strikers" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
-                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                    <Link href="/programs/strikers" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black ${
+                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                     }`}>Strikers</Link>
-                    <Link href="/programs/wingers" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
-                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                    <Link href="/programs/wingers" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black ${
+                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                     }`}>Wingers</Link>
-                    <Link href="/programs/cam" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
-                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                    <Link href="/programs/cam" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black ${
+                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                     }`}>Central Attacking Midfielders</Link>
-                    <Link href="/programs/cm" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
-                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                    <Link href="/programs/cm" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black ${
+                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                     }`}>Centre-Mids</Link>
-                    <Link href="/programs/cdm" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
-                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                    <Link href="/programs/cdm" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black ${
+                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                     }`}>Central Defending Midfielders</Link>
-                    <Link href="/programs/fb" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
-                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                    <Link href="/programs/fb" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black ${
+                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                     }`}>Full-back</Link>
-                    <Link href="/programs/cb" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white dark:hover:text-black ${
-                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                    <Link href="/programs/cb" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black ${
+                      isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                     }`}>Centre-back</Link>
                   </div>
                 </div>
@@ -216,24 +216,24 @@ export default function MainNavbar() {
               
               {isProfileOpen && (
                 <div className={`absolute top-full right-0 mt-2 w-48 backdrop-blur-md rounded-2xl p-2 z-50 shadow-lg border ${
-                  isScrolled ? 'bg-white/95 border-gray-200 dark:bg-black/95 dark:border-gray-800' : 'bg-white/10 border-white/20 dark:bg-black/20 dark:border-white/10'
+                  isScrolled ? 'bg-white/95 border-gray-200 dark:bg-black/95 dark:border-gray-800' : 'bg-white/95 border-gray-200 dark:bg-black/20 dark:border-white/10'
                 }`}>
                   {user ? (
                     <>
-                      <Link href="/dashboard" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-black mb-1 flex items-center gap-2 ${
-                        isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                      <Link href="/dashboard" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black mb-1 flex items-center gap-2 ${
+                        isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                       }`}>
                         <LayoutDashboard className="w-4 h-4" />
                         Dashboard
                       </Link>
-                      <Link href="/profile" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-black mb-1 flex items-center gap-2 ${
-                        isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                      <Link href="/profile" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black mb-1 flex items-center gap-2 ${
+                        isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                       }`}>
                         <User className="w-4 h-4" />
                         Profile
                       </Link>
-                      <Link href="/settings" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-black mb-1 flex items-center gap-2 ${
-                        isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                      <Link href="/settings" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black mb-1 flex items-center gap-2 ${
+                        isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                       }`}>
                         <Settings className="w-4 h-4" />
                         Settings
@@ -243,20 +243,20 @@ export default function MainNavbar() {
                       }`}></div>
                       <button
                         onClick={toggleTheme}
-                        className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-black w-full text-left flex items-center gap-2 ${
-                          isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                        className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black w-full text-left flex items-center gap-2 ${
+                          isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                         }`}
                       >
                         {isMounted && theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                         {isMounted && theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                       </button>
                       <div className={`border-t my-1 ${
-                        isScrolled ? 'border-gray-200 dark:border-white/20' : 'border-white/20'
+                        isScrolled ? 'border-gray-200 dark:border-white/20' : 'border-gray-200 dark:border-white/20'
                       }`}></div>
                       <button
                         onClick={handleSignOut}
-                        className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-black w-full text-left flex items-center gap-2 ${
-                          isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                        className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black w-full text-left flex items-center gap-2 ${
+                          isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                         }`}
                       >
                         <LogOut className="w-4 h-4" />
@@ -265,23 +265,23 @@ export default function MainNavbar() {
                     </>
                   ) : (
                     <>
-                      <Link href="/login" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-black mb-1 ${
-                        isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                      <Link href="/login" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black mb-1 ${
+                        isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                       }`}>
                         Sign In
                       </Link>
-                      <Link href="/register" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-black mb-1 ${
-                        isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                      <Link href="/register" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black mb-1 ${
+                        isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                       }`}>
                         Register
                       </Link>
                       <div className={`border-t my-1 ${
-                        isScrolled ? 'border-gray-200 dark:border-white/20' : 'border-white/20'
+                        isScrolled ? 'border-gray-200 dark:border-white/20' : 'border-gray-200 dark:border-white/20'
                       }`}></div>
                       <button
                         onClick={toggleTheme}
-                        className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-black w-full text-left flex items-center gap-2 ${
-                          isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                        className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black w-full text-left flex items-center gap-2 ${
+                          isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                         }`}
                       >
                         {isMounted && theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}

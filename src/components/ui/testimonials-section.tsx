@@ -27,7 +27,7 @@ const testimonials: Testimonial[] = [
     id: "will",
     name: "Will",
     position: "Player",
-    playerImage: "/Testimonials/will-lars/player-image.jpg",
+    playerImage: "/Testimonials/Will headshot.jpeg",
     quote: "Detailed and specific to what we were working on, it was good to understand how the defenders momentum is important when creating space.",
     rating: 5
   },
@@ -35,7 +35,7 @@ const testimonials: Testimonial[] = [
     id: "seb",
     name: "Seb",
     position: "Attacking Midfielder",
-    playerImage: "/Testimonials/josh-johnson/player-image.jpg",
+    playerImage: "/Testimonials/Seb headshot.jpeg",
     quote: "It is realistic to game scenarios for me as a 10. It is a high standard of coaching and helps improve my end product and 1v1 scenarios.",
     rating: 5
   },
@@ -43,7 +43,7 @@ const testimonials: Testimonial[] = [
     id: "charlie-huyton",
     name: "Charlie Huyton",
     position: "Coach",
-    playerImage: "/images/about/harry-founder.jpg",
+    playerImage: "/Testimonials/Charlie Huyton.jpg",
     quote: "Within the past 2-4 weeks, the lad's confidence and game success has significantly improved. Sessions replicate game-like situations and realistic movements for players to help them deal with pressurised situations within a game.",
     rating: 5
   },
@@ -51,7 +51,7 @@ const testimonials: Testimonial[] = [
     id: "james",
     name: "James",
     position: "Player",
-    playerImage: "/Testimonials/will-lars/player-image.jpg",
+    playerImage: "/Testimonials/James Watts Headshot.PNG",
     quote: "Really good attention to detail and knowledge. The best 1-2-1 session I have had. The session was much more beneficial in terms of improvement, whereas other sessions have just got a lot of vague information and drills.",
     rating: 5
   },
@@ -75,7 +75,7 @@ const testimonials: Testimonial[] = [
     id: "leon",
     name: "Leon",
     position: "Winger",
-    playerImage: "/Testimonials/tylor-holmes/player-image.webp",
+    playerImage: "/Testimonials/Leon headshot.jpeg",
     quote: "The session was super detailed with how to improve my 1v1's which is something as a winger is not really coached anywhere else. It was so much more in depth and really looked at the scenarios that happen in a game in my position.",
     rating: 5
   },
@@ -83,7 +83,7 @@ const testimonials: Testimonial[] = [
     id: "sam",
     name: "Sam",
     position: "Centre Midfielder",
-    playerImage: "/Testimonials/josh-johnson/player-image.jpg",
+    playerImage: "/Testimonials/Sam headshot.jpeg",
     quote: "The session is more specific to me for what I need to master as centre mid.",
     rating: 5
   },
@@ -91,7 +91,7 @@ const testimonials: Testimonial[] = [
     id: "jake",
     name: "Jake",
     position: "Full Back",
-    playerImage: "/Testimonials/will-lars/player-image.jpg",
+    playerImage: "/Testimonials/Jake headshot.jpeg",
     quote: "I think the session will increase my 1v1 game success because as a full back, I feel like crossing and 1v1 scenarios are what I am in most of the time.",
     rating: 5
   }
@@ -229,22 +229,6 @@ export default function TestimonialsSection() {
           </div>
         </div>
 
-        {/* Call to Action */}
-        <div className="text-center mt-16">
-          <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-              Are you ready to instantly increase your game success?
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
-              Join hundreds of players who have already improved their 1v1 skills with REBALL's innovative training methods.
-            </p>
-            <div className="flex justify-center">
-              <Link href="/register" className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-200">
-                Register Now
-              </Link>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   )
