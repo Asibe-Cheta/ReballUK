@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
           
           <div style="background: #f8f9fa; padding: 20px; text-align: center; color: #666;">
             <p style="margin: 0; font-size: 14px;">
-              This message was sent from the REBALL contact form at ${process.env.NEXTAUTH_URL || 'reball.uk'}
+              This message was sent from the REBALL contact form at reball.uk
             </p>
           </div>
         </div>
@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
             </div>
             
             <div style="text-align: center; margin: 40px 0;">
-              <a href="${process.env.NEXTAUTH_URL || 'http://localhost:3000'}" 
+              <a href="https://reball.uk" 
                  style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
                         color: white; 
                         padding: 15px 30px; 

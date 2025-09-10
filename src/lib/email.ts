@@ -130,7 +130,7 @@ export async function sendWelcomeEmail(email: string, name: string) {
           </div>
           
           <div style="text-align: center; margin: 40px 0;">
-            <a href="${process.env.NEXTAUTH_URL || 'http://localhost:3000'}" 
+            <a href="https://reball.uk" 
                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
                       color: white; 
                       padding: 15px 30px; 
