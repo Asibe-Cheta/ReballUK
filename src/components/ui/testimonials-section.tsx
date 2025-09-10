@@ -28,7 +28,7 @@ const testimonials: Testimonial[] = [
     name: "Will",
     position: "Player",
     playerImage: "/Testimonials/will-lars/player-image.jpg",
-    quote: "DETAILED AND SPECIFIC TO WHAT WE WERE WORKING ON, IT WAS GOOD TO UNDERSTAND HOW THE DEFENDERS MOMENTUM IS IMPORTANT WHEN CREATING SPACE",
+    quote: "Detailed and specific to what we were working on, it was good to understand how the defenders momentum is important when creating space.",
     rating: 5
   },
   {
@@ -36,7 +36,7 @@ const testimonials: Testimonial[] = [
     name: "Seb",
     position: "Attacking Midfielder",
     playerImage: "/Testimonials/josh-johnson/player-image.jpg",
-    quote: "IT IS REALISTIC TO GAME SCENARIOS FOR ME AS A 10. IT IS A HIGH STANDARD OF COACHING AND HELPS IMPROVE MY END PRODUCT AND 1V1 SCENARIOS",
+    quote: "It is realistic to game scenarios for me as a 10. It is a high standard of coaching and helps improve my end product and 1v1 scenarios.",
     rating: 5
   },
   {
@@ -52,7 +52,7 @@ const testimonials: Testimonial[] = [
     name: "James",
     position: "Player",
     playerImage: "/Testimonials/will-lars/player-image.jpg",
-    quote: "REALLY GOOD ATTENTION TO DETAIL AND KNOWLEDGE. THE BEST 1-2-1 SESSION I HAVE HAD. THE SESSION WAS MUCH MORE BENEFICIAL IN TERMS OF IMPROVEMENT, WHEREAS OTHER SESSIONS HAVE JUST GOT A LOT OF VAGUE INFORMATION AND DRILLS",
+    quote: "Really good attention to detail and knowledge. The best 1-2-1 session I have had. The session was much more beneficial in terms of improvement, whereas other sessions have just got a lot of vague information and drills.",
     rating: 5
   },
   {
@@ -76,7 +76,7 @@ const testimonials: Testimonial[] = [
     name: "Leon",
     position: "Winger",
     playerImage: "/Testimonials/tylor-holmes/player-image.webp",
-    quote: "THE SESSION WAS SUPER DETAILED WITH HOW TO IMPROVE MY 1V1's WHICH IS SOMETHING AS A WINGER IS NOT REALLY COACHED ANYWHERE ELSE. IT WAS SO MUCH MORE IN DEPTH AND REALLY LOOKED AT THE SCENARIOS THAT HAPPEN IN A GAME IN MY POSITION",
+    quote: "The session was super detailed with how to improve my 1v1's which is something as a winger is not really coached anywhere else. It was so much more in depth and really looked at the scenarios that happen in a game in my position.",
     rating: 5
   },
   {
@@ -84,7 +84,7 @@ const testimonials: Testimonial[] = [
     name: "Sam",
     position: "Centre Midfielder",
     playerImage: "/Testimonials/josh-johnson/player-image.jpg",
-    quote: "THE SESSION IS MORE SPECIFIC TO ME FOR WHAT I NEED TO MASTER AS CENTRE MID",
+    quote: "The session is more specific to me for what I need to master as centre mid.",
     rating: 5
   },
   {
@@ -92,7 +92,7 @@ const testimonials: Testimonial[] = [
     name: "Jake",
     position: "Full Back",
     playerImage: "/Testimonials/will-lars/player-image.jpg",
-    quote: "I THINK the session will increase my 1v1 game success BECAUSE AS A FULL BACK, I FEEL LIKE CROSSING AND 1V1 SCENARIOS ARE WHAT I AM IN MOST OF THE TIME",
+    quote: "I think the session will increase my 1v1 game success because as a full back, I feel like crossing and 1v1 scenarios are what I am in most of the time.",
     rating: 5
   }
 ]
@@ -233,17 +233,14 @@ export default function TestimonialsSection() {
         <div className="text-center mt-16">
           <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-8 max-w-4xl mx-auto">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-              Ready to Transform Your Game?
+              Are you ready to instantly increase your game success?
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
               Join hundreds of players who have already improved their 1v1 skills with REBALL's innovative training methods.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Link href="/register" className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-200">
-                Start Training Today
-              </Link>
-              <Link href="/resources" className="border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 px-8 py-3 rounded-lg font-semibold transition-colors duration-200">
-                Learn More
+                Register Now
               </Link>
             </div>
           </div>

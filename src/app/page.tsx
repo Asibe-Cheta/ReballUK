@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronDown, Play } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import TestimonialsSection from "@/components/ui/testimonials-section";
 // import MobileHeader from "@/components/header/mobile-header";
@@ -47,20 +47,11 @@ export default function Home() {
             Learn the specific tactical, movement and technical information you need to instantly increase your success in the exact scenarios you face in the game
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8 sm:mb-12 max-w-3xl mx-auto">
+          <div className="flex justify-center items-center mb-8 sm:mb-12 max-w-3xl mx-auto">
             {/* Primary CTA Button */}
             <Link href="/register" className="group relative overflow-hidden bg-black hover:bg-gray-900 text-white border-2 border-white hover:border-gray-300 text-lg px-10 py-5 w-full sm:w-auto font-bold transition-all duration-500 hover:scale-105 shadow-2xl rounded-xl min-w-[250px] transform hover:-translate-y-1 inline-block text-center">
               <span className="relative z-10">Register Now</span>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-            </Link>
-            
-            {/* Secondary CTA Button */}
-            <Link href="/resources" className="group relative overflow-hidden bg-white/10 backdrop-blur-md border-2 border-white text-white hover:bg-white hover:text-black text-lg px-10 py-5 w-full sm:w-auto font-bold transition-all duration-500 hover:scale-105 shadow-2xl rounded-xl min-w-[250px] transform hover:-translate-y-1 inline-block text-center">
-              <span className="relative z-10 flex items-center justify-center gap-3">
-                <Play className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" />
-                Learn More
-              </span>
               <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
             </Link>
           </div>

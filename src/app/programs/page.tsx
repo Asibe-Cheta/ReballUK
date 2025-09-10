@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import AnimatedHeroHeading from "@/components/ui/animated-hero-heading";
-import { Target, Users, Trophy, Star, CheckCircle, Clock, ChevronDown } from "lucide-react";
+import { Target, Users, Trophy, Star, CheckCircle, Clock, ChevronDown, Lock } from "lucide-react";
 import type { Metadata } from "next";
 
 // Course data structure
@@ -757,11 +757,12 @@ export default function ProgramsPage() {
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
-                              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                              <span className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${
                                 course.level === 'Essential'
                                   ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                                   : 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
                               }`}>
+                                {course.level === 'Advanced' && <Lock className="w-3 h-3" />}
                                 {course.level}
                               </span>
                               <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
@@ -803,11 +804,12 @@ export default function ProgramsPage() {
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
-                              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                              <span className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${
                                 course.level === 'Essential'
                                   ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                                   : 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
                               }`}>
+                                {course.level === 'Advanced' && <Lock className="w-3 h-3" />}
                                 {course.level}
                               </span>
                               <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
