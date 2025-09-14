@@ -4,21 +4,27 @@ import { setAuthCookie } from "@/lib/auth-utils"
 
 export async function GET(request: NextRequest) {
   try {
+    // Debug logging at the start
+    console.error('=== GOOGLE OAUTH DEBUG START ===')
+    console.error('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID)
+    console.error('GOOGLE_REDIRECT_URI:', process.env.GOOGLE_REDIRECT_URI)
+    console.error('Request URL:', request.url)
+    
     const { searchParams } = new URL(request.url)
     const code = searchParams.get('code')
     const error = searchParams.get('error')
 
+    console.error('Code parameter:', code)
+    console.error('Error parameter:', error)
+
     if (error) {
+      console.error('Google OAuth error:', error)
       return NextResponse.redirect(new URL('/login?error=google_auth_failed', request.url))
     }
 
     if (!code) {
-      // Debug logging
-      console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID)
-      console.log('GOOGLE_REDIRECT_URI:', process.env.GOOGLE_REDIRECT_URI)
-      
       const redirectUri = process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/api/auth/google'
-      console.log('Using redirect URI:', redirectUri)
+      console.error('Using redirect URI:', redirectUri)
       
       // Redirect to Google OAuth
       const googleAuthUrl = `https://accounts.google.com/oauth/authorize?` +
@@ -28,13 +34,14 @@ export async function GET(request: NextRequest) {
         `scope=openid email profile&` +
         `access_type=offline`
 
-      console.log('Google Auth URL:', googleAuthUrl)
+      console.error('Google Auth URL:', googleAuthUrl)
+      console.error('=== GOOGLE OAUTH DEBUG END ===')
       return NextResponse.redirect(googleAuthUrl)
     }
 
     // Exchange code for tokens
     const redirectUri = process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/api/auth/google'
-    console.log('Token exchange - redirect URI:', redirectUri)
+    console.error('Token exchange - redirect URI:', redirectUri)
     
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
