@@ -13,18 +13,29 @@ export async function GET(request: NextRequest) {
     }
 
     if (!code) {
+      // Debug logging
+      console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID)
+      console.log('GOOGLE_REDIRECT_URI:', process.env.GOOGLE_REDIRECT_URI)
+      
+      const redirectUri = process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/api/auth/google'
+      console.log('Using redirect URI:', redirectUri)
+      
       // Redirect to Google OAuth
       const googleAuthUrl = `https://accounts.google.com/oauth/authorize?` +
         `client_id=${process.env.GOOGLE_CLIENT_ID}&` +
-        `redirect_uri=${encodeURIComponent(process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/api/auth/google')}&` +
+        `redirect_uri=${encodeURIComponent(redirectUri)}&` +
         `response_type=code&` +
         `scope=openid email profile&` +
         `access_type=offline`
 
+      console.log('Google Auth URL:', googleAuthUrl)
       return NextResponse.redirect(googleAuthUrl)
     }
 
     // Exchange code for tokens
+    const redirectUri = process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/api/auth/google'
+    console.log('Token exchange - redirect URI:', redirectUri)
+    
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: {
@@ -35,7 +46,7 @@ export async function GET(request: NextRequest) {
         client_secret: process.env.GOOGLE_CLIENT_SECRET!,
         code,
         grant_type: 'authorization_code',
-        redirect_uri: process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/api/auth/google',
+        redirect_uri: redirectUri,
       }),
     })
 
