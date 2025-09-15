@@ -26,13 +26,12 @@ export async function GET(request: NextRequest) {
       const redirectUri = process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/api/auth/google'
       console.error('Using redirect URI:', redirectUri)
       
-      // Redirect to Google OAuth
+      // Redirect to Google OAuth - using minimal parameters
       const googleAuthUrl = `https://accounts.google.com/oauth/authorize?` +
         `client_id=${process.env.GOOGLE_CLIENT_ID}&` +
         `redirect_uri=${encodeURIComponent(redirectUri)}&` +
         `response_type=code&` +
-        `scope=email profile&` +
-        `access_type=offline`
+        `scope=email`
 
       console.error('Google Auth URL:', googleAuthUrl)
       console.error('=== GOOGLE OAUTH DEBUG END ===')

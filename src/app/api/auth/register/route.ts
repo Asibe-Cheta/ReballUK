@@ -42,6 +42,18 @@ export async function POST(request: NextRequest) {
     console.log("Checking for existing user...")
     const db = await getDbClient()
     
+    // Test database connection first
+    try {
+      await db.query('SELECT 1')
+      console.log("Database connection verified")
+    } catch (dbError) {
+      console.error("Database connection test failed:", dbError)
+      return NextResponse.json(
+        { success: false, error: "Database connection failed" },
+        { status: 503 }
+      )
+    }
+    
     // Add timeout to database query
     const existingUsersResult = await Promise.race([
       db.query(
