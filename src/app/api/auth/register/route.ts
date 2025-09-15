@@ -20,23 +20,54 @@ export async function POST(request: NextRequest) {
     // Validate captcha token if provided
     if (captchaToken) {
       try {
+        const secretKey = process.env.HCAPTCHA_SECRET_KEY
+        console.log("Captcha verification attempt:", { 
+          hasSecretKey: !!secretKey, 
+          secretKeyLength: secretKey?.length,
+          tokenLength: captchaToken.length 
+        })
+
+        if (!secretKey) {
+          console.error("HCAPTCHA_SECRET_KEY environment variable not set")
+          return NextResponse.json(
+            { success: false, error: "Captcha configuration error" },
+            { status: 500 }
+          )
+        }
+
+        // Get client IP for verification
+        const clientIP = request.headers.get('x-forwarded-for') || 
+                        request.headers.get('x-real-ip') || 
+                        '127.0.0.1'
+
         const captchaResponse = await fetch('https://hcaptcha.com/siteverify', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: new URLSearchParams({
-            secret: process.env.HCAPTCHA_SECRET_KEY || '',
+            secret: secretKey,
             response: captchaToken,
+            remoteip: clientIP,
           }),
         })
 
         const captchaResult = await captchaResponse.json()
+        console.log("Captcha verification result:", captchaResult)
         
         if (!captchaResult.success) {
-          console.log("Captcha verification failed:", captchaResult)
+          console.log("Captcha verification failed:", {
+            success: captchaResult.success,
+            errorCodes: captchaResult['error-codes'],
+            challengeTs: captchaResult.challenge_ts,
+            hostname: captchaResult.hostname
+          })
           return NextResponse.json(
-            { success: false, error: "Captcha verification failed" },
+            { 
+              success: false, 
+              error: "Captcha verification failed",
+              details: captchaResult['error-codes'] || ['unknown_error']
+            },
             { status: 400 }
           )
         }
@@ -47,6 +78,12 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         )
       }
+    } else {
+      console.log("No captcha token provided")
+      return NextResponse.json(
+        { success: false, error: "Captcha verification required" },
+        { status: 400 }
+      )
     }
 
     // Validate email format
