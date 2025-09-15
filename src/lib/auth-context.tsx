@@ -135,7 +135,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const googleSignIn = async () => {
     try {
-      // Redirect to Google OAuth
+      // Redirect to Supabase Google OAuth
       window.location.href = "/api/auth/google"
       return { success: true }
     } catch (error) {
