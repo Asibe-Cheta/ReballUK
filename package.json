@@ -18,6 +18,7 @@
     "@auth/prisma-adapter": "^2.10.0",
     "@cloudinary/react": "^1.14.3",
     "@cloudinary/url-gen": "^1.21.0",
+    "@hcaptcha/react-hcaptcha": "^1.12.1",
     "@hookform/resolvers": "^5.2.1",
     "@paralleldrive/cuid2": "^2.2.2",
     "@prisma/client": "^6.13.0",

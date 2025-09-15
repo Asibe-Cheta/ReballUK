@@ -1,19 +1,16 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Eye, EyeOff, Mail, Lock, User, XCircle } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { useTheme } from "next-themes"
 import { toast } from "sonner"
+import HCaptcha from "@hcaptcha/react-hcaptcha"
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -32,10 +29,13 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const [passwordStrength, setPasswordStrength] = useState<{
     score: number
     feedback: string[]
   }>({ score: 0, feedback: [] })
+  
+  const captchaRef = useRef<HCaptcha>(null)
 
   const router = useRouter()
   const { register: registerUser, googleSignIn } = useAuth()
@@ -95,9 +95,17 @@ export default function RegisterPage() {
   }
 
   const onSubmit = async (data: RegisterFormData) => {
+    // Check if captcha is completed
+    if (!captchaToken) {
+      toast.error("Please complete the captcha verification", {
+        description: "This helps us protect against spam and abuse.",
+      })
+      return
+    }
+
     setIsLoading(true)
     try {
-      const result = await registerUser(data)
+      const result = await registerUser({ ...data, captchaToken })
       
       if (result.success) {
         toast.success("Registration successful!", {
@@ -108,11 +116,17 @@ export default function RegisterPage() {
         toast.error("Registration failed", {
           description: result.error,
         })
+        // Reset captcha on failure
+        captchaRef.current?.resetCaptcha()
+        setCaptchaToken(null)
       }
     } catch (error) {
       toast.error("Registration failed", {
         description: "An unexpected error occurred.",
       })
+      // Reset captcha on error
+      captchaRef.current?.resetCaptcha()
+      setCaptchaToken(null)
     } finally {
       setIsLoading(false)
     }
@@ -383,6 +397,18 @@ export default function RegisterPage() {
                   {errors.confirmPassword.message}
                 </p>
               )}
+            </div>
+
+            {/* hCaptcha */}
+            <div className="mb-6">
+              <HCaptcha
+                ref={captchaRef}
+                sitekey="1738bbaa-c888-4fa2-8d96-47ccd84e5b8a"
+                onVerify={(token) => setCaptchaToken(token)}
+                onExpire={() => setCaptchaToken(null)}
+                onError={() => setCaptchaToken(null)}
+                theme={theme === 'dark' ? 'dark' : 'light'}
+              />
             </div>
 
             {/* Submit Button */}

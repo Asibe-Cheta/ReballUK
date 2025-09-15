@@ -30,6 +30,7 @@ interface RegisterData {
   name: string
   email: string
   password: string
+  captchaToken?: string
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)

@@ -4,7 +4,7 @@ import { isValidEmail, validatePassword } from "@/lib/auth-utils"
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, password } = await request.json()
+    const { name, email, password, captchaToken } = await request.json()
 
     console.log("Registration attempt:", { name, email, hasPassword: !!password })
 
@@ -15,6 +15,38 @@ export async function POST(request: NextRequest) {
         { success: false, error: "All fields are required" },
         { status: 400 }
       )
+    }
+
+    // Validate captcha token if provided
+    if (captchaToken) {
+      try {
+        const captchaResponse = await fetch('https://hcaptcha.com/siteverify', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            secret: process.env.HCAPTCHA_SECRET_KEY || '',
+            response: captchaToken,
+          }),
+        })
+
+        const captchaResult = await captchaResponse.json()
+        
+        if (!captchaResult.success) {
+          console.log("Captcha verification failed:", captchaResult)
+          return NextResponse.json(
+            { success: false, error: "Captcha verification failed" },
+            { status: 400 }
+          )
+        }
+      } catch (captchaError) {
+        console.error("Captcha verification error:", captchaError)
+        return NextResponse.json(
+          { success: false, error: "Captcha verification failed" },
+          { status: 400 }
+        )
+      }
     }
 
     // Validate email format
