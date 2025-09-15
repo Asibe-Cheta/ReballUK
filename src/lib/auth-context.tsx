@@ -39,13 +39,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
   const router = useRouter()
 
-  // Check if user is logged in on mount
+  // Check if user is logged in on mount and handle OAuth callbacks
   useEffect(() => {
+    // Handle OAuth callback with access token in URL hash
+    const handleOAuthCallback = () => {
+      const hash = window.location.hash
+      if (hash.includes('access_token=')) {
+        // Extract token from hash
+        const tokenMatch = hash.match(/access_token=([^&]+)/)
+        if (tokenMatch) {
+          const token = tokenMatch[1]
+          // Store token and redirect to clean URL
+          localStorage.setItem('supabase_access_token', token)
+          window.location.hash = ''
+          window.location.pathname = '/'
+        }
+      }
+    }
+
+    handleOAuthCallback()
     checkAuthStatus()
   }, [])
 
   const checkAuthStatus = async () => {
     try {
+      // Check for Supabase token first
+      const supabaseToken = localStorage.getItem('supabase_access_token')
+      if (supabaseToken) {
+        // Verify token with Supabase and get user info
+        const response = await fetch("/api/auth/verify-supabase-token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: supabaseToken }),
+        })
+        
+        if (response.ok) {
+          const data = await response.json()
+          setUser(data.user)
+          return
+        } else {
+          // Token is invalid, remove it
+          localStorage.removeItem('supabase_access_token')
+        }
+      }
+
+      // Fallback to regular auth check
       const response = await fetch("/api/auth/me")
       if (response.ok) {
         const data = await response.json()
@@ -74,6 +112,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (response.ok) {
         setUser(data.user)
+        // Store the access token if provided
+        if (data.access_token) {
+          localStorage.setItem('supabase_access_token', data.access_token)
+        }
         return { success: true }
       } else {
         return { success: false, error: data.error || "Login failed" }
@@ -105,7 +147,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      await fetch("/api/auth/logout", { method: "POST" })
+      // Clear Supabase token
+      localStorage.removeItem('supabase_access_token')
+      
+      // Call logout API if it exists
+      try {
+        await fetch("/api/auth/logout", { method: "POST" })
+      } catch (apiError) {
+        // API logout might not exist, that's okay
+        console.log("API logout not available, continuing with local logout")
+      }
+      
       setUser(null)
       router.push("/")
     } catch (error) {
