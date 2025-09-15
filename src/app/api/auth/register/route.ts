@@ -86,6 +86,20 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error("Supabase signup error:", error)
+      console.error("Error details:", {
+        message: error.message,
+        status: error.status,
+        name: error.name
+      })
+      
+      // Check if it's specifically an email sending error
+      if (error.message.includes('email') || error.message.includes('confirmation')) {
+        return NextResponse.json(
+          { success: false, error: "Error sending confirmation email" },
+          { status: 400 }
+        )
+      }
+      
       return NextResponse.json(
         { success: false, error: error.message },
         { status: 400 }
@@ -98,6 +112,14 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
+
+    // Log successful signup details
+    console.log("Supabase signup successful:", {
+      userId: data.user.id,
+      email: data.user.email,
+      emailConfirmed: data.user.email_confirmed_at,
+      session: data.session ? "present" : "absent"
+    })
 
     // Create profile record
     const { error: profileError } = await supabase
