@@ -32,8 +32,7 @@ export async function GET(request: NextRequest) {
         `redirect_uri=${encodeURIComponent(redirectUri)}&` +
         `response_type=code&` +
         `scope=email profile&` +
-        `access_type=offline&` +
-        `prompt=select_account`
+        `access_type=offline`
 
       console.error('Google Auth URL:', googleAuthUrl)
       console.error('=== GOOGLE OAUTH DEBUG END ===')

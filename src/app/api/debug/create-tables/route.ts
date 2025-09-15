@@ -43,7 +43,7 @@ export async function POST() {
         height INTEGER,
         weight INTEGER,
         bio TEXT,
-        goals TEXT,
+        goals TEXT[],
         "confidenceRating" INTEGER,
         "completedOnboarding" BOOLEAN DEFAULT false,
         "isActive" BOOLEAN DEFAULT true,
