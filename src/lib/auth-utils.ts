@@ -50,10 +50,10 @@ export async function getUserFromToken(token: string): Promise<User | null> {
 
   const db = await getDbClient()
   const usersResult = await db.query(
-    `SELECT u.id, u.name, u.email, u.image, u.role, u."emailVerified", u."createdAt",
-            p.position, p."trainingLevel", p."completedOnboarding"
-     FROM "User" u
-     LEFT JOIN "Profile" p ON u.id = p."userId"
+    `SELECT u.id, u.name, u.email, u.image, u.created_at,
+            p.position, p.playing_level, p.welcome_completed
+     FROM users u
+     LEFT JOIN profiles p ON u.id = p.user_id
      WHERE u.id = $1`,
     [payload.userId]
   )
@@ -67,12 +67,12 @@ export async function getUserFromToken(token: string): Promise<User | null> {
     name: user.name,
     email: user.email,
     image: user.image,
-    role: user.role,
+    role: "USER", // Default role since it's not in the users table
     position: user.position,
-    trainingLevel: user.trainingLevel,
-    completedOnboarding: user.completedOnboarding,
-    emailVerified: user.emailVerified,
-    createdAt: user.createdAt,
+    trainingLevel: user.playing_level,
+    completedOnboarding: user.welcome_completed,
+    emailVerified: true, // Default to true since we're not using email verification in this schema
+    createdAt: user.created_at,
   }
 }
 

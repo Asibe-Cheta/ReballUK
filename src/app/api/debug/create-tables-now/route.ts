@@ -6,56 +6,35 @@ export async function GET() {
     console.log("Creating database tables...")
     const db = await getDbClient()
     
-    // Create User table
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS "User" (
-        id TEXT PRIMARY KEY,
-        name TEXT,
-        email TEXT UNIQUE NOT NULL,
-        "emailVerified" BOOLEAN DEFAULT false,
-        image TEXT,
-        password TEXT,
-        role TEXT DEFAULT 'USER',
-        "createdAt" TIMESTAMP DEFAULT NOW(),
-        "updatedAt" TIMESTAMP DEFAULT NOW()
+    // Check if users table exists (it should already exist in Supabase)
+    const usersTableCheck = await db.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_schema = 'public' 
+        AND table_name = 'users'
       )
     `)
-    console.log("User table created/verified")
+    console.log("Users table exists:", usersTableCheck.rows[0].exists)
 
-    // Create VerificationToken table
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS "VerificationToken" (
-        identifier TEXT NOT NULL,
-        token TEXT PRIMARY KEY,
-        expires TIMESTAMP NOT NULL
+    // Check if profiles table exists (it should already exist in Supabase)
+    const profilesTableCheck = await db.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_schema = 'public' 
+        AND table_name = 'profiles'
       )
     `)
-    console.log("VerificationToken table created/verified")
+    console.log("Profiles table exists:", profilesTableCheck.rows[0].exists)
 
-    // Create Profile table
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS "Profile" (
-        id TEXT PRIMARY KEY,
-        "userId" TEXT UNIQUE NOT NULL,
-        "firstName" TEXT,
-        "lastName" TEXT,
-        position TEXT,
-        "trainingLevel" TEXT,
-        "dateOfBirth" DATE,
-        "preferredFoot" TEXT,
-        height INTEGER,
-        weight INTEGER,
-        bio TEXT,
-        goals TEXT[],
-        "confidenceRating" INTEGER,
-        "completedOnboarding" BOOLEAN DEFAULT false,
-        "isActive" BOOLEAN DEFAULT true,
-        "createdAt" TIMESTAMP DEFAULT NOW(),
-        "updatedAt" TIMESTAMP DEFAULT NOW(),
-        FOREIGN KEY ("userId") REFERENCES "User"(id) ON DELETE CASCADE
+    // Check if auth.users table exists (Supabase auth table)
+    const authUsersTableCheck = await db.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_schema = 'auth' 
+        AND table_name = 'users'
       )
     `)
-    console.log("Profile table created/verified")
+    console.log("Auth users table exists:", authUsersTableCheck.rows[0].exists)
 
     return NextResponse.json({
       success: true,

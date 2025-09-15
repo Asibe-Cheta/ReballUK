@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     // Add timeout to database query
     const existingUsersResult = await Promise.race([
       db.query(
-        'SELECT id, email, "emailVerified" FROM "User" WHERE email = $1',
+        'SELECT id, email FROM users WHERE email = $1',
         [email.toLowerCase()]
       ),
       new Promise((_, reject) => 
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
     
     if (existingUsersResult.rows.length > 0) {
       const existingUser = existingUsersResult.rows[0]
-      console.log("User already exists:", email, "ID:", existingUser.id, "Verified:", existingUser.emailVerified)
+      console.log("User already exists:", email, "ID:", existingUser.id)
       return NextResponse.json(
         { success: false, error: "User with this email already exists" },
         { status: 409 }
@@ -78,65 +78,13 @@ export async function POST(request: NextRequest) {
     console.log("Hashing password...")
     const hashedPassword = await hashPassword(password)
 
-    // Create user using direct database connection
-    console.log("Creating user in database...")
-    const userId = createId()
-    const now = new Date()
-    
-    const createUserResult = await Promise.race([
-      db.query(
-        `INSERT INTO "User" (id, name, email, password, role, "emailVerified", "createdAt", "updatedAt")
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-         RETURNING id, name, email, "emailVerified"`,
-        [userId, name.trim(), email.toLowerCase(), hashedPassword, 'USER', false, now, now]
-      ),
-      new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Database query timeout')), 10000)
-      )
-    ]) as any
-    
-    const user = createUserResult.rows[0]
-    console.log("User created successfully:", user.id, "Email:", user.email, "Verified:", user.emailVerified)
-
-    // Create basic profile record
-    console.log("Creating basic profile...")
-    try {
-      const profileId = createId()
-      await db.query(
-        `INSERT INTO "Profile" (id, "userId", "completedOnboarding", "isActive", "createdAt", "updatedAt")
-         VALUES ($1, $2, $3, $4, $5, $6)`,
-        [profileId, user.id, false, true, now, now]
-      )
-      console.log("Basic profile created successfully")
-    } catch (profileError) {
-      console.error("Failed to create profile:", profileError)
-      // Don't fail registration if profile creation fails
-    }
-
-    // Create verification token
-    console.log("Creating verification token...")
-    const verificationToken = await createVerificationToken(user.id)
-
-    // Send verification email
-    try {
-      console.log("Sending verification email...")
-      await sendVerificationEmail(user.email, user.name, verificationToken)
-      console.log("Verification email sent successfully")
-    } catch (emailError) {
-      console.error("Failed to send verification email:", emailError)
-      // Don't fail the registration if email fails
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: "Registration successful. Please check your email to verify your account.",
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        emailVerified: user.emailVerified,
-      }
-    })
+    // Since we're using Supabase Auth, we don't create users manually
+    // The user will be created by Supabase Auth when they sign up
+    // For now, let's return an error asking user to use Google OAuth
+    return NextResponse.json(
+      { success: false, error: "Please use Google sign-in for registration" },
+      { status: 400 }
+    )
 
           } catch (error) {
           console.error("Registration error details:", error)
