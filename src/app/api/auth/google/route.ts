@@ -11,8 +11,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL('/login?error=config_error', request.url))
     }
 
-    // Redirect to Supabase's Google OAuth
-    const supabaseAuthUrl = `${supabaseUrl}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://www.reball.uk')}`
+    // Redirect to Supabase's Google OAuth with account selection prompt
+    const supabaseAuthUrl = `${supabaseUrl}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent('https://www.reball.uk')}&prompt=select_account`
     
     console.log('Redirecting to Supabase Google OAuth:', supabaseAuthUrl)
     return NextResponse.redirect(supabaseAuthUrl)
