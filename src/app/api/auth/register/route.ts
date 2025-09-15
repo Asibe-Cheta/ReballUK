@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getDbClient } from "@/lib/db-direct"
 import { hashPassword, isValidEmail, validatePassword, createVerificationToken } from "@/lib/auth-utils"
 import { sendVerificationEmail } from "@/lib/email"
+import { createId } from "@paralleldrive/cuid2"
 
 export async function POST(request: NextRequest) {
   try {
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
 
     // Create user using direct database connection
     console.log("Creating user in database...")
-    const userId = crypto.randomUUID()
+    const userId = createId()
     const now = new Date()
     
     const createUserResult = await Promise.race([
@@ -84,6 +85,21 @@ export async function POST(request: NextRequest) {
     
     const user = createUserResult.rows[0]
     console.log("User created successfully:", user.id, "Email:", user.email, "Verified:", user.emailVerified)
+
+    // Create basic profile record
+    console.log("Creating basic profile...")
+    try {
+      const profileId = createId()
+      await db.query(
+        `INSERT INTO "Profile" (id, "userId", "completedOnboarding", "isActive", "createdAt", "updatedAt")
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [profileId, user.id, false, true, now, now]
+      )
+      console.log("Basic profile created successfully")
+    } catch (profileError) {
+      console.error("Failed to create profile:", profileError)
+      // Don't fail registration if profile creation fails
+    }
 
     // Create verification token
     console.log("Creating verification token...")

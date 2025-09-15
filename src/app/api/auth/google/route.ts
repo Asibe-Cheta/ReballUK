@@ -31,8 +31,9 @@ export async function GET(request: NextRequest) {
         `client_id=${process.env.GOOGLE_CLIENT_ID}&` +
         `redirect_uri=${encodeURIComponent(redirectUri)}&` +
         `response_type=code&` +
-        `scope=openid email profile&` +
-        `access_type=offline`
+        `scope=email profile&` +
+        `access_type=offline&` +
+        `prompt=select_account`
 
       console.error('Google Auth URL:', googleAuthUrl)
       console.error('=== GOOGLE OAUTH DEBUG END ===')
@@ -108,6 +109,12 @@ export async function GET(request: NextRequest) {
           image: userData.picture,
           role: "USER",
           emailVerified: true, // Google accounts are pre-verified
+          profile: {
+            create: {
+              completedOnboarding: false,
+              isActive: true,
+            }
+          }
         },
         select: {
           id: true,
