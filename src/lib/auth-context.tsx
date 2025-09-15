@@ -50,9 +50,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (response.ok) {
         const data = await response.json()
         setUser(data.user)
+      } else if (response.status === 401) {
+        // User is not authenticated, which is normal
+        setUser(null)
       }
     } catch (error) {
       console.error("Auth check failed:", error)
+      setUser(null)
     } finally {
       setLoading(false)
     }
