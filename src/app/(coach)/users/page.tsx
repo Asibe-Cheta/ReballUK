@@ -44,15 +44,14 @@ export default async function UsersPage({
     where.OR = [
       { name: { contains: search, mode: "insensitive" } },
       { email: { contains: search, mode: "insensitive" } },
-      { profile: { firstName: { contains: search, mode: "insensitive" } } },
-      { profile: { lastName: { contains: search, mode: "insensitive" } } }
+      { profile: { playerName: { contains: search, mode: "insensitive" } } }
     ]
   }
 
   if (status === "active") {
-    where.profile = { isActive: true }
+    where.profile = { isNot: null }
   } else if (status === "inactive") {
-    where.profile = { isActive: false }
+    where.profile = { is: null }
   }
 
   if (position) {
@@ -94,7 +93,7 @@ export default async function UsersPage({
 
   // Calculate statistics
   const totalUsers = users.length
-  const activeUsers = users.filter(user => user.profile?.isActive).length
+  const activeUsers = users.filter(user => user.profile !== null).length
   const usersWithBookings = users.filter(user => user._count.bookings > 0).length
   const usersWithProgress = users.filter(user => user._count.progress > 0).length
 
@@ -249,8 +248,8 @@ export default async function UsersPage({
                     )}
                   </TableCell>
                   <TableCell>
-                    <Badge variant={user.profile?.isActive ? "default" : "secondary"}>
-                      {user.profile?.isActive ? "Active" : "Inactive"}
+                    <Badge variant={user.profile ? "default" : "secondary"}>
+                      {user.profile ? "Active" : "Inactive"}
                     </Badge>
                   </TableCell>
                   <TableCell>

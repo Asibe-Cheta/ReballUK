@@ -41,7 +41,7 @@ export default async function CoachDashboard() {
     prisma.user.count({
       where: {
         role: "USER",
-        profile: { isActive: true },
+        profile: { isNot: null },
         OR: [
           { bookings: { some: { createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } } } },
           { progress: { some: { createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } } } }

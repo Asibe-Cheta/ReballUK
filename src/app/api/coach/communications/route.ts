@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       // Send to all users or active users
       const where: any = { role: "USER" }
       if (recipients === "active") {
-        where.profile = { isActive: true }
+        where.profile = { isNot: null }
       }
 
       const users = await prisma.user.findMany({

@@ -23,15 +23,14 @@ export async function GET(request: NextRequest) {
       where.OR = [
         { name: { contains: search, mode: "insensitive" } },
         { email: { contains: search, mode: "insensitive" } },
-        { profile: { firstName: { contains: search, mode: "insensitive" } } },
-        { profile: { lastName: { contains: search, mode: "insensitive" } } }
+        { profile: { playerName: { contains: search, mode: "insensitive" } } }
       ]
     }
 
     if (status === "active") {
-      where.profile = { isActive: true }
+      where.profile = { isNot: null }
     } else if (status === "inactive") {
-      where.profile = { isActive: false }
+      where.profile = { is: null }
     }
 
     if (position) {
