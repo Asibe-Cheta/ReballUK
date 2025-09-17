@@ -111,7 +111,7 @@ export async function GET() {
         lastActive,
         progressPercentage: Math.round(progressPercentage),
         favoritePosition: profile?.position || "Not set",
-        trainingLevel: profile?.trainingLevel || "Not set",
+         playingLevel: profile?.playingLevel || "Not set",
       }
 
       return playerStats
