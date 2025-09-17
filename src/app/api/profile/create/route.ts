@@ -6,8 +6,7 @@ import { z } from "zod"
 // Enhanced profile creation schema
 const profileCreationSchema = z.object({
   // Personal information
-  firstName: z.string().min(1, "First name is required").max(50),
-  lastName: z.string().min(1, "Last name is required").max(50),
+  playerName: z.string().min(1, "Player name is required").max(100),
   dateOfBirth: z.string().optional().nullable().transform(val => val ? new Date(val) : null),
   phoneNumber: z.string().optional().nullable(),
   emergencyContact: z.string().optional().nullable(),
@@ -19,7 +18,7 @@ const profileCreationSchema = z.object({
   weight: z.number().min(30).max(200).optional().nullable(),
   
   // Experience
-  trainingLevel: z.enum(['BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'PROFESSIONAL']),
+  playingLevel: z.enum(['BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'PROFESSIONAL']),
   yearsPlaying: z.number().min(0).max(50).optional().nullable(),
   currentClub: z.string().max(100).optional().nullable(),
   previousExperience: z.string().max(1000).optional().nullable(),
@@ -52,7 +51,7 @@ const profileCreationSchema = z.object({
   }),
   
   // System fields
-  completedOnboarding: z.boolean().default(true),
+  welcomeCompleted: z.boolean().default(true),
 })
 
 export async function POST(request: Request) {
@@ -95,7 +94,7 @@ export async function POST(request: Request) {
       where: { userId: user.id }
     })
 
-    if (existingProfile?.completedOnboarding) {
+    if (existingProfile?.welcomeCompleted) {
       return NextResponse.json(
         { 
           success: false, 
@@ -112,8 +111,7 @@ export async function POST(request: Request) {
         where: { userId: user.id },
         update: {
           // Personal info
-          firstName: profileData.firstName,
-          lastName: profileData.lastName,
+          playerName: profileData.playerName,
           dateOfBirth: profileData.dateOfBirth,
           
           // Position and physical
@@ -123,7 +121,7 @@ export async function POST(request: Request) {
           weight: profileData.weight,
           
           // Experience
-          trainingLevel: profileData.trainingLevel,
+          playingLevel: profileData.playingLevel,
           
           // Extended profile data (stored as JSON in bio field for now)
           bio: JSON.stringify({
@@ -145,15 +143,14 @@ export async function POST(request: Request) {
           ),
           
           // Mark as completed
-          completedOnboarding: true,
+          welcomeCompleted: true,
           updatedAt: new Date(),
         },
         create: {
           userId: user.id,
           
           // Personal info
-          firstName: profileData.firstName,
-          lastName: profileData.lastName,
+          playerName: profileData.playerName,
           dateOfBirth: profileData.dateOfBirth,
           
           // Position and physical
@@ -163,7 +160,7 @@ export async function POST(request: Request) {
           weight: profileData.weight,
           
           // Experience
-          trainingLevel: profileData.trainingLevel,
+          playingLevel: profileData.playingLevel,
           
           // Extended profile data
           bio: JSON.stringify({
@@ -185,7 +182,7 @@ export async function POST(request: Request) {
           ),
           
           // Mark as completed
-          completedOnboarding: true,
+          welcomeCompleted: true,
         },
         include: {
           user: {
@@ -291,16 +288,15 @@ export async function GET() {
       where: { userId: user.id },
       select: {
         id: true,
-        completedOnboarding: true,
-        firstName: true,
-        lastName: true,
+        welcomeCompleted: true,
+        playerName: true,
         position: true,
-        trainingLevel: true,
+        playingLevel: true,
         createdAt: true,
       }
     })
 
-    const canCreateProfile = !existingProfile || !existingProfile.completedOnboarding
+    const canCreateProfile = !existingProfile || !existingProfile.welcomeCompleted
     
     return NextResponse.json({
       success: true,
