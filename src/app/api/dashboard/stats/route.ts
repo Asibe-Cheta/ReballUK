@@ -23,8 +23,7 @@ export async function GET() {
         where: { userId },
         select: {
           position: true,
-          trainingLevel: true,
-          confidenceRating: true,
+          playingLevel: true,
         }
       })
 
@@ -235,8 +234,8 @@ export async function GET() {
         : 0
 
       // Set realistic goals based on user level
-      const weeklyGoal = profile?.trainingLevel === "BEGINNER" ? 2 : 
-                        profile?.trainingLevel === "INTERMEDIATE" ? 3 : 4
+      const weeklyGoal = profile?.playingLevel === "BEGINNER" ? 2 : 
+                        profile?.playingLevel === "INTERMEDIATE" ? 3 : 4
       const monthlyGoal = weeklyGoal * 4
 
       const userStats: UserStats = {
