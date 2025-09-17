@@ -71,7 +71,7 @@ export default async function AnalyticsPage({
     userGrowth,
     revenueGrowth,
     positionStats,
-    trainingLevelStats
+    playingLevelStats
   ] = await Promise.all([
     // Total users
     prisma.user.count({
@@ -156,11 +156,11 @@ export default async function AnalyticsPage({
       }
     }),
     
-    // Training level statistics
+    // Playing level statistics
     prisma.profile.groupBy({
-      by: ['trainingLevel'],
+      by: ['playingLevel'],
       _count: {
-        trainingLevel: true
+        playingLevel: true
       }
     })
   ])
@@ -374,26 +374,26 @@ export default async function AnalyticsPage({
           </CardContent>
         </Card>
 
-        {/* Training Level Distribution */}
+        {/* Playing Level Distribution */}
         <Card>
           <CardHeader>
-            <CardTitle>Training Levels</CardTitle>
+            <CardTitle>Playing Levels</CardTitle>
             <CardDescription>
-              Distribution of players by training level
+              Distribution of players by playing level
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {trainingLevelStats.map((stat) => (
-                <div key={stat.trainingLevel} className="flex items-center justify-between">
+              {playingLevelStats.map((stat) => (
+                <div key={stat.playingLevel} className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <div className="h-3 w-3 rounded-full bg-green-500"></div>
                     <span className="text-sm font-medium">
-                      {stat.trainingLevel}
+                      {stat.playingLevel}
                     </span>
                   </div>
                   <Badge variant="outline">
-                    {stat._count.trainingLevel}
+                    {stat._count.playingLevel}
                   </Badge>
                 </div>
               ))}
