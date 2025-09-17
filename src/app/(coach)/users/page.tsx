@@ -239,9 +239,9 @@ export default async function UsersPage({
                     )}
                   </TableCell>
                   <TableCell>
-                    {user.profile?.trainingLevel ? (
+                    {user.profile?.playingLevel ? (
                       <Badge variant="secondary">
-                        {user.profile.trainingLevel}
+                        {user.profile.playingLevel}
                       </Badge>
                     ) : (
                       <span className="text-gray-400">-</span>
