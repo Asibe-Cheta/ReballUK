@@ -68,16 +68,14 @@ export const userProfileOperations = {
           update: {
             ...profileData,
             position: profileData.position as any,
-            trainingLevel: profileData.trainingLevel as any,
-            goals: profileData.goals ? [profileData.goals] : [],
+            playingLevel: profileData.playingLevel as any,
             updatedAt: new Date(),
           },
           create: {
             userId,
             ...profileData,
             position: profileData.position as any,
-            trainingLevel: profileData.trainingLevel as any,
-            goals: profileData.goals ? [profileData.goals] : [],
+            playingLevel: profileData.playingLevel as any,
           },
           include: {
             user: {
@@ -114,18 +112,16 @@ export const userProfileOperations = {
           update: {
             ...onboardingData,
             position: onboardingData.position as any,
-            trainingLevel: onboardingData.trainingLevel as any,
-            goals: onboardingData.goals ? [onboardingData.goals] : [],
-            completedOnboarding: true,
+            playingLevel: onboardingData.playingLevel as any,
+            welcomeCompleted: true,
             updatedAt: new Date(),
           },
           create: {
             userId,
             ...onboardingData,
             position: onboardingData.position as any,
-            trainingLevel: onboardingData.trainingLevel as any,
-            goals: onboardingData.goals ? [onboardingData.goals] : [],
-            completedOnboarding: true,
+            playingLevel: onboardingData.playingLevel as any,
+            welcomeCompleted: true,
           },
           include: {
             user: {
@@ -155,24 +151,20 @@ export const userProfileOperations = {
     const profile = await db.profile.findUnique({
       where: { userId },
       select: {
-        firstName: true,
-        lastName: true,
+        playerName: true,
         position: true,
-        trainingLevel: true,
-        confidenceRating: true,
-        completedOnboarding: true,
+        playingLevel: true,
+        welcomeCompleted: true,
       }
     })
 
     if (!profile) return false
 
     return !!(
-      profile.firstName &&
-      profile.lastName &&
+      profile.playerName &&
       profile.position &&
-      profile.trainingLevel &&
-      profile.confidenceRating &&
-      profile.completedOnboarding
+      profile.playingLevel &&
+      profile.welcomeCompleted
     )
   },
 }
@@ -254,7 +246,7 @@ export const courseOperations = {
       where: { userId },
       select: {
         position: true,
-        trainingLevel: true,
+        playingLevel: true,
       }
     })
 
@@ -262,7 +254,7 @@ export const courseOperations = {
       isActive: true,
       // Recommend courses for user's position and level
       ...(profile?.position && { position: profile.position }),
-      ...(profile?.trainingLevel && { level: profile.trainingLevel }),
+      ...(profile?.playingLevel && { level: profile.playingLevel }),
     }
 
     return withRetry(async () => {
@@ -599,7 +591,7 @@ export const analyticsOperations = {
       lastActive,
       progressPercentage: Math.round(progressPercentage),
       favoritePosition: profile?.position || "Not set",
-      trainingLevel: profile?.trainingLevel || "Not set",
+      playingLevel: profile?.playingLevel || "Not set",
     }
   },
 }

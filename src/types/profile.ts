@@ -45,8 +45,7 @@ export type BookingWithRelations = Booking & {
 
 // Profile form validation schemas
 export const profileUpdateSchema = z.object({
-  firstName: z.string().min(1, "First name is required").max(50, "First name too long"),
-  lastName: z.string().min(1, "Last name is required").max(50, "Last name too long"),
+  playerName: z.string().min(1, "Player name is required").max(100, "Player name too long"),
   dateOfBirth: z.date().optional().nullable(),
   position: z.nativeEnum({
     STRIKER: "STRIKER",
@@ -58,7 +57,7 @@ export const profileUpdateSchema = z.object({
     GOALKEEPER: "GOALKEEPER",
     OTHER: "OTHER",
   }).optional().nullable(),
-  trainingLevel: z.nativeEnum({
+  playingLevel: z.nativeEnum({
     BEGINNER: "BEGINNER",
     INTERMEDIATE: "INTERMEDIATE",
     ADVANCED: "ADVANCED",
@@ -73,8 +72,7 @@ export const profileUpdateSchema = z.object({
 })
 
 export const onboardingSchema = z.object({
-  firstName: z.string().min(1, "First name is required").max(50),
-  lastName: z.string().min(1, "Last name is required").max(50),
+  playerName: z.string().min(1, "Player name is required").max(100),
   dateOfBirth: z.date().optional(),
   position: z.nativeEnum({
     STRIKER: "STRIKER",
@@ -86,15 +84,12 @@ export const onboardingSchema = z.object({
     GOALKEEPER: "GOALKEEPER",
     OTHER: "OTHER",
   }),
-  trainingLevel: z.nativeEnum({
+  playingLevel: z.nativeEnum({
     BEGINNER: "BEGINNER",
     INTERMEDIATE: "INTERMEDIATE", 
     ADVANCED: "ADVANCED",
     PROFESSIONAL: "PROFESSIONAL",
   }),
-  confidenceRating: z.number().min(1).max(10),
-  preferredFoot: z.enum(["left", "right", "both"]),
-  goals: z.string().max(1000, "Goals too long").optional(),
 })
 
 // Course booking validation
@@ -131,7 +126,7 @@ export interface PlayerStats {
   lastActive: Date
   progressPercentage: number
   favoritePosition: string
-  trainingLevel: string
+  playingLevel: string
 }
 
 // Dashboard data interface
@@ -252,8 +247,8 @@ export const PAYMENT_STATUS_LABELS: Record<string, string> = {
 export const profileUtils = {
   // Get display name for user
   getDisplayName: (user: UserWithProfile): string => {
-    if (user.profile?.firstName && user.profile?.lastName) {
-      return `${user.profile.firstName} ${user.profile.lastName}`
+    if (user.profile?.playerName) {
+      return user.profile.playerName
     }
     if (user.name) {
       return user.name
@@ -263,8 +258,12 @@ export const profileUtils = {
 
   // Get user initials
   getInitials: (user: UserWithProfile): string => {
-    if (user.profile?.firstName && user.profile?.lastName) {
-      return `${user.profile.firstName[0]}${user.profile.lastName[0]}`.toUpperCase()
+    if (user.profile?.playerName) {
+      const names = user.profile.playerName.split(' ')
+      if (names.length >= 2) {
+        return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase()
+      }
+      return user.profile.playerName[0].toUpperCase()
     }
     if (user.name) {
       const names = user.name.split(' ')
@@ -280,11 +279,10 @@ export const profileUtils = {
   isProfileComplete: (profile: Profile | null): boolean => {
     if (!profile) return false
     return !!(
-      profile.firstName &&
-      profile.lastName &&
+      profile.playerName &&
       profile.position &&
-      profile.trainingLevel &&
-      profile.confidenceRating
+      profile.playingLevel &&
+      profile.welcomeCompleted
     )
   },
 
@@ -293,17 +291,19 @@ export const profileUtils = {
     if (!profile) return 0
     
     const fields = [
-      profile.firstName,
-      profile.lastName,
+      profile.playerName,
       profile.dateOfBirth,
       profile.position,
-      profile.trainingLevel,
-      profile.confidenceRating,
-      profile.preferredFoot,
-      profile.height,
-      profile.weight,
-      profile.bio,
-      profile.goals,
+      profile.playingLevel,
+      profile.contactEmail,
+      profile.contactNumber,
+      profile.postcode,
+      profile.medicalConditions,
+      profile.currentTeam,
+      profile.trainingReason,
+      profile.hearAbout,
+      profile.postTrainingSnacks,
+      profile.postTrainingDrinks,
     ]
     
     const completedFields = fields.filter(field => field !== null && field !== undefined).length
