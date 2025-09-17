@@ -40,10 +40,10 @@ export async function POST(request: NextRequest) {
         emailVerified: true, // Auto-verify coach accounts
         profile: {
           create: {
-            firstName: name.split(' ')[0] || name,
-            lastName: name.split(' ').slice(1).join(' ') || '',
-            trainingLevel: "ADVANCED",
-            isActive: true
+            playerName: name,
+            playingLevel: "PROFESSIONAL",
+            welcomeCompleted: true,
+            welcomeCompletedDate: new Date()
           }
         }
       },
