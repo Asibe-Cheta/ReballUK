@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
           where: { userId },
           select: {
             position: true,
-            confidenceRating: true,
+            playingLevel: true,
           }
         }),
 
