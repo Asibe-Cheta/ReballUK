@@ -22,8 +22,10 @@ import {
   Shield,
   Award,
   Target,
-  Settings
+  Settings,
+  ArrowRight
 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -44,6 +46,9 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!user) {
       router.push('/login');
+    } else if (!user.profileCompleted) {
+      // Redirect to profile completion if not completed
+      router.push('/profile/complete');
     }
   }, [user, router]);
 
@@ -77,6 +82,66 @@ export default function ProfilePage() {
 
   if (!user) {
     return null;
+  }
+
+  // Show profile completion prompt if profile is not completed
+  if (!user.profileCompleted) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-20">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-2xl mx-auto">
+            <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+              <CardHeader className="text-center">
+                <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <User className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <CardTitle className="text-3xl text-gray-900 dark:text-white mb-2">
+                  Complete Your Profile
+                </CardTitle>
+                <CardDescription className="text-lg text-gray-600 dark:text-gray-400">
+                  Complete your profile to access all REBALL features
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
+                    What you'll get access to:
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex items-center space-x-3">
+                      <Target className="w-5 h-5 text-green-500" />
+                      <span className="text-gray-700 dark:text-gray-300">Training Sessions</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Award className="w-5 h-5 text-green-500" />
+                      <span className="text-gray-700 dark:text-gray-300">Training Materials</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Shield className="w-5 h-5 text-green-500" />
+                      <span className="text-gray-700 dark:text-gray-300">Progress Tracking</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Settings className="w-5 h-5 text-green-500" />
+                      <span className="text-gray-700 dark:text-gray-300">Personalized Content</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <Button asChild size="lg" className="bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200">
+                    <Link href="/profile/complete">
+                      <User className="w-5 h-5 mr-2" />
+                      Complete Your Profile
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

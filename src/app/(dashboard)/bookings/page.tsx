@@ -16,6 +16,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 import { ErrorBoundary } from "@/components/ui/error-boundary"
+import ProfileCompletionGuard from "@/components/auth/profile-completion-guard"
 
 // Import booking components
 import SessionTypeSelector, { SessionType } from "@/components/bookings/session-type-selector"
@@ -28,7 +29,9 @@ type BookingStep = "session-type" | "position" | "datetime" | "summary"
 export default function BookingsPage() {
   return (
     <ErrorBoundary>
-      <BookingsContent />
+      <ProfileCompletionGuard fallbackMessage="Please complete your profile to book training sessions">
+        <BookingsContent />
+      </ProfileCompletionGuard>
     </ErrorBoundary>
   )
 }

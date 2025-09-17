@@ -52,6 +52,7 @@ export async function POST(request: NextRequest) {
       position: profile?.position || null,
       trainingLevel: profile?.playing_level || null,
       completedOnboarding: profile?.welcome_completed || false,
+      profileCompleted: profile?.welcome_completed || false,
       emailVerified: user.email_confirmed_at ? true : false,
       createdAt: new Date(user.created_at)
     }

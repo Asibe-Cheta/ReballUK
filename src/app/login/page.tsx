@@ -62,7 +62,13 @@ function LoginForm() {
         toast.success("Welcome back!", {
           description: "You have been successfully logged in.",
         })
-        router.push("/") // Redirect to home page, not dashboard
+        // Check if profile is completed and redirect accordingly
+        const callbackUrl = searchParams.get('callbackUrl')
+        if (callbackUrl) {
+          router.push(callbackUrl)
+        } else {
+          router.push("/") // Redirect to home page, not dashboard
+        }
       } else {
         toast.error("Login failed", {
           description: result.error,

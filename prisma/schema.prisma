@@ -73,19 +73,26 @@ model User {
 model Profile {
   id                  String          @id @default(cuid())
   userId              String          @unique @map("user_id")
-  firstName           String?         @map("first_name")
-  lastName            String?         @map("last_name")
-  position            PlayerPosition?
-  trainingLevel       TrainingLevel   @default(BEGINNER) @map("training_level")
+  playerName          String?         @map("player_name")
   dateOfBirth         DateTime?       @map("date_of_birth")
-  preferredFoot       String?         @map("preferred_foot")
-  height              Int?
-  weight              Int?
-  bio                 String?
-  goals               String[]        @default([])
-  confidenceRating    Int?            @map("confidence_rating")
-  completedOnboarding Boolean         @default(false) @map("completed_onboarding")
-  isActive            Boolean         @default(true) @map("is_active")
+  guardianName        String?         @map("guardian_name")
+  contactEmail        String?         @map("contact_email")
+  contactNumber       String?         @map("contact_number")
+  postcode            String?
+  medicalConditions   String?         @map("medical_conditions")
+  position            PlayerPosition?
+  playingLevel        String?         @map("playing_level")
+  currentTeam         String?         @map("current_team")
+  evidenceFiles       String[]        @default([]) @map("evidence_files")
+  trainingReason      String?         @map("training_reason")
+  hearAbout           String?         @map("hear_about")
+  referralName        String?         @map("referral_name")
+  postTrainingSnacks  String?         @map("post_training_snacks")
+  postTrainingDrinks  String?         @map("post_training_drinks")
+  socialMediaConsent  Boolean?        @default(false) @map("social_media_consent")
+  marketingConsent    Boolean?        @default(false) @map("marketing_consent")
+  welcomeCompleted    Boolean         @default(false) @map("welcome_completed")
+  welcomeCompletedDate DateTime?      @map("welcome_completed_date")
   createdAt           DateTime        @default(now()) @map("created_at")
   updatedAt           DateTime        @default(now()) @updatedAt @map("updated_at")
   user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)

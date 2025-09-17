@@ -12,6 +12,7 @@ export interface User {
   position?: string
   trainingLevel?: string
   completedOnboarding?: boolean
+  profileCompleted?: boolean
   emailVerified: boolean
   createdAt: Date
 }
@@ -53,7 +54,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // Store token and redirect to clean URL
           localStorage.setItem('supabase_access_token', token)
           window.location.hash = ''
-          window.location.pathname = '/'
+          // Check profile completion status and redirect accordingly
+          checkProfileCompletionAndRedirect()
         }
       }
     }
@@ -61,6 +63,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     handleOAuthCallback()
     checkAuthStatus()
   }, [])
+
+  const checkProfileCompletionAndRedirect = async () => {
+    try {
+      const token = localStorage.getItem('supabase_access_token')
+      if (!token) return
+
+      const response = await fetch('/api/profile/status', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (!data.isCompleted) {
+          window.location.pathname = '/profile/complete'
+        } else {
+          window.location.pathname = '/dashboard'
+        }
+      } else {
+        window.location.pathname = '/'
+      }
+    } catch (error) {
+      console.error('Error checking profile completion:', error)
+      window.location.pathname = '/'
+    }
+  }
 
   const checkAuthStatus = async () => {
     try {

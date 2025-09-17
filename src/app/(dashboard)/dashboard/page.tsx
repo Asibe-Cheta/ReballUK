@@ -30,9 +30,14 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import ProfileCompletionGuard from "@/components/auth/profile-completion-guard"
 
 export default function DashboardPage() {
-  return <DashboardContent />
+  return (
+    <ProfileCompletionGuard fallbackMessage="Please complete your profile to access the dashboard">
+      <DashboardContent />
+    </ProfileCompletionGuard>
+  )
 }
 
 function DashboardContent() {
