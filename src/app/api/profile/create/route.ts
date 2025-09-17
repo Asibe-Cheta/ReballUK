@@ -3,52 +3,33 @@ import { getCurrentUser } from "@/lib/auth-utils"
 import { db, withRetry } from "@/lib/db"
 import { z } from "zod"
 
-// Enhanced profile creation schema
+// Profile creation schema matching our new database schema
 const profileCreationSchema = z.object({
   // Personal information
   playerName: z.string().min(1, "Player name is required").max(100),
   dateOfBirth: z.string().optional().nullable().transform(val => val ? new Date(val) : null),
-  phoneNumber: z.string().optional().nullable(),
-  emergencyContact: z.string().optional().nullable(),
+  guardianName: z.string().optional().nullable(),
+  contactEmail: z.string().email().optional().nullable(),
+  contactNumber: z.string().optional().nullable(),
+  postcode: z.string().optional().nullable(),
+  medicalConditions: z.string().optional().nullable(),
   
-  // Position and physical info
+  // Position and level
   position: z.enum(['STRIKER', 'WINGER', 'CAM', 'FULLBACK', 'GOALKEEPER', 'DEFENDER', 'MIDFIELDER', 'OTHER']),
-  preferredFoot: z.enum(['left', 'right', 'both']),
-  height: z.number().min(100).max(250).optional().nullable(),
-  weight: z.number().min(30).max(200).optional().nullable(),
-  
-  // Experience
   playingLevel: z.enum(['BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'PROFESSIONAL']),
-  yearsPlaying: z.number().min(0).max(50).optional().nullable(),
-  currentClub: z.string().max(100).optional().nullable(),
-  previousExperience: z.string().max(1000).optional().nullable(),
-  coachingExperience: z.boolean().default(false),
+  currentTeam: z.string().optional().nullable(),
+  evidenceFiles: z.array(z.string()).optional().nullable(),
   
-  // Goals (stored as JSON)
-  goals: z.object({
-    primaryGoals: z.array(z.string()).min(1).max(10),
-    specificAreas: z.string().optional().nullable(),
-    shortTermGoals: z.string().optional().nullable(),
-    longTermGoals: z.string().optional().nullable(),
-  }),
+  // Training information
+  trainingReason: z.string().optional().nullable(),
+  hearAbout: z.string().optional().nullable(),
+  referralName: z.string().optional().nullable(),
+  postTrainingSnacks: z.string().optional().nullable(),
+  postTrainingDrinks: z.string().optional().nullable(),
   
-  // Confidence (stored as JSON)
-  confidence: z.object({
-    scenarios: z.record(z.string(), z.number().min(1).max(10)),
-    overallConfidence: z.number().min(1).max(10),
-    areasForImprovement: z.array(z.string()).optional(),
-  }),
-  
-  // Preferences (stored as JSON)
-  preferences: z.object({
-    availableDays: z.array(z.string()).min(1),
-    preferredTimes: z.array(z.string()).min(1),
-    sessionFrequency: z.string(),
-    sessionDuration: z.string(),
-    trainingIntensity: z.string(),
-    groupTraining: z.boolean().default(false),
-    oneOnOneTraining: z.boolean().default(true),
-  }),
+  // Consent
+  socialMediaConsent: z.boolean().default(false),
+  marketingConsent: z.boolean().default(false),
   
   // System fields
   welcomeCompleted: z.boolean().default(true),
@@ -58,7 +39,7 @@ export async function POST(request: Request) {
   try {
     // Authenticate user
     const user = await getCurrentUser()
-    if (!user?.id) {
+    if (!user) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -67,27 +48,7 @@ export async function POST(request: Request) {
 
     // Parse and validate request body
     const body = await request.json()
-    console.log("Profile creation request:", body)
-    
-    const validationResult = profileCreationSchema.safeParse(body)
-    if (!validationResult.success) {
-      const errors = validationResult.error.issues.map((err: any) => ({
-        field: err.path.join('.'),
-        message: err.message,
-      }))
-      
-      console.error("Validation errors:", errors)
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Validation failed",
-          errors,
-        },
-        { status: 400 }
-      )
-    }
-
-    const profileData = validationResult.data
+    const profileData = profileCreationSchema.parse(body)
 
     // Check if user already has a profile
     const existingProfile = await db.profile.findUnique({
@@ -101,182 +62,108 @@ export async function POST(request: Request) {
           error: "Profile already exists and onboarding is complete",
           profile: existingProfile
         },
-        { status: 409 }
+        { status: 400 }
       )
     }
 
-    // Create or update profile with comprehensive data
+    // Create or update profile
     const profile = await withRetry(async () => {
-      return await db.profile.upsert({
-        where: { userId: user.id },
-        update: {
-          // Personal info
-          playerName: profileData.playerName,
-          dateOfBirth: profileData.dateOfBirth,
-          
-          // Position and physical
-          position: profileData.position,
-          preferredFoot: profileData.preferredFoot,
-          height: profileData.height,
-          weight: profileData.weight,
-          
-          // Experience
-          playingLevel: profileData.playingLevel,
-          
-          // Extended profile data (stored as JSON in bio field for now)
-          bio: JSON.stringify({
-            yearsPlaying: profileData.yearsPlaying,
-            currentClub: profileData.currentClub,
-            previousExperience: profileData.previousExperience,
-            coachingExperience: profileData.coachingExperience,
-            phoneNumber: profileData.phoneNumber,
-            emergencyContact: profileData.emergencyContact,
-            goals: profileData.goals,
-            confidence: profileData.confidence,
-            preferences: profileData.preferences,
-          }),
-          
-          // Calculate confidence rating average
-          confidenceRating: Math.round(
-            Object.values(profileData.confidence.scenarios).reduce((sum, val) => sum + val, 0) / 
-            Object.values(profileData.confidence.scenarios).length
-          ),
-          
-          // Mark as completed
-          welcomeCompleted: true,
-          updatedAt: new Date(),
-        },
-        create: {
-          userId: user.id,
-          
-          // Personal info
-          playerName: profileData.playerName,
-          dateOfBirth: profileData.dateOfBirth,
-          
-          // Position and physical
-          position: profileData.position,
-          preferredFoot: profileData.preferredFoot,
-          height: profileData.height,
-          weight: profileData.weight,
-          
-          // Experience
-          playingLevel: profileData.playingLevel,
-          
-          // Extended profile data
-          bio: JSON.stringify({
-            yearsPlaying: profileData.yearsPlaying,
-            currentClub: profileData.currentClub,
-            previousExperience: profileData.previousExperience,
-            coachingExperience: profileData.coachingExperience,
-            phoneNumber: profileData.phoneNumber,
-            emergencyContact: profileData.emergencyContact,
-            goals: profileData.goals,
-            confidence: profileData.confidence,
-            preferences: profileData.preferences,
-          }),
-          
-          // Calculate confidence rating
-          confidenceRating: Math.round(
-            Object.values(profileData.confidence.scenarios).reduce((sum, val) => sum + val, 0) / 
-            Object.values(profileData.confidence.scenarios).length
-          ),
-          
-          // Mark as completed
-          welcomeCompleted: true,
-        },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              image: true,
-              createdAt: true,
-            }
+      if (existingProfile) {
+        // Update existing profile
+        return await db.profile.update({
+          where: { userId: user.id },
+          data: {
+            playerName: profileData.playerName,
+            dateOfBirth: profileData.dateOfBirth,
+            guardianName: profileData.guardianName,
+            contactEmail: profileData.contactEmail,
+            contactNumber: profileData.contactNumber,
+            postcode: profileData.postcode,
+            medicalConditions: profileData.medicalConditions,
+            position: profileData.position,
+            playingLevel: profileData.playingLevel,
+            currentTeam: profileData.currentTeam,
+            evidenceFiles: profileData.evidenceFiles || [],
+            trainingReason: profileData.trainingReason,
+            hearAbout: profileData.hearAbout,
+            referralName: profileData.referralName,
+            postTrainingSnacks: profileData.postTrainingSnacks,
+            postTrainingDrinks: profileData.postTrainingDrinks,
+            socialMediaConsent: profileData.socialMediaConsent,
+            marketingConsent: profileData.marketingConsent,
+            welcomeCompleted: profileData.welcomeCompleted,
+            welcomeCompletedDate: profileData.welcomeCompleted ? new Date() : null,
           }
-        }
-      })
+        })
+      } else {
+        // Create new profile
+        return await db.profile.create({
+          data: {
+            userId: user.id,
+            playerName: profileData.playerName,
+            dateOfBirth: profileData.dateOfBirth,
+            guardianName: profileData.guardianName,
+            contactEmail: profileData.contactEmail,
+            contactNumber: profileData.contactNumber,
+            postcode: profileData.postcode,
+            medicalConditions: profileData.medicalConditions,
+            position: profileData.position,
+            playingLevel: profileData.playingLevel,
+            currentTeam: profileData.currentTeam,
+            evidenceFiles: profileData.evidenceFiles || [],
+            trainingReason: profileData.trainingReason,
+            hearAbout: profileData.hearAbout,
+            referralName: profileData.referralName,
+            postTrainingSnacks: profileData.postTrainingSnacks,
+            postTrainingDrinks: profileData.postTrainingDrinks,
+            socialMediaConsent: profileData.socialMediaConsent,
+            marketingConsent: profileData.marketingConsent,
+            welcomeCompleted: profileData.welcomeCompleted,
+            welcomeCompletedDate: profileData.welcomeCompleted ? new Date() : null,
+          }
+        })
+      }
     })
-
-    // Create initial user statistics record (for future analytics)
-    try {
-      await db.$executeRaw`
-        INSERT INTO user_stats (user_id, total_sessions, completed_sessions, total_watch_time, created_at, updated_at)
-        VALUES (${user.id}, 0, 0, 0, NOW(), NOW())
-        ON CONFLICT (user_id) DO NOTHING
-      `
-    } catch (error) {
-      // This is optional - don't fail profile creation if stats creation fails
-      console.warn("Could not create user stats:", error)
-    }
-
-    // Send welcome notification (optional)
-    try {
-      // Here you could trigger welcome email, push notification, etc.
-      console.log(`Welcome email should be sent to: ${user.email}`)
-    } catch (error) {
-      console.warn("Could not send welcome notification:", error)
-    }
 
     return NextResponse.json({
       success: true,
-      profile,
-      message: "Profile created successfully! Welcome to REBALL.",
+      message: existingProfile ? "Profile updated successfully" : "Profile created successfully",
+      profile: {
+        id: profile.id,
+        playerName: profile.playerName,
+        position: profile.position,
+        playingLevel: profile.playingLevel,
+        welcomeCompleted: profile.welcomeCompleted,
+        createdAt: profile.createdAt,
+      }
     })
 
   } catch (error) {
-    console.error("Error creating profile:", error)
+    console.error("Profile creation error:", error)
     
-    // Handle specific database errors
-    if (error instanceof Error) {
-      if (error.message.includes("Unique constraint")) {
-        return NextResponse.json(
-          { 
-            success: false, 
-            error: "Profile already exists for this user",
-          },
-          { status: 409 }
-        )
-      }
-      
-      if (error.message.includes("Foreign key constraint")) {
-        return NextResponse.json(
-          { 
-            success: false, 
-            error: "Invalid user reference",
-          },
-          { status: 400 }
-        )
-      }
-
-      if (error.message.includes("Data too long")) {
-        return NextResponse.json(
-          { 
-            success: false, 
-            error: "Some profile data is too long. Please shorten your text inputs.",
-          },
-          { status: 400 }
-        )
-      }
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: "Validation failed", 
+          details: error.errors 
+        },
+        { status: 400 }
+      )
     }
 
     return NextResponse.json(
-      { 
-        success: false, 
-        error: "Internal server error",
-        message: "Failed to create profile. Please try again."
-      },
+      { success: false, error: "Internal server error" },
       { status: 500 }
     )
   }
 }
 
-// GET /api/profile/create - Check if user can create profile
-export async function GET() {
+export async function GET(request: Request) {
   try {
     // Authenticate user
     const user = await getCurrentUser()
-    if (!user?.id) {
+    if (!user) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 }
@@ -302,24 +189,19 @@ export async function GET() {
       success: true,
       data: {
         canCreateProfile,
-        existingProfile: existingProfile || null,
+        existingProfile,
         user: {
           id: user.id,
           name: user.name,
           email: user.email,
-          image: user.image,
         }
-      },
+      }
     })
 
   } catch (error) {
-    console.error("Error checking profile creation status:", error)
+    console.error("Profile check error:", error)
     return NextResponse.json(
-      { 
-        success: false, 
-        error: "Internal server error",
-        message: error instanceof Error ? error.message : "Unknown error"
-      },
+      { success: false, error: "Internal server error" },
       { status: 500 }
     )
   }
