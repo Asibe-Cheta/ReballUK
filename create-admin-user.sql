@@ -9,33 +9,33 @@
 -- Check if the user exists in auth.users first
 DO $$
 DECLARE
-    user_id UUID;
+    admin_user_id UUID;
 BEGIN
     -- Get the user ID from auth.users
-    SELECT id INTO user_id FROM auth.users WHERE email = 'harry@reball.uk' LIMIT 1;
+    SELECT id INTO admin_user_id FROM auth.users WHERE email = 'harry@reball.uk' LIMIT 1;
     
     -- If user doesn't exist, show error message
-    IF user_id IS NULL THEN
+    IF admin_user_id IS NULL THEN
         RAISE EXCEPTION 'User harry@reball.uk does not exist in auth.users. Please create the user in Supabase Auth UI first (Authentication > Users).';
     END IF;
     
     -- Insert admin user into public.users table
     INSERT INTO public.users (id, email, role, created_at, updated_at)
-    VALUES (user_id, 'harry@reball.uk', 'ADMIN', NOW(), NOW())
+    VALUES (admin_user_id, 'harry@reball.uk', 'ADMIN', NOW(), NOW())
     ON CONFLICT (id) DO UPDATE SET
       role = 'ADMIN',
       updated_at = NOW();
       
-    RAISE NOTICE 'Admin user created successfully with ID: %', user_id;
+    RAISE NOTICE 'Admin user created successfully with ID: %', admin_user_id;
 END $$;
 
 -- Create admin profile (this will be handled in the same transaction)
 DO $$
 DECLARE
-    user_id UUID;
+    admin_user_id UUID;
 BEGIN
     -- Get the user ID from auth.users
-    SELECT id INTO user_id FROM auth.users WHERE email = 'harry@reball.uk' LIMIT 1;
+    SELECT id INTO admin_user_id FROM auth.users WHERE email = 'harry@reball.uk' LIMIT 1;
     
     -- Create admin profile
     INSERT INTO public.profiles (
@@ -64,7 +64,7 @@ BEGIN
       updated_at
     )
     VALUES (
-      user_id,
+      admin_user_id,
       'Harry Admin',
       '1990-01-01',
       NULL,
@@ -96,7 +96,7 @@ BEGIN
       welcome_completed_date = NOW(),
       updated_at = NOW();
       
-    RAISE NOTICE 'Admin profile created successfully for user ID: %', user_id;
+    RAISE NOTICE 'Admin profile created successfully for user ID: %', admin_user_id;
 END $$;
 
 -- Verify the admin user was created
