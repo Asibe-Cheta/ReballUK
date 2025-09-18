@@ -183,9 +183,20 @@ export default function ProfileCompletionForm() {
 
     setIsLoading(true)
     try {
+      // Get the Supabase access token from localStorage
+      const token = localStorage.getItem('supabase_access_token')
+      if (!token) {
+        toast.error('Authentication required. Please log in again.')
+        window.location.href = '/login'
+        return
+      }
+
       const response = await fetch('/api/profile/complete', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(profileData)
       })
 
