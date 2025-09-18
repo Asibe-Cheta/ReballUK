@@ -1,0 +1,89 @@
+-- Create Admin User for REBALL
+-- Run this in your Supabase SQL Editor
+
+-- First, create the user in auth.users (Supabase Auth)
+-- Note: You'll need to create this user through Supabase Auth UI or API
+-- For now, we'll assume the user exists in auth.users with email 'harry@reball.uk'
+
+-- Insert admin user into public.users table
+INSERT INTO public.users (id, email, role, created_at, updated_at)
+VALUES (
+  (SELECT id FROM auth.users WHERE email = 'harry@reball.uk' LIMIT 1),
+  'harry@reball.uk',
+  'ADMIN',
+  NOW(),
+  NOW()
+)
+ON CONFLICT (id) DO UPDATE SET
+  role = 'ADMIN',
+  updated_at = NOW();
+
+-- Create admin profile
+INSERT INTO public.profiles (
+  user_id,
+  player_name,
+  date_of_birth,
+  guardian_name,
+  contact_email,
+  contact_number,
+  postcode,
+  medical_conditions,
+  position,
+  playing_level,
+  current_team,
+  evidence_files,
+  training_reason,
+  hear_about,
+  referral_name,
+  post_training_snacks,
+  post_training_drinks,
+  social_media_consent,
+  marketing_consent,
+  welcome_completed,
+  welcome_completed_date,
+  created_at,
+  updated_at
+)
+VALUES (
+  (SELECT id FROM auth.users WHERE email = 'harry@reball.uk' LIMIT 1),
+  'Harry Admin',
+  '1990-01-01',
+  NULL,
+  'harry@reball.uk',
+  '+44 (0) 20 1234 5678',
+  'SW1A 1AA',
+  NULL,
+  'STRIKER',
+  'PROFESSIONAL',
+  'REBALL Admin',
+  ARRAY[]::text[],
+  'Admin account',
+  'Website',
+  NULL,
+  'Energy bar',
+  'Water',
+  true,
+  true,
+  true,
+  NOW(),
+  NOW(),
+  NOW()
+)
+ON CONFLICT (user_id) DO UPDATE SET
+  player_name = 'Harry Admin',
+  contact_email = 'harry@reball.uk',
+  contact_number = '+44 (0) 20 1234 5678',
+  welcome_completed = true,
+  welcome_completed_date = NOW(),
+  updated_at = NOW();
+
+-- Verify the admin user was created
+SELECT 
+  u.id,
+  u.email,
+  u.role,
+  p.player_name,
+  p.welcome_completed
+FROM public.users u
+LEFT JOIN public.profiles p ON u.id = p.user_id
+WHERE u.email = 'harry@reball.uk';

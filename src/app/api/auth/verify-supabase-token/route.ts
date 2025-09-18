@@ -35,11 +35,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get user profile from our database
+    // Get user profile and role from our database
     const { data: profile } = await supabase
       .from('profiles')
       .select('*')
       .eq('user_id', user.id)
+      .single()
+
+    // Get user role from users table
+    const { data: userRecord } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
       .single()
 
     // Create user object in the format expected by the frontend
@@ -48,7 +55,7 @@ export async function POST(request: NextRequest) {
       name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
       email: user.email || '',
       image: user.user_metadata?.avatar_url || user.user_metadata?.picture,
-      role: 'user',
+      role: userRecord?.role || 'USER',
       position: profile?.position || null,
       trainingLevel: profile?.playing_level || null,
       completedOnboarding: profile?.welcome_completed || false,
