@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect, Suspense, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
@@ -14,6 +14,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Eye, EyeOff, Mail, Lock, CheckCircle } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
+import HCaptcha from "@hcaptcha/react-hcaptcha"
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -27,6 +28,8 @@ function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const captchaRef = useRef<HCaptcha>(null)
 
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -54,9 +57,14 @@ function LoginForm() {
   }, [searchParams])
 
   const onSubmit = async (data: LoginFormData) => {
+    if (!captchaToken) {
+      toast.error("Please complete the captcha verification")
+      return
+    }
+
     setIsLoading(true)
     try {
-      const result = await login(data.email, data.password)
+      const result = await login(data.email, data.password, captchaToken)
       
       if (result.success) {
         toast.success("Welcome back!", {
@@ -73,11 +81,17 @@ function LoginForm() {
         toast.error("Login failed", {
           description: result.error,
         })
+        // Reset captcha on error
+        captchaRef.current?.resetCaptcha()
+        setCaptchaToken(null)
       }
     } catch (error) {
       toast.error("Login failed", {
         description: "An unexpected error occurred.",
       })
+      // Reset captcha on error
+      captchaRef.current?.resetCaptcha()
+      setCaptchaToken(null)
     } finally {
       setIsLoading(false)
     }
@@ -231,6 +245,17 @@ function LoginForm() {
                 <Link href="/forgot-password" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
                   Forgot your password?
                 </Link>
+              </div>
+
+              {/* hCaptcha */}
+              <div className="flex justify-center">
+                <HCaptcha
+                  ref={captchaRef}
+                  sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || "1738bbaa-c888-4fa2-8d96-47ccd84e5b8a"}
+                  onVerify={(token) => setCaptchaToken(token)}
+                  onExpire={() => setCaptchaToken(null)}
+                  onError={() => setCaptchaToken(null)}
+                />
               </div>
 
               {/* Submit Button */}

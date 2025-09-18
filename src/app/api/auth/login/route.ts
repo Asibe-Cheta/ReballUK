@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json()
+    const { email, password, captchaToken } = await request.json()
 
     // Validate input
     if (!email || !password) {
@@ -27,10 +27,19 @@ export async function POST(request: NextRequest) {
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
     // Sign in with Supabase Auth
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const signInOptions: any = {
       email: email.toLowerCase(),
       password
-    })
+    }
+
+    // Add captcha token if provided
+    if (captchaToken) {
+      signInOptions.options = {
+        captchaToken: captchaToken
+      }
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword(signInOptions)
 
     if (error) {
       console.error("Supabase login error:", error)
