@@ -37,66 +37,72 @@ BEGIN
     -- Get the user ID from auth.users
     SELECT id INTO admin_user_id FROM auth.users WHERE email = 'harry@reball.uk' LIMIT 1;
     
-    -- Create admin profile
-    INSERT INTO public.profiles (
-      user_id,
-      player_name,
-      date_of_birth,
-      guardian_name,
-      contact_email,
-      contact_number,
-      postcode,
-      medical_conditions,
-      position,
-      playing_level,
-      current_team,
-      evidence_files,
-      training_reason,
-      hear_about,
-      referral_name,
-      post_training_snacks,
-      post_training_drinks,
-      social_media_consent,
-      marketing_consent,
-      welcome_completed,
-      welcome_completed_date,
-      created_at,
-      updated_at
-    )
-    VALUES (
-      admin_user_id,
-      'Harry Admin',
-      '1990-01-01',
-      NULL,
-      'harry@reball.uk',
-      '+44 (0) 20 1234 5678',
-      'SW1A 1AA',
-      NULL,
-      'STRIKER',
-      'PROFESSIONAL',
-      'REBALL Admin',
-      ARRAY[]::text[],
-      'Admin account',
-      'Website',
-      NULL,
-      'Energy bar',
-      'Water',
-      true,
-      true,
-      true,
-      NOW(),
-      NOW(),
-      NOW()
-    )
-    ON CONFLICT (user_id) DO UPDATE SET
-      player_name = 'Harry Admin',
-      contact_email = 'harry@reball.uk',
-      contact_number = '+44 (0) 20 1234 5678',
-      welcome_completed = true,
-      welcome_completed_date = NOW(),
-      updated_at = NOW();
-      
-    RAISE NOTICE 'Admin profile created successfully for user ID: %', admin_user_id;
+    -- Check if profile already exists
+    IF EXISTS (SELECT 1 FROM public.profiles WHERE user_id = admin_user_id) THEN
+        -- Update existing profile
+        UPDATE public.profiles SET
+          player_name = 'Harry Admin',
+          contact_email = 'harry@reball.uk',
+          contact_number = '+44 (0) 20 1234 5678',
+          welcome_completed = true,
+          welcome_completed_date = NOW(),
+          updated_at = NOW()
+        WHERE user_id = admin_user_id;
+        RAISE NOTICE 'Admin profile updated for user ID: %', admin_user_id;
+    ELSE
+        -- Create new profile
+        INSERT INTO public.profiles (
+          user_id,
+          player_name,
+          date_of_birth,
+          guardian_name,
+          contact_email,
+          contact_number,
+          postcode,
+          medical_conditions,
+          position,
+          playing_level,
+          current_team,
+          evidence_files,
+          training_reason,
+          hear_about,
+          referral_name,
+          post_training_snacks,
+          post_training_drinks,
+          social_media_consent,
+          marketing_consent,
+          welcome_completed,
+          welcome_completed_date,
+          created_at,
+          updated_at
+        )
+        VALUES (
+          admin_user_id,
+          'Harry Admin',
+          '1990-01-01',
+          NULL,
+          'harry@reball.uk',
+          '+44 (0) 20 1234 5678',
+          'SW1A 1AA',
+          NULL,
+          'STRIKER',
+          'PROFESSIONAL',
+          'REBALL Admin',
+          ARRAY[]::text[],
+          'Admin account',
+          'Website',
+          NULL,
+          'Energy bar',
+          'Water',
+          true,
+          true,
+          true,
+          NOW(),
+          NOW(),
+          NOW()
+        );
+        RAISE NOTICE 'Admin profile created for user ID: %', admin_user_id;
+    END IF;
 END $$;
 
 -- Verify the admin user was created
