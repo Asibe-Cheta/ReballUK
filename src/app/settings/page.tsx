@@ -27,6 +27,7 @@ import {
   CheckCircle,
   Trash2
 } from 'lucide-react';
+import { PasswordChangeForm } from '@/components/auth/password-change-form';
 
 export default function SettingsPage() {
   const { user, logout } = useAuth();
@@ -176,6 +177,9 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Password Change */}
+            <PasswordChangeForm />
 
             {/* Privacy Settings */}
             <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">

@@ -24,6 +24,7 @@ import {
   Globe,
   Users
 } from 'lucide-react'
+import { PasswordChangeForm } from '@/components/auth/password-change-form'
 
 export function AdminSettings() {
   const [settings, setSettings] = useState({
@@ -436,6 +437,9 @@ export function AdminSettings() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Password Change */}
+      <PasswordChangeForm />
 
       {/* Save Button */}
       <div className="flex justify-end">
