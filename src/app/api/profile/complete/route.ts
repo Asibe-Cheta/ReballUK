@@ -50,12 +50,54 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Ensure user exists in public.users table
+    const { data: publicUser, error: publicUserError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', user.id)
+      .single()
+
+    if (publicUserError && publicUserError.code === 'PGRST116') {
+      // User doesn't exist in public.users, create them
+      const { error: createUserError } = await supabase
+        .from('users')
+        .insert({
+          id: user.id,
+          email: user.email || '',
+          name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+          image: user.user_metadata?.avatar_url || user.user_metadata?.picture,
+          role: 'USER'
+        })
+
+      if (createUserError) {
+        console.error('Failed to create user in public.users:', createUserError)
+        return NextResponse.json(
+          { error: 'Failed to create user record', details: createUserError.message },
+          { status: 500 }
+        )
+      }
+    } else if (publicUserError) {
+      console.error('Error checking public user:', publicUserError)
+      return NextResponse.json(
+        { error: 'Failed to check user record', details: publicUserError.message },
+        { status: 500 }
+      )
+    }
+
     // Check if profile already exists
-    const { data: existingProfile } = await supabase
+    const { data: existingProfile, error: profileCheckError } = await supabase
       .from('profiles')
       .select('*')
       .eq('user_id', user.id)
       .single()
+
+    if (profileCheckError && profileCheckError.code !== 'PGRST116') {
+      console.error('Profile check error:', profileCheckError)
+      return NextResponse.json(
+        { error: 'Failed to check existing profile', details: profileCheckError.message },
+        { status: 500 }
+      )
+    }
 
     const profileData = {
       user_id: user.id,
@@ -95,7 +137,7 @@ export async function POST(request: NextRequest) {
       if (error) {
         console.error('Profile update error:', error)
         return NextResponse.json(
-          { error: 'Failed to update profile' },
+          { error: 'Failed to update profile', details: error.message, code: error.code },
           { status: 500 }
         )
       }
@@ -111,7 +153,7 @@ export async function POST(request: NextRequest) {
       if (error) {
         console.error('Profile creation error:', error)
         return NextResponse.json(
-          { error: 'Failed to create profile' },
+          { error: 'Failed to create profile', details: error.message, code: error.code },
           { status: 500 }
         )
       }
