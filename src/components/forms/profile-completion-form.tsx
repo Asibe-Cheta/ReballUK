@@ -191,7 +191,7 @@ export default function ProfileCompletionForm() {
         return
       }
 
-      const response = await fetch('/api/profile/complete', {
+          const response = await fetch('/api/profile/complete-bypass', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
