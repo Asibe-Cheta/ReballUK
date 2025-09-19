@@ -18,7 +18,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <MainNavbar />
+      {!isDashboardPage && <MainNavbar />}
       <main className="flex-1">
         {children}
       </main>

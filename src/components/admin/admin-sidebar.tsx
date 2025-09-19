@@ -13,6 +13,7 @@ import {
   Calendar,
   Shield
 } from 'lucide-react'
+import ReballLogo from '@/components/ui/reball-logo'
 
 const navigation = [
   {
@@ -63,6 +64,11 @@ export function AdminSidebar() {
   return (
     <div className="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 pt-16">
       <div className="flex flex-col h-full">
+        {/* Logo */}
+        <div className="px-4 py-4 border-b border-gray-200 dark:border-gray-700">
+          <ReballLogo size="md" />
+        </div>
+        
         <nav className="flex-1 px-4 py-6 space-y-2">
           {navigation.map((item) => {
             const isActive = pathname === item.href
