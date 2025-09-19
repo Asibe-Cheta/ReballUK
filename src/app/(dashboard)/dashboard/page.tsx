@@ -94,7 +94,7 @@ function DashboardContent() {
       {/* Welcome Header */}
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl lg:text-3xl font-bold tracking-tight">
-          Welcome back, {userName}! 👋
+          Welcome back, {userName}!
         </h1>
         <p className="text-sm lg:text-base text-muted-foreground">
           Ready to elevate your football skills? Let&apos;s get you started with your training journey.

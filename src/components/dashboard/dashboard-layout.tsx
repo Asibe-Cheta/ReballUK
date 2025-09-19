@@ -9,6 +9,8 @@ import {
   Moon, 
   Sun, 
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Home,
   BarChart3,
   Target,
@@ -104,9 +106,11 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
               className="hidden lg:block p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
-              <ChevronDown 
-                className={`w-5 h-5 text-gray-600 dark:text-gray-400 transition-transform ${sidebarCollapsed ? "rotate-90" : ""}`} 
-              />
+              {sidebarCollapsed ? (
+                <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              ) : (
+                <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              )}
             </button>
           </div>
         </div>
