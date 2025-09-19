@@ -31,6 +31,7 @@ import {
   Upload
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { useAuth } from '@/lib/auth-context'
 
 interface ProfileData {
   // Stage 1: Personal Information
@@ -124,6 +125,7 @@ const DRINK_OPTIONS = [
 export default function ProfileCompletionForm() {
   const [currentStage, setCurrentStage] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
+  const { user } = useAuth()
   const [profileData, setProfileData] = useState<ProfileData>({
     playerName: '',
     dateOfBirth: '',
@@ -181,17 +183,23 @@ export default function ProfileCompletionForm() {
       return
     }
 
+    if (!user) {
+      toast.error('Authentication required. Please log in again.')
+      window.location.href = '/login'
+      return
+    }
+
     setIsLoading(true)
     try {
       // Get the Supabase access token from localStorage
       const token = localStorage.getItem('supabase_access_token')
       if (!token) {
-        toast.error('Authentication required. Please log in again.')
+        toast.error('Authentication token not found. Please log in again.')
         window.location.href = '/login'
         return
       }
 
-          const response = await fetch('/api/profile/complete-bypass', {
+      const response = await fetch('/api/profile/complete-bypass', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

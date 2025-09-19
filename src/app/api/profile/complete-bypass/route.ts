@@ -51,10 +51,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create client with service role key to bypass RLS
+    // Create client with anon key (same as auth client)
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     )
 
     // Ensure user exists in public.users table
