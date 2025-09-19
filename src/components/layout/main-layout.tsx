@@ -14,7 +14,15 @@ export default function MainLayout({ children }: MainLayoutProps) {
   // Check if we're on a dashboard page
   const isDashboardPage = pathname?.startsWith('/dashboard') || 
                          pathname?.startsWith('/coach') || 
-                         pathname?.startsWith('/admin')
+                         pathname?.startsWith('/admin') ||
+                         pathname?.startsWith('/bookings') ||
+                         pathname?.startsWith('/progress') ||
+                         pathname?.startsWith('/video-analysis') ||
+                         pathname?.startsWith('/my-bookings') ||
+                         pathname?.startsWith('/profile') ||
+                         pathname?.startsWith('/settings') ||
+                         pathname?.startsWith('/1v1-scenarios') ||
+                         pathname?.startsWith('/training')
 
   return (
     <div className="min-h-screen flex flex-col">
