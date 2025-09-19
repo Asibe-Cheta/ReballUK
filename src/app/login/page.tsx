@@ -251,7 +251,7 @@ function LoginForm() {
               <div className="flex justify-center">
                 <HCaptcha
                   ref={captchaRef}
-                  sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || "1738bbaa-c888-4fa2-8d96-47ccd84e5b8a"}
+                  sitekey="1738bbaa-c888-4fa2-8d96-47ccd84e5b8a"
                   onVerify={(token) => setCaptchaToken(token)}
                   onExpire={() => setCaptchaToken(null)}
                   onError={() => setCaptchaToken(null)}
