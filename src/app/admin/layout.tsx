@@ -19,7 +19,7 @@ export default function AdminLayout({
         <AdminHeader />
         <div className="flex">
           <AdminSidebar />
-          <main className="flex-1 p-6 ml-64">
+          <main className="flex-1 p-6 ml-16 transition-all duration-300">
             {children}
           </main>
         </div>

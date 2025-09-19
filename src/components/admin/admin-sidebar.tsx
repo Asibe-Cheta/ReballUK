@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
@@ -60,13 +61,24 @@ const navigation = [
 
 export function AdminSidebar() {
   const pathname = usePathname()
+  const [sidebarHovered, setSidebarHovered] = useState(false)
 
   return (
-    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 pt-16">
+    <div 
+      className={`fixed inset-y-0 left-0 z-50 transition-all duration-300 ease-in-out ${
+        sidebarHovered ? "w-64" : "w-16"
+      } bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 pt-16`}
+      onMouseEnter={() => setSidebarHovered(true)}
+      onMouseLeave={() => setSidebarHovered(false)}
+    >
       <div className="flex flex-col h-full">
         {/* Logo */}
         <div className="px-4 py-4 border-b border-gray-200 dark:border-gray-700">
-          <ReballLogo size="md" />
+          {sidebarHovered ? (
+            <ReballLogo size="md" />
+          ) : (
+            <ReballLogo size="sm" className="mx-auto" />
+          )}
         </div>
         
         <nav className="flex-1 px-4 py-6 space-y-2">
@@ -83,8 +95,8 @@ export function AdminSidebar() {
                     : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
                 )}
               >
-                <item.icon className="mr-3 h-5 w-5" />
-                {item.name}
+                <item.icon className={`${sidebarHovered ? "mr-3" : "mx-auto"} h-5 w-5`} />
+                {sidebarHovered && item.name}
               </Link>
             )
           })}

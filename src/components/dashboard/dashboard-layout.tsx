@@ -45,7 +45,8 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children, user }: DashboardLayoutProps) {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false)
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true) // Start collapsed by default
+  const [sidebarHovered, setSidebarHovered] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { theme, setTheme } = useTheme()
 
@@ -82,15 +83,19 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-        mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-      } ${sidebarCollapsed ? "w-16" : "w-64"} bg-white dark:bg-gray-800 shadow-lg`}>
+      <div 
+        className={`fixed inset-y-0 left-0 z-50 transform transition-all duration-300 ease-in-out lg:translate-x-0 ${
+          mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        } ${sidebarCollapsed && !sidebarHovered ? "w-16" : "w-64"} bg-white dark:bg-gray-800 shadow-lg`}
+        onMouseEnter={() => setSidebarHovered(true)}
+        onMouseLeave={() => setSidebarHovered(false)}
+      >
         {/* Sidebar Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-          {!sidebarCollapsed && (
+          {(!sidebarCollapsed || sidebarHovered) && (
             <ReballLogo size="md" />
           )}
-          {sidebarCollapsed && (
+          {sidebarCollapsed && !sidebarHovered && (
             <ReballLogo size="sm" className="mx-auto" />
           )}
           <div className="flex items-center space-x-2">
@@ -101,23 +106,21 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
             >
               <X className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             </button>
-            {/* Desktop collapse button */}
-            <button
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="hidden lg:block p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            >
-              {sidebarCollapsed ? (
-                <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              ) : (
+            {/* Desktop collapse button - only show when expanded */}
+            {(!sidebarCollapsed || sidebarHovered) && (
+              <button
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="hidden lg:block p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              >
                 <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              )}
-            </button>
+              </button>
+            )}
           </div>
         </div>
 
         {/* Navigation */}
         <nav className="mt-6 px-3 overflow-y-auto h-[calc(100vh-80px)]">
-          {!sidebarCollapsed && (
+          {(!sidebarCollapsed || sidebarHovered) && (
             <div className="mb-6">
               <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Navigation
@@ -137,13 +140,13 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
                     : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`}
               >
-                <item.icon className={`${sidebarCollapsed ? "mx-auto" : "mr-3"} w-5 h-5 flex-shrink-0`} />
-                {!sidebarCollapsed && item.name}
+                <item.icon className={`${sidebarCollapsed && !sidebarHovered ? "mx-auto" : "mr-3"} w-5 h-5 flex-shrink-0`} />
+                {(!sidebarCollapsed || sidebarHovered) && item.name}
               </Link>
             ))}
           </div>
 
-          {!sidebarCollapsed && (
+          {(!sidebarCollapsed || sidebarHovered) && (
             <>
               <div className="mt-8 mb-4">
                 <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -176,7 +179,7 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
       </div>
 
       {/* Main Content */}
-      <div className={`${sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"} transition-all duration-300`}>
+      <div className={`${sidebarCollapsed && !sidebarHovered ? "lg:ml-16" : "lg:ml-64"} transition-all duration-300`}>
         {/* Top Header */}
         <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between px-4 lg:px-6 py-4">
