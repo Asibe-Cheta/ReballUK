@@ -91,7 +91,7 @@ export default function MainNavbar() {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="flex items-center gap-8">
+            <nav className="hidden lg:flex items-center gap-8">
               <Link 
                 href="/" 
                 className={`font-medium transition-all duration-300 hover:opacity-70 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 ${
@@ -126,6 +126,15 @@ export default function MainNavbar() {
                 </div>
               </div>
               
+              <Link 
+                href="/programs" 
+                className={`font-medium transition-all duration-300 hover:opacity-70 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 ${
+                  isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                }`}
+              >
+                Programmes
+              </Link>
+              
               <div className="relative group">
                 <Link 
                   href="/programs" 
@@ -136,10 +145,10 @@ export default function MainNavbar() {
                   Courses
                   <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
                 </Link>
-                <div className={`absolute top-full left-0 mt-2 w-64 backdrop-blur-md rounded-2xl p-2 transform -translate-y-2 opacity-0 invisible group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 shadow-lg border ${
+                <div className={`absolute top-full left-0 mt-2 w-80 backdrop-blur-md rounded-2xl p-2 transform -translate-y-2 opacity-0 invisible group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 shadow-lg border max-h-96 overflow-y-auto ${
                   isScrolled ? 'bg-white/98 border-gray-200 dark:bg-black/98 dark:border-gray-800' : 'bg-white/95 border-gray-200 dark:bg-black/95 dark:border-white/30'
                 }`}>
-                  <div className="grid grid-cols-1 gap-1">
+                  <div className="grid grid-cols-2 gap-1">
                     <Link href="/programs/strikers" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black ${
                       isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
                     }`}>Strikers</Link>
@@ -189,7 +198,7 @@ export default function MainNavbar() {
           <div className="flex items-center gap-4">
             
             {/* Desktop Profile Dropdown */}
-            <div className="block relative profile-dropdown">
+            <div className="hidden lg:block relative profile-dropdown">
               <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className="flex items-center gap-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 hover:scale-110"
@@ -348,13 +357,95 @@ export default function MainNavbar() {
               </Link>
               
               <Link 
-                href="#" 
+                href="/programs" 
                 className={`block px-3 py-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-md transition-colors duration-200 ${
                   isScrolled ? 'text-gray-700 dark:text-white/70' : 'text-white/70'
                 } hover:text-gray-900 dark:hover:text-white`}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Resources
+                Programmes
+              </Link>
+              
+              {/* Mobile Courses Section */}
+              <div className="space-y-1">
+                <div className={`px-3 py-2 font-medium ${
+                  isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
+                }`}>
+                  Courses
+                </div>
+                <Link 
+                  href="/programs/strikers" 
+                  className={`block px-6 py-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-md transition-colors duration-200 ${
+                    isScrolled ? 'text-gray-700 dark:text-white/70' : 'text-white/70'
+                  } hover:text-gray-900 dark:hover:text-white`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Strikers
+                </Link>
+                <Link 
+                  href="/programs/wingers" 
+                  className={`block px-6 py-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-md transition-colors duration-200 ${
+                    isScrolled ? 'text-gray-700 dark:text-white/70' : 'text-white/70'
+                  } hover:text-gray-900 dark:hover:text-white`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Wingers
+                </Link>
+                <Link 
+                  href="/programs/cam" 
+                  className={`block px-6 py-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-md transition-colors duration-200 ${
+                    isScrolled ? 'text-gray-700 dark:text-white/70' : 'text-white/70'
+                  } hover:text-gray-900 dark:hover:text-white`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Central Attacking Midfielders
+                </Link>
+                <Link 
+                  href="/programs/cm" 
+                  className={`block px-6 py-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-md transition-colors duration-200 ${
+                    isScrolled ? 'text-gray-700 dark:text-white/70' : 'text-white/70'
+                  } hover:text-gray-900 dark:hover:text-white`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Central Midfielders
+                </Link>
+                <Link 
+                  href="/programs/cdm" 
+                  className={`block px-6 py-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-md transition-colors duration-200 ${
+                    isScrolled ? 'text-gray-700 dark:text-white/70' : 'text-white/70'
+                  } hover:text-gray-900 dark:hover:text-white`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Central Defensive Midfielders
+                </Link>
+                <Link 
+                  href="/programs/fb" 
+                  className={`block px-6 py-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-md transition-colors duration-200 ${
+                    isScrolled ? 'text-gray-700 dark:text-white/70' : 'text-white/70'
+                  } hover:text-gray-900 dark:hover:text-white`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Full-backs
+                </Link>
+                <Link 
+                  href="/programs/cb" 
+                  className={`block px-6 py-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-md transition-colors duration-200 ${
+                    isScrolled ? 'text-gray-700 dark:text-white/70' : 'text-white/70'
+                  } hover:text-gray-900 dark:hover:text-white`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Centre-backs
+                </Link>
+              </div>
+              
+              <Link 
+                href="/services" 
+                className={`block px-3 py-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-md transition-colors duration-200 ${
+                  isScrolled ? 'text-gray-700 dark:text-white/70' : 'text-white/70'
+                } hover:text-gray-900 dark:hover:text-white`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Services
               </Link>
               
               <Link 

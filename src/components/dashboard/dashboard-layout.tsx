@@ -93,10 +93,10 @@ export default function DashboardLayout({ children, user }: DashboardLayoutProps
         {/* Sidebar Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
           {(!sidebarCollapsed || sidebarHovered) && (
-            <ReballLogo size="md" />
+            <ReballLogo size="md" clickable={true} />
           )}
           {sidebarCollapsed && !sidebarHovered && (
-            <ReballLogo size="sm" className="mx-auto" />
+            <ReballLogo size="sm" className="mx-auto" clickable={true} />
           )}
           <div className="flex items-center space-x-2">
             {/* Mobile close button */}

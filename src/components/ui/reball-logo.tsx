@@ -3,13 +3,15 @@
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 
 interface ReballLogoProps {
   size?: "sm" | "md" | "lg"
   className?: string
+  clickable?: boolean
 }
 
-export default function ReballLogo({ size = "md", className = "" }: ReballLogoProps) {
+export default function ReballLogo({ size = "md", className = "", clickable = false }: ReballLogoProps) {
   const { theme, systemTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -43,7 +45,7 @@ export default function ReballLogo({ size = "md", className = "" }: ReballLogoPr
 
   const { width, height } = sizeClasses[size]
 
-  return (
+  const logoContent = (
     <div className={`flex items-center space-x-2 ${className}`}>
       <Image
         src={isDark ? "/logos/logo-white.svg" : "/logos/logo-black.svg"}
@@ -54,4 +56,14 @@ export default function ReballLogo({ size = "md", className = "" }: ReballLogoPr
       />
     </div>
   )
+
+  if (clickable) {
+    return (
+      <Link href="/" className="hover:opacity-80 transition-opacity duration-200">
+        {logoContent}
+      </Link>
+    )
+  }
+
+  return logoContent
 }
