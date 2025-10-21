@@ -8,32 +8,32 @@ import { CheckCircle, Clock, Lock, ArrowLeft } from "lucide-react";
 const cbCourses = [
   {
     id: "cb-1v1-defending-essential",
-    title: "Essential 1v1 Defending Course",
-    description: "Learn the specific essential tactical, movement and technical information you need to instantly improve your defending in the exact 8 1v1 scenarios you face in the game",
+    title: "Essential 1v1 Defending Centre-back Course",
+    description: "Learn the specific essential tactical, movement and technical information you need to instantly increase your 1v1 defending success in the exact 1v1 scenarios you face in the game",
     level: "Essential",
     type: "1v1 Defending",
     available: true,
   },
   {
     id: "cb-1v1-defending-advanced",
-    title: "Advanced 1v1 Defending Course",
-    description: "Learn the specific advanced tactical, movement and technical information you need to become an unstoppable defender in the exact 8 1v1 scenarios you face in the game",
+    title: "Advanced 1v1 Defending Centre-back Course",
+    description: "Learn the specific advanced tactical, movement and technical information you need to instantly increase your 1v1 defending success in the exact 1v1 scenarios you face in the game",
     level: "Advanced",
     type: "1v1 Defending",
     available: true,
   },
   {
     id: "cb-receiving-essential",
-    title: "Essential Receiving Course",
-    description: "Coming Soon",
+    title: "Essential Receiving Centre-back Course",
+    description: "Learn the specific essential tactical, movement and technical information you need to instantly increase your receiving success in the exact 1v1 scenarios you face in the game",
     level: "Essential",
     type: "Receiving",
     available: false,
   },
   {
     id: "cb-receiving-advanced",
-    title: "Advanced Receiving Course",
-    description: "Coming Soon",
+    title: "Advanced Receiving Centre-back Course",
+    description: "Learn the specific advanced tactical, movement and technical information you need to instantly increase your receiving success in the exact 1v1 scenarios you face in the game",
     level: "Advanced",
     type: "Receiving",
     available: false,
@@ -52,14 +52,14 @@ export default function CBPage() {
             <div className="mb-6">
               <Link href="/programs" className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <ArrowLeft className="w-4 h-4" />
-                Back to All Programs
+                Back to All Courses
               </Link>
             </div>
             <AnimatedHeroHeading className="font-marker text-4xl md:text-5xl lg:text-6xl mb-6 text-gray-900 dark:text-white">
-              Centre-back Training Programs
+              Centre-back Training Courses
             </AnimatedHeroHeading>
             <p className="text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-8 leading-relaxed">
-              Position-specific training programs designed to improve your defensive awareness, aerial ability, and ball distribution
+              Learn the specific tactical, movement and technical information you need to instantly increase your 1v1 defending and receiving success in the exact scenarios you face in the game
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="text-lg px-8 py-6 bg-black hover:bg-gray-800 text-white border border-white hover:border-gray-300">
@@ -80,9 +80,6 @@ export default function CBPage() {
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
                 Available Training Courses
               </h2>
-              <p className="text-lg text-gray-600 dark:text-gray-300">
-                Comprehensive training programs specifically designed for centre-backs
-              </p>
             </div>
 
             {availableCourses.length > 0 && (

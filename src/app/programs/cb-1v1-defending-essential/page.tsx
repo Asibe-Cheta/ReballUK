@@ -26,10 +26,10 @@ export default function EssentialCB1v1DefendingCourse() {
               </span>
             </div>
             <AnimatedHeroHeading className="font-marker text-3xl md:text-4xl lg:text-5xl mb-6 text-gray-900 dark:text-white">
-              Essential 1v1 Defending Course
+              Essential 1v1 Defending Centre-back Course
             </AnimatedHeroHeading>
             <p className="text-lg md:text-xl text-gray-700 dark:text-gray-200 mb-8 leading-relaxed">
-              Learn the specific essential tactical, movement and technical information you need to instantly improve your defending in the exact 8 1v1 scenarios you face in the game
+              Learn the specific essential tactical, movement and technical information you need to instantly increase your 1v1 defending success in the exact 1v1 scenarios you face in the game
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="text-lg px-8 py-6 bg-black hover:bg-gray-800 text-white border border-white hover:border-gray-300">
@@ -264,7 +264,7 @@ export default function EssentialCB1v1DefendingCourse() {
                 <Link href="/register">Enroll Now</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-black text-lg px-8 py-6">
-                <Link href="/programs">View All Programs</Link>
+                <Link href="/programs">View All Courses</Link>
               </Button>
             </div>
           </div>

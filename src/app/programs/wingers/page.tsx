@@ -20,20 +20,38 @@ interface Course {
 
 const wingerCourses: Course[] = [
   {
-    id: "winger-1v1-attacking-essential",
+    id: "winger-1v1-attacking-crossing-essential",
     title: "Essential 1v1 Attacking Winger Crossing Course",
-    description: "Learn the specific essential tactical, movement and technical information you need to instantly get more assists in the exact 8 1v1 scenarios you face in the game",
+    description: "Learn the specific essential tactical, movement and technical information you need to instantly beat defenders and deliver assists. This course features the exact 8 1v1 attacking scenarios you face in the game.",
     level: "Essential",
-    type: "1v1 Attacking",
+    type: "1v1 Attacking Crossing",
     available: true,
     positions: ["Wingers"]
   },
   {
-    id: "winger-1v1-attacking-advanced",
+    id: "winger-1v1-attacking-crossing-advanced",
     title: "Advanced 1v1 Attacking Winger Crossing Course",
-    description: "Learn the specific advanced tactical, movement and technical information you need to become an unstoppable goal creator in the exact 8 1v1 scenarios you face in the game",
+    description: "Learn the specific advanced tactical, movement and technical information you need to become unstoppable in beating defenders and delivering assists. This course features the exact 8 1v1 attacking scenarios you face in the game.",
     level: "Advanced",
-    type: "1v1 Attacking",
+    type: "1v1 Attacking Crossing",
+    available: true,
+    positions: ["Wingers"]
+  },
+  {
+    id: "winger-1v1-attacking-finishing-essential",
+    title: "Essential 1v1 Attacking Winger Finishing Course",
+    description: "Learn the specific essential tactical, movement and technical information you need to instantly beat defenders and score goals. This course features the exact 8 1v1 attacking scenarios you face in the game.",
+    level: "Essential",
+    type: "1v1 Attacking Finishing",
+    available: true,
+    positions: ["Wingers"]
+  },
+  {
+    id: "winger-1v1-attacking-finishing-advanced",
+    title: "Advanced 1v1 Attacking Winger Finishing Course",
+    description: "Learn the specific advanced tactical, movement and technical information you need to become unstoppable in beating defenders and scoring goals. This course features the exact 8 1v1 attacking scenarios you face in the game.",
+    level: "Advanced",
+    type: "1v1 Attacking Finishing",
     available: true,
     positions: ["Wingers"]
   },
@@ -142,14 +160,14 @@ export default function WingersPage() {
             <div className="mb-6">
               <Link href="/programs" className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <ArrowLeft className="w-4 h-4" />
-                Back to All Programs
+                Back to All Courses
               </Link>
             </div>
             <AnimatedHeroHeading className="font-marker text-4xl md:text-5xl lg:text-6xl mb-6 text-gray-900 dark:text-white">
-              Wingers Training Programs
+              Winger Training Courses
             </AnimatedHeroHeading>
             <p className="text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-8 leading-relaxed">
-              Position-specific training programs designed to improve your crossing, dribbling, and attacking play from wide areas
+              Learn the specific tactical, movement and technical information you need to instantly increase your 1v1 attacking, 1v1's with the keeper, 1v2 attacking, dribbling, runs and finishing in the box and receiving success in the exact scenarios you face in the game
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="text-lg px-8 py-6 bg-black hover:bg-gray-800 text-white border border-white hover:border-gray-300">
@@ -172,7 +190,7 @@ export default function WingersPage() {
                 Available Training Courses
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300">
-                Comprehensive training programs specifically designed for wingers
+                Comprehensive training courses specifically designed for wingers
               </p>
             </div>
 

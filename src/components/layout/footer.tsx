@@ -69,9 +69,9 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 3 - Training Programs & Social Media */}
+          {/* Column 3 - Training Courses & Social Media */}
           <div className="space-y-6">
-            <h3 className="font-semibold text-gray-900 dark:text-white">Training Programs</h3>
+            <h3 className="font-semibold text-gray-900 dark:text-white">Training Courses</h3>
             <div className="space-y-3">
               <Link href="/contact" className="block text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                 Strikers Training

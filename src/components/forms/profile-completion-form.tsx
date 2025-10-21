@@ -475,34 +475,26 @@ export default function ProfileCompletionForm() {
       <div className="space-y-6">
         <div className="space-y-2">
           <Label className="text-gray-700 dark:text-gray-300">Post-Training Snacks *</Label>
-          <Select value={profileData.postTrainingSnacks} onValueChange={(value) => updateProfileData('postTrainingSnacks', value)}>
-            <SelectTrigger className="border-gray-300 dark:border-gray-600">
-              <SelectValue placeholder="Select your preferred snack" />
-            </SelectTrigger>
-            <SelectContent>
-              {SNACK_OPTIONS.map((snack) => (
-                <SelectItem key={snack} value={snack}>
-                  {snack}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Input
+            type="text"
+            placeholder="e.g., Protein bar, Banana, Energy bar, etc."
+            value={profileData.postTrainingSnacks}
+            onChange={(e) => updateProfileData('postTrainingSnacks', e.target.value)}
+            className="border-gray-300 dark:border-gray-600"
+          />
+          <p className="text-sm text-gray-500 dark:text-gray-400">Tell us what snacks you'd like after training</p>
         </div>
 
         <div className="space-y-2">
           <Label className="text-gray-700 dark:text-gray-300">Post-Training Drinks *</Label>
-          <Select value={profileData.postTrainingDrinks} onValueChange={(value) => updateProfileData('postTrainingDrinks', value)}>
-            <SelectTrigger className="border-gray-300 dark:border-gray-600">
-              <SelectValue placeholder="Select your preferred drink" />
-            </SelectTrigger>
-            <SelectContent>
-              {DRINK_OPTIONS.map((drink) => (
-                <SelectItem key={drink} value={drink}>
-                  {drink}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Input
+            type="text"
+            placeholder="e.g., Water, Sports drink, Protein shake, etc."
+            value={profileData.postTrainingDrinks}
+            onChange={(e) => updateProfileData('postTrainingDrinks', e.target.value)}
+            className="border-gray-300 dark:border-gray-600"
+          />
+          <p className="text-sm text-gray-500 dark:text-gray-400">Tell us what drinks you'd like after training</p>
         </div>
 
         <div className="space-y-4">

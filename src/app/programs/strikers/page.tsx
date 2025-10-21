@@ -22,7 +22,7 @@ const strikerCourses: Course[] = [
   {
     id: "striker-1v1-attacking-essential",
     title: "Essential 1v1 Attacking Striker Finishing Course",
-    description: "Learn the specific essential tactical, movement and technical information you need to instantly get more goals in the exact 8 1v1 scenarios you face in the game",
+    description: "Learn the specific essential tactical, movement and technical information you need to instantly beat defenders and score goals. This course features the exact 8 1v1 attacking scenarios you face in the game.",
     level: "Essential",
     type: "1v1 Attacking",
     available: true,
@@ -31,7 +31,7 @@ const strikerCourses: Course[] = [
   {
     id: "striker-1v1-attacking-advanced",
     title: "Advanced 1v1 Attacking Striker Finishing Course",
-    description: "Learn the specific advanced tactical, movement and technical information you need to become an unstoppable goalscorer in the exact 8 1v1 scenarios you face in the game",
+    description: "Learn the specific advanced tactical, movement and technical information you need to become unstoppable in beating defenders and scoring goals. This course features the exact 8 1v1 attacking scenarios you face in the game.",
     level: "Advanced",
     type: "1v1 Attacking",
     available: true,
@@ -39,7 +39,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-1v1-keeper-essential",
-    title: "Essential 1v1's with Keeper Course",
+    title: "Essential 1v1's with Keeper Striker Course",
     description: "Coming Soon",
     level: "Essential",
     type: "1v1's with Keeper",
@@ -48,7 +48,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-1v1-keeper-advanced",
-    title: "Advanced 1v1's with Keeper Course",
+    title: "Advanced 1v1's with Keeper Striker Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "1v1's with Keeper",
@@ -57,7 +57,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-runs-finishing-essential",
-    title: "Essential Runs & Finishing in Box Course",
+    title: "Essential Runs & Finishing in Box Striker Course",
     description: "Coming Soon",
     level: "Essential",
     type: "Runs & Finishing in Box",
@@ -66,7 +66,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-runs-finishing-advanced",
-    title: "Advanced Runs & Finishing in Box Course",
+    title: "Advanced Runs & Finishing in Box Striker Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "Runs & Finishing in Box",
@@ -75,7 +75,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-1v2-essential",
-    title: "Essential 1v2 Course",
+    title: "Essential 1v2 Striker Course",
     description: "Coming Soon",
     level: "Essential",
     type: "1v2",
@@ -84,7 +84,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-1v2-advanced",
-    title: "Advanced 1v2 Course",
+    title: "Advanced 1v2 Striker Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "1v2",
@@ -93,7 +93,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-dribbling-essential",
-    title: "Essential Dribbling Course",
+    title: "Essential Dribbling Striker Course",
     description: "Coming Soon",
     level: "Essential",
     type: "Dribbling",
@@ -102,7 +102,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-dribbling-advanced",
-    title: "Advanced Dribbling Course",
+    title: "Advanced Dribbling Striker Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "Dribbling",
@@ -111,7 +111,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-receiving-essential",
-    title: "Essential Receiving Course",
+    title: "Essential Receiving Striker Course",
     description: "Coming Soon",
     level: "Essential",
     type: "Receiving",
@@ -120,7 +120,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-receiving-advanced",
-    title: "Advanced Receiving Course",
+    title: "Advanced Receiving Striker Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "Receiving",
@@ -142,14 +142,14 @@ export default function StrikersPage() {
             <div className="mb-6">
               <Link href="/programs" className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <ArrowLeft className="w-4 h-4" />
-                Back to All Programs
+                Back to All Courses
               </Link>
             </div>
             <AnimatedHeroHeading className="font-marker text-4xl md:text-5xl lg:text-6xl mb-6 text-gray-900 dark:text-white">
-              Strikers Training Programs
+              Striker Training Courses
             </AnimatedHeroHeading>
             <p className="text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-8 leading-relaxed">
-              Position-specific training programs designed to improve your finishing, movement, and decision-making in the final third
+              Learn the specific tactical, movement and technical information you need to instantly increase your 1v1 attacking, 1v1's with the keeper, 1v2 attacking, dribbling, runs and finishing in the box and receiving success in the exact scenarios you face in the game
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="text-lg px-8 py-6 bg-black hover:bg-gray-800 text-white border border-white hover:border-gray-300">
@@ -172,7 +172,7 @@ export default function StrikersPage() {
                 Available Training Courses
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300">
-                Comprehensive training programs specifically designed for strikers
+                Comprehensive training courses specifically designed for strikers
               </p>
             </div>
 

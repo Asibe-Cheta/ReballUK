@@ -133,7 +133,7 @@ export default function MainNavbar() {
                     isScrolled ? 'text-gray-700 dark:text-white' : 'text-white'
                   }`}
                 >
-                  Programs
+                  Courses
                   <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
                 </Link>
                 <div className={`absolute top-full left-0 mt-2 w-64 backdrop-blur-md rounded-2xl p-2 transform -translate-y-2 opacity-0 invisible group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 shadow-lg border ${
@@ -151,16 +151,16 @@ export default function MainNavbar() {
                     }`}>Central Attacking Midfielders</Link>
                     <Link href="/programs/cm" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black ${
                       isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
-                    }`}>Centre-Mids</Link>
+                    }`}>Central Midfielders</Link>
                     <Link href="/programs/cdm" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black ${
                       isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
-                    }`}>Central Defending Midfielders</Link>
+                    }`}>Central Defensive Midfielders</Link>
                     <Link href="/programs/fb" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black ${
                       isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
-                    }`}>Full-back</Link>
+                    }`}>Full-backs</Link>
                     <Link href="/programs/cb" className={`block p-3 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-white hover:text-gray-700 dark:hover:text-black ${
                       isScrolled ? 'text-gray-700 dark:text-white' : 'text-gray-700 dark:text-white'
-                    }`}>Centre-back</Link>
+                    }`}>Centre-backs</Link>
                   </div>
                 </div>
               </div>

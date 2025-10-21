@@ -9,18 +9,18 @@ const cmCourses = [
   {
     id: "cm-1v1-attacking-essential",
     title: "Essential 1v1 Attacking CM Crossing Course",
-    description: "Learn the specific essential tactical, movement and technical information you need to instantly get more assists in the exact 8 1v1 scenarios you face in the game",
+    description: "Coming Soon",
     level: "Essential",
     type: "1v1 Attacking",
-    available: true,
+    available: false,
   },
   {
     id: "cm-1v1-attacking-advanced",
     title: "Advanced 1v1 Attacking CM Crossing Course",
-    description: "Learn the specific advanced tactical, movement and technical information you need to become an unstoppable goal creator in the exact 8 1v1 scenarios you face in the game",
+    description: "Coming Soon",
     level: "Advanced",
     type: "1v1 Attacking",
-    available: true,
+    available: false,
   },
   {
     id: "cm-dribbling-essential",
@@ -68,14 +68,14 @@ export default function CMPage() {
             <div className="mb-6">
               <Link href="/programs" className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                 <ArrowLeft className="w-4 h-4" />
-                Back to All Programs
+                Back to All Courses
               </Link>
             </div>
             <AnimatedHeroHeading className="font-marker text-4xl md:text-5xl lg:text-6xl mb-6 text-gray-900 dark:text-white">
-              Centre-Mids Training Programs
+              Central Midfielder Training Courses
             </AnimatedHeroHeading>
             <p className="text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-8 leading-relaxed">
-              Position-specific training programs designed to improve your passing, vision, and control of the midfield
+              Learn the specific tactical, movement and technical information you need to instantly increase your 1v1 attacking, dribbling, and receiving success in the exact scenarios you face in the game
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="text-lg px-8 py-6 bg-black hover:bg-gray-800 text-white border border-white hover:border-gray-300">
@@ -97,7 +97,7 @@ export default function CMPage() {
                 Available Training Courses
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300">
-                Comprehensive training programs specifically designed for centre-mids
+                Comprehensive training courses specifically designed for centre-mids
               </p>
             </div>
 
