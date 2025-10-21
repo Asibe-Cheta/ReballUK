@@ -16,7 +16,6 @@
     "db:seed-courses": "tsx scripts/seed-courses.ts"
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.10.0",
     "@cloudinary/react": "^1.14.3",
     "@cloudinary/url-gen": "^1.21.0",
     "@hcaptcha/react-hcaptcha": "^1.12.1",

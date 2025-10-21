@@ -227,7 +227,7 @@ export default async function SessionsPage({
                   <TableCell>
                     <div>
                       <p className="font-medium">
-                        {session.course?.title || session.sessionType}
+                        {session.course?.name || session.sessionType}
                       </p>
                       {session.position && (
                         <p className="text-sm text-gray-500 dark:text-gray-400">

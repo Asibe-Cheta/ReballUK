@@ -8,7 +8,7 @@ import { CheckCircle, Clock, Lock, ArrowLeft } from "lucide-react";
 const cbCourses = [
   {
     id: "cb-1v1-defending-essential",
-    title: "Essential 1v1 Defending Centre-back Course",
+    name: "Essential 1v1 Defending Centre-back Course",
     description: "Learn the specific essential tactical, movement and technical information you need to instantly increase your 1v1 defending success in the exact 1v1 scenarios you face in the game",
     level: "Essential",
     type: "1v1 Defending",
@@ -16,7 +16,7 @@ const cbCourses = [
   },
   {
     id: "cb-1v1-defending-advanced",
-    title: "Advanced 1v1 Defending Centre-back Course",
+    name: "Advanced 1v1 Defending Centre-back Course",
     description: "Learn the specific advanced tactical, movement and technical information you need to instantly increase your 1v1 defending success in the exact 1v1 scenarios you face in the game",
     level: "Advanced",
     type: "1v1 Defending",
@@ -24,7 +24,7 @@ const cbCourses = [
   },
   {
     id: "cb-receiving-essential",
-    title: "Essential Receiving Centre-back Course",
+    name: "Essential Receiving Centre-back Course",
     description: "Learn the specific essential tactical, movement and technical information you need to instantly increase your receiving success in the exact 1v1 scenarios you face in the game",
     level: "Essential",
     type: "Receiving",
@@ -32,7 +32,7 @@ const cbCourses = [
   },
   {
     id: "cb-receiving-advanced",
-    title: "Advanced Receiving Centre-back Course",
+    name: "Advanced Receiving Centre-back Course",
     description: "Learn the specific advanced tactical, movement and technical information you need to instantly increase your receiving success in the exact 1v1 scenarios you face in the game",
     level: "Advanced",
     type: "Receiving",
@@ -107,7 +107,7 @@ export default function CBPage() {
                             </span>
                           </div>
                           <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                            {course.title}
+                            {course.name}
                           </h4>
                           <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
                             {course.description}
@@ -150,7 +150,7 @@ export default function CBPage() {
                             </span>
                           </div>
                           <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                            {course.title}
+                            {course.name}
                           </h4>
                           <p className="text-gray-500 dark:text-gray-400 text-sm">
                             Coming Soon

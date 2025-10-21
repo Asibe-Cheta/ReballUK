@@ -26,10 +26,9 @@ export async function GET(request: NextRequest) {
           course: {
             select: {
               id: true,
-              title: true,
-              level: true,
+              name: true,
+              type: true,
               position: true,
-              thumbnailUrl: true,
             }
           },
           video: {
@@ -98,7 +97,7 @@ export async function GET(request: NextRequest) {
         id: progress.id,
         date: progress.lastAccessedAt,
         type: sessionType,
-        title: progress.video?.title || progress.course.title,
+        title: progress.video?.title || progress.course.name,
         duration: progress.timeSpent,
         rating: progress.rating || undefined,
         feedback: progress.feedback || undefined,
@@ -106,11 +105,11 @@ export async function GET(request: NextRequest) {
         improvementAreas: improvementAreas.slice(0, 3), // Limit to 3 main areas
         completionPercentage: progress.completionPercentage,
         videoUrl: progress.video?.videoUrl,
-        thumbnailUrl: progress.video?.thumbnailUrl || progress.course.thumbnailUrl,
+        thumbnailUrl: progress.video?.thumbnailUrl,
         course: {
           id: progress.course.id,
-          title: progress.course.title,
-          level: progress.course.level as "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "PROFESSIONAL",
+          title: progress.course.name,
+          level: progress.course.type as "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "PROFESSIONAL",
           position: progress.course.position as "STRIKER" | "WINGER" | "CAM" | "FULLBACK" | "MIDFIELDER" | "DEFENDER" | "GOALKEEPER" | "OTHER",
         }
       }
@@ -172,8 +171,8 @@ export async function POST(request: NextRequest) {
           course: {
             select: {
               id: true,
-              title: true,
-              level: true,
+              name: true,
+              type: true,
               position: true,
             }
           },

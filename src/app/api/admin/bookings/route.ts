@@ -56,9 +56,9 @@ export async function GET(request: Request) {
         course: {
           select: {
             id: true,
-            title: true,
+            name: true,
             position: true,
-            level: true
+            type: true
           }
         }
       },
@@ -75,9 +75,9 @@ export async function GET(request: Request) {
       },
       course: {
         id: booking.course.id,
-        title: booking.course.title,
+        title: booking.course.name,
         position: booking.course.position,
-        level: booking.course.level
+        level: booking.course.type
       },
       scheduledFor: booking.scheduledFor.toISOString(),
       status: booking.status,

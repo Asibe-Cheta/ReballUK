@@ -1,23 +1,45 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
 import { createCourseCheckoutSession, createBookingCheckoutSession } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
+import { createClient } from '@supabase/supabase-js'
 
 export async function POST(request: NextRequest) {
   try {
-    // Get the authenticated user
-    const session = await getServerSession()
-    
-    if (!session?.user?.email) {
+    // Get authorization header
+    const authHeader = request.headers.get('authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
       )
     }
 
+    const token = authHeader.split(' ')[1]
+
+    // Verify token with Supabase
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return NextResponse.json(
+        { success: false, error: 'Server configuration error' },
+        { status: 500 }
+      )
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey)
+    const { data: { user: supabaseUser }, error } = await supabase.auth.getUser(token)
+
+    if (error || !supabaseUser) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid token' },
+        { status: 401 }
+      )
+    }
+
     // Get user from database
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
+      where: { email: supabaseUser.email! }
     })
 
     if (!user) {
@@ -61,7 +83,7 @@ export async function POST(request: NextRequest) {
       const checkoutSession = await createCourseCheckoutSession({
         courseId: course.id,
         courseTitle: course.name,
-        coursePrice: Number(course.price_121), // 1v1 course price
+        coursePrice: Number(course.price121), // 1v1 course price
         userId: user.id,
         userEmail: user.email,
         successUrl: `${baseUrl}/dashboard?payment=success&course_id=${course.slug || course.id}`,

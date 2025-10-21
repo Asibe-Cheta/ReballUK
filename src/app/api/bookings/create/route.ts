@@ -57,11 +57,11 @@ export async function POST(request: NextRequest) {
     // Get or create a course based on session type and position
     let course = await prisma.course.findFirst({
       where: {
-        title: {
+        name: {
           contains: position,
           mode: 'insensitive'
         },
-        isActive: true
+        available: true
       }
     })
 
@@ -69,14 +69,14 @@ export async function POST(request: NextRequest) {
     if (!course) {
       course = await prisma.course.create({
         data: {
-          title: `${position} Training - ${sessionType === '1v1' ? 'Personal' : 'Group'}`,
+          name: `${position} Training - ${sessionType === '1v1' ? 'Personal' : 'Group'}`,
           description: `${position} training session for ${sessionType === '1v1' ? 'individual' : 'group'} training`,
-          level: "BEGINNER",
+          type: "BEGINNER",
           position: position as string,
-          duration: 60,
-          price: sessionType === '1v1' ? 75 : 25,
-          isActive: true,
-          tags: [position, sessionType]
+          durationWeeks: 1,
+          price121: sessionType === '1v1' ? 75 : 25,
+          priceGroup: sessionType === '1v1' ? 75 : 25,
+          available: true
         }
       })
     }

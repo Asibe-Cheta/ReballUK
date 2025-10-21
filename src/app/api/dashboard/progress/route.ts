@@ -47,8 +47,7 @@ export async function GET(request: NextRequest) {
             course: {
               select: {
                 position: true,
-                level: true,
-                tags: true,
+                type: true,
               }
             },
             video: {
@@ -128,7 +127,6 @@ export async function GET(request: NextRequest) {
     const bySkill: Record<string, ProgressPoint[]> = {}
     rawProgress.forEach(p => {
       const skills = [
-        ...(p.course.tags || []),
         ...(p.video?.tags || []),
         p.video?.analysisType || "general"
       ].filter(Boolean)
@@ -309,8 +307,8 @@ export async function POST(request: NextRequest) {
         include: {
           course: {
             select: {
-              title: true,
-              level: true,
+              name: true,
+              type: true,
               position: true,
             }
           },

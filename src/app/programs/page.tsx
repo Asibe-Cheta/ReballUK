@@ -10,7 +10,7 @@ import type { Metadata } from "next";
 // Course data structure
 interface Course {
   id: string;
-  title: string;
+  name: string;
   description: string;
   level: "Essential" | "Advanced";
   type: string;
@@ -33,7 +33,7 @@ const positions: Position[] = [
     courses: [
       {
         id: "striker-1v1-attacking-essential",
-        title: "Essential 1v1 Attacking Striker Finishing Course",
+        name: "Essential 1v1 Attacking Striker Finishing Course",
         description: "Learn the specific essential tactical, movement and technical information you need to instantly get more goals in the exact 8 1v1 scenarios you face in the game",
         level: "Essential",
         type: "1v1 Attacking",
@@ -42,7 +42,7 @@ const positions: Position[] = [
       },
       {
         id: "striker-1v1-attacking-advanced",
-        title: "Advanced 1v1 Attacking Striker Finishing Course",
+        name: "Advanced 1v1 Attacking Striker Finishing Course",
         description: "Learn the specific advanced tactical, movement and technical information you need to become an unstoppable goalscorer in the exact 8 1v1 scenarios you face in the game",
         level: "Advanced",
         type: "1v1 Attacking",
@@ -51,7 +51,7 @@ const positions: Position[] = [
       },
       {
         id: "striker-1v1-keeper-essential",
-        title: "Essential 1v1's with Keeper Course",
+        name: "Essential 1v1's with Keeper Course",
         description: "Coming Soon",
         level: "Essential",
         type: "1v1's with Keeper",
@@ -60,7 +60,7 @@ const positions: Position[] = [
       },
       {
         id: "striker-1v1-keeper-advanced",
-        title: "Advanced 1v1's with Keeper Course",
+        name: "Advanced 1v1's with Keeper Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "1v1's with Keeper",
@@ -69,7 +69,7 @@ const positions: Position[] = [
       },
       {
         id: "striker-runs-finishing-essential",
-        title: "Essential Runs & Finishing in Box Course",
+        name: "Essential Runs & Finishing in Box Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Runs & Finishing in Box",
@@ -78,7 +78,7 @@ const positions: Position[] = [
       },
       {
         id: "striker-runs-finishing-advanced",
-        title: "Advanced Runs & Finishing in Box Course",
+        name: "Advanced Runs & Finishing in Box Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Runs & Finishing in Box",
@@ -87,7 +87,7 @@ const positions: Position[] = [
       },
       {
         id: "striker-1v2-essential",
-        title: "Essential 1v2 Course",
+        name: "Essential 1v2 Course",
         description: "Coming Soon",
         level: "Essential",
         type: "1v2",
@@ -96,7 +96,7 @@ const positions: Position[] = [
       },
       {
         id: "striker-1v2-advanced",
-        title: "Advanced 1v2 Course",
+        name: "Advanced 1v2 Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "1v2",
@@ -105,7 +105,7 @@ const positions: Position[] = [
       },
       {
         id: "striker-dribbling-essential",
-        title: "Essential Dribbling Course",
+        name: "Essential Dribbling Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Dribbling",
@@ -114,7 +114,7 @@ const positions: Position[] = [
       },
       {
         id: "striker-dribbling-advanced",
-        title: "Advanced Dribbling Course",
+        name: "Advanced Dribbling Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Dribbling",
@@ -123,7 +123,7 @@ const positions: Position[] = [
       },
       {
         id: "striker-receiving-essential",
-        title: "Essential Receiving Course",
+        name: "Essential Receiving Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Receiving",
@@ -132,7 +132,7 @@ const positions: Position[] = [
       },
       {
         id: "striker-receiving-advanced",
-        title: "Advanced Receiving Course",
+        name: "Advanced Receiving Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Receiving",
@@ -148,7 +148,7 @@ const positions: Position[] = [
     courses: [
       {
         id: "winger-1v1-attacking-crossing-essential",
-        title: "Essential 1v1 Attacking Winger Crossing Course",
+        name: "Essential 1v1 Attacking Winger Crossing Course",
         description: "Learn the specific essential tactical, movement and technical information you need to instantly beat defenders and deliver assists. This course features the exact 8 1v1 attacking scenarios you face in the game.",
         level: "Essential",
         type: "1v1 Attacking Crossing",
@@ -157,7 +157,7 @@ const positions: Position[] = [
       },
       {
         id: "winger-1v1-attacking-crossing-advanced",
-        title: "Advanced 1v1 Attacking Winger Crossing Course",
+        name: "Advanced 1v1 Attacking Winger Crossing Course",
         description: "Learn the specific advanced tactical, movement and technical information you need to become unstoppable in beating defenders and delivering assists. This course features the exact 8 1v1 attacking scenarios you face in the game.",
         level: "Advanced",
         type: "1v1 Attacking Crossing",
@@ -166,7 +166,7 @@ const positions: Position[] = [
       },
       {
         id: "winger-1v1-attacking-finishing-essential",
-        title: "Essential 1v1 Attacking Winger Finishing Course",
+        name: "Essential 1v1 Attacking Winger Finishing Course",
         description: "Learn the specific essential tactical, movement and technical information you need to instantly beat defenders and score goals. This course features the exact 8 1v1 attacking scenarios you face in the game.",
         level: "Essential",
         type: "1v1 Attacking Finishing",
@@ -175,7 +175,7 @@ const positions: Position[] = [
       },
       {
         id: "winger-1v1-attacking-finishing-advanced",
-        title: "Advanced 1v1 Attacking Winger Finishing Course",
+        name: "Advanced 1v1 Attacking Winger Finishing Course",
         description: "Learn the specific advanced tactical, movement and technical information you need to become unstoppable in beating defenders and scoring goals. This course features the exact 8 1v1 attacking scenarios you face in the game.",
         level: "Advanced",
         type: "1v1 Attacking Finishing",
@@ -184,7 +184,7 @@ const positions: Position[] = [
       },
       {
         id: "winger-1v1-keeper-essential",
-        title: "Essential 1v1's with Keeper Winger Course",
+        name: "Essential 1v1's with Keeper Winger Course",
         description: "Coming Soon",
         level: "Essential",
         type: "1v1's with Keeper",
@@ -193,7 +193,7 @@ const positions: Position[] = [
       },
       {
         id: "winger-1v1-keeper-advanced",
-        title: "Advanced 1v1's with Keeper Winger Course",
+        name: "Advanced 1v1's with Keeper Winger Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "1v1's with Keeper",
@@ -202,7 +202,7 @@ const positions: Position[] = [
       },
       {
         id: "winger-runs-finishing-essential",
-        title: "Essential Runs & Finishing in Box Winger Course",
+        name: "Essential Runs & Finishing in Box Winger Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Runs & Finishing in Box",
@@ -211,7 +211,7 @@ const positions: Position[] = [
       },
       {
         id: "winger-runs-finishing-advanced",
-        title: "Advanced Runs & Finishing in Box Winger Course",
+        name: "Advanced Runs & Finishing in Box Winger Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Runs & Finishing in Box",
@@ -220,7 +220,7 @@ const positions: Position[] = [
       },
       {
         id: "winger-1v2-essential",
-        title: "Essential 1v2 Winger Course",
+        name: "Essential 1v2 Winger Course",
         description: "Coming Soon",
         level: "Essential",
         type: "1v2",
@@ -229,7 +229,7 @@ const positions: Position[] = [
       },
       {
         id: "winger-1v2-advanced",
-        title: "Advanced 1v2 Winger Course",
+        name: "Advanced 1v2 Winger Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "1v2",
@@ -238,7 +238,7 @@ const positions: Position[] = [
       },
       {
         id: "winger-dribbling-essential",
-        title: "Essential Dribbling Winger Course",
+        name: "Essential Dribbling Winger Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Dribbling",
@@ -247,7 +247,7 @@ const positions: Position[] = [
       },
       {
         id: "winger-dribbling-advanced",
-        title: "Advanced Dribbling Winger Course",
+        name: "Advanced Dribbling Winger Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Dribbling",
@@ -256,7 +256,7 @@ const positions: Position[] = [
       },
       {
         id: "winger-receiving-essential",
-        title: "Essential Receiving Winger Course",
+        name: "Essential Receiving Winger Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Receiving",
@@ -265,7 +265,7 @@ const positions: Position[] = [
       },
       {
         id: "winger-receiving-advanced",
-        title: "Advanced Receiving Winger Course",
+        name: "Advanced Receiving Winger Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Receiving",
@@ -281,7 +281,7 @@ const positions: Position[] = [
     courses: [
       {
         id: "cam-1v1-attacking-crossing-essential",
-        title: "Essential 1v1 Attacking CAM Crossing Course",
+        name: "Essential 1v1 Attacking CAM Crossing Course",
         description: "Learn the specific essential tactical, movement and technical information you need to instantly beat defenders and deliver assists. This course features the exact 8 1v1 attacking scenarios you face in the game.",
         level: "Essential",
         type: "1v1 Attacking Crossing",
@@ -290,7 +290,7 @@ const positions: Position[] = [
       },
       {
         id: "cam-1v1-attacking-crossing-advanced",
-        title: "Advanced 1v1 Attacking CAM Crossing Course",
+        name: "Advanced 1v1 Attacking CAM Crossing Course",
         description: "Learn the specific advanced tactical, movement and technical information you need to become unstoppable in beating defenders and delivering assists. This course features the exact 8 1v1 attacking scenarios you face in the game.",
         level: "Advanced",
         type: "1v1 Attacking Crossing",
@@ -299,7 +299,7 @@ const positions: Position[] = [
       },
       {
         id: "cam-1v1-attacking-finishing-essential",
-        title: "Essential 1v1 Attacking CAM Finishing Course",
+        name: "Essential 1v1 Attacking CAM Finishing Course",
         description: "Learn the specific essential tactical, movement and technical information you need to instantly beat defenders and score goals. This course features the exact 8 1v1 attacking scenarios you face in the game.",
         level: "Essential",
         type: "1v1 Attacking Finishing",
@@ -308,7 +308,7 @@ const positions: Position[] = [
       },
       {
         id: "cam-1v1-attacking-finishing-advanced",
-        title: "Advanced 1v1 Attacking CAM Finishing Course",
+        name: "Advanced 1v1 Attacking CAM Finishing Course",
         description: "Learn the specific advanced tactical, movement and technical information you need to become unstoppable in beating defenders and scoring goals. This course features the exact 8 1v1 attacking scenarios you face in the game.",
         level: "Advanced",
         type: "1v1 Attacking Finishing",
@@ -317,7 +317,7 @@ const positions: Position[] = [
       },
       {
         id: "cam-dribbling-essential",
-        title: "Essential Dribbling CAM Course",
+        name: "Essential Dribbling CAM Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Dribbling",
@@ -326,7 +326,7 @@ const positions: Position[] = [
       },
       {
         id: "cam-dribbling-advanced",
-        title: "Advanced Dribbling CAM Course",
+        name: "Advanced Dribbling CAM Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Dribbling",
@@ -335,7 +335,7 @@ const positions: Position[] = [
       },
       {
         id: "cam-receiving-essential",
-        title: "Essential Receiving CAM Course",
+        name: "Essential Receiving CAM Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Receiving",
@@ -344,7 +344,7 @@ const positions: Position[] = [
       },
       {
         id: "cam-receiving-advanced",
-        title: "Advanced Receiving CAM Course",
+        name: "Advanced Receiving CAM Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Receiving",
@@ -353,7 +353,7 @@ const positions: Position[] = [
       },
       {
         id: "cam-runs-finishing-essential",
-        title: "Essential Runs & Finishing in Box CAM Course",
+        name: "Essential Runs & Finishing in Box CAM Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Runs & Finishing in Box",
@@ -362,7 +362,7 @@ const positions: Position[] = [
       },
       {
         id: "cam-runs-finishing-advanced",
-        title: "Advanced Runs & Finishing in Box CAM Course",
+        name: "Advanced Runs & Finishing in Box CAM Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Runs & Finishing in Box",
@@ -378,7 +378,7 @@ const positions: Position[] = [
     courses: [
       {
         id: "cm-1v1-attacking-essential",
-        title: "Essential 1v1 Attacking CM Crossing Course",
+        name: "Essential 1v1 Attacking CM Crossing Course",
         description: "Coming Soon",
         level: "Essential",
         type: "1v1 Attacking",
@@ -387,7 +387,7 @@ const positions: Position[] = [
       },
       {
         id: "cm-1v1-attacking-advanced",
-        title: "Advanced 1v1 Attacking CM Crossing Course",
+        name: "Advanced 1v1 Attacking CM Crossing Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "1v1 Attacking",
@@ -396,7 +396,7 @@ const positions: Position[] = [
       },
       {
         id: "cm-dribbling-essential",
-        title: "Essential Dribbling CM Course",
+        name: "Essential Dribbling CM Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Dribbling",
@@ -405,7 +405,7 @@ const positions: Position[] = [
       },
       {
         id: "cm-dribbling-advanced",
-        title: "Advanced Dribbling CM Course",
+        name: "Advanced Dribbling CM Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Dribbling",
@@ -414,7 +414,7 @@ const positions: Position[] = [
       },
       {
         id: "cm-receiving-essential",
-        title: "Essential Receiving CM Course",
+        name: "Essential Receiving CM Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Receiving",
@@ -423,7 +423,7 @@ const positions: Position[] = [
       },
       {
         id: "cm-receiving-advanced",
-        title: "Advanced Receiving CM Course",
+        name: "Advanced Receiving CM Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Receiving",
@@ -439,7 +439,7 @@ const positions: Position[] = [
     courses: [
       {
         id: "cdm-1v1-attacking-essential",
-        title: "Essential 1v1 Attacking CDM Course",
+        name: "Essential 1v1 Attacking CDM Course",
         description: "Coming Soon",
         level: "Essential",
         type: "1v1 Attacking",
@@ -448,7 +448,7 @@ const positions: Position[] = [
       },
       {
         id: "cdm-1v1-attacking-advanced",
-        title: "Advanced 1v1 Attacking CDM Course",
+        name: "Advanced 1v1 Attacking CDM Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "1v1 Attacking",
@@ -457,7 +457,7 @@ const positions: Position[] = [
       },
       {
         id: "cdm-1v1-defending-essential",
-        title: "Essential 1v1 Defending CDM Course",
+        name: "Essential 1v1 Defending CDM Course",
         description: "Coming Soon",
         level: "Essential",
         type: "1v1 Defending",
@@ -466,7 +466,7 @@ const positions: Position[] = [
       },
       {
         id: "cdm-1v1-defending-advanced",
-        title: "Advanced 1v1 Defending CDM Course",
+        name: "Advanced 1v1 Defending CDM Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "1v1 Defending",
@@ -475,7 +475,7 @@ const positions: Position[] = [
       },
       {
         id: "cdm-screening-essential",
-        title: "Essential Screening CDM Course",
+        name: "Essential Screening CDM Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Screening",
@@ -484,7 +484,7 @@ const positions: Position[] = [
       },
       {
         id: "cdm-screening-advanced",
-        title: "Advanced Screening CDM Course",
+        name: "Advanced Screening CDM Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Screening",
@@ -493,7 +493,7 @@ const positions: Position[] = [
       },
       {
         id: "cdm-dribbling-essential",
-        title: "Essential Dribbling CDM Course",
+        name: "Essential Dribbling CDM Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Dribbling",
@@ -502,7 +502,7 @@ const positions: Position[] = [
       },
       {
         id: "cdm-dribbling-advanced",
-        title: "Advanced Dribbling CDM Course",
+        name: "Advanced Dribbling CDM Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Dribbling",
@@ -511,7 +511,7 @@ const positions: Position[] = [
       },
       {
         id: "cdm-receiving-essential",
-        title: "Essential Receiving CDM Course",
+        name: "Essential Receiving CDM Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Receiving",
@@ -520,7 +520,7 @@ const positions: Position[] = [
       },
       {
         id: "cdm-receiving-advanced",
-        title: "Advanced Receiving CDM Course",
+        name: "Advanced Receiving CDM Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Receiving",
@@ -536,7 +536,7 @@ const positions: Position[] = [
     courses: [
       {
         id: "fb-1v1-attacking-essential",
-        title: "Essential 1v1 Attacking Full-back Course",
+        name: "Essential 1v1 Attacking Full-back Course",
         description: "Learn the specific essential tactical, movement and technical information you need to instantly beat defenders and deliver assists. This course features the exact 8 1v1 attacking scenarios you face in the game.",
         level: "Essential",
         type: "1v1 Attacking",
@@ -545,7 +545,7 @@ const positions: Position[] = [
       },
       {
         id: "fb-1v1-attacking-advanced",
-        title: "Advanced 1v1 Attacking Full-back Course",
+        name: "Advanced 1v1 Attacking Full-back Course",
         description: "Learn the specific advanced tactical, movement and technical information you need to become unstoppable in beating defenders and delivering assists. This course features the exact 8 1v1 attacking scenarios you face in the game.",
         level: "Advanced",
         type: "1v1 Attacking",
@@ -554,7 +554,7 @@ const positions: Position[] = [
       },
       {
         id: "fb-1v1-defending-essential",
-        title: "Essential 1v1 Defending Full-back Course",
+        name: "Essential 1v1 Defending Full-back Course",
         description: "Coming Soon",
         level: "Essential",
         type: "1v1 Defending",
@@ -563,7 +563,7 @@ const positions: Position[] = [
       },
       {
         id: "fb-1v1-defending-advanced",
-        title: "Advanced 1v1 Defending Full-back Course",
+        name: "Advanced 1v1 Defending Full-back Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "1v1 Defending",
@@ -572,7 +572,7 @@ const positions: Position[] = [
       },
       {
         id: "fb-dribbling-essential",
-        title: "Essential Dribbling Full-back Course",
+        name: "Essential Dribbling Full-back Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Dribbling",
@@ -581,7 +581,7 @@ const positions: Position[] = [
       },
       {
         id: "fb-dribbling-advanced",
-        title: "Advanced Dribbling Full-back Course",
+        name: "Advanced Dribbling Full-back Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Dribbling",
@@ -590,7 +590,7 @@ const positions: Position[] = [
       },
       {
         id: "fb-receiving-essential",
-        title: "Essential Receiving Full-back Course",
+        name: "Essential Receiving Full-back Course",
         description: "Coming Soon",
         level: "Essential",
         type: "Receiving",
@@ -599,7 +599,7 @@ const positions: Position[] = [
       },
       {
         id: "fb-receiving-advanced",
-        title: "Advanced Receiving Full-back Course",
+        name: "Advanced Receiving Full-back Course",
         description: "Coming Soon",
         level: "Advanced",
         type: "Receiving",
@@ -615,7 +615,7 @@ const positions: Position[] = [
     courses: [
       {
         id: "cb-1v1-defending-essential",
-        title: "Essential 1v1 Defending Centre-back Course",
+        name: "Essential 1v1 Defending Centre-back Course",
         description: "Learn the specific essential tactical, movement and technical information you need to instantly increase your 1v1 defending success in the exact 1v1 scenarios you face in the game",
         level: "Essential",
         type: "1v1 Defending",
@@ -624,7 +624,7 @@ const positions: Position[] = [
       },
       {
         id: "cb-1v1-defending-advanced",
-        title: "Advanced 1v1 Defending Centre-back Course",
+        name: "Advanced 1v1 Defending Centre-back Course",
         description: "Learn the specific advanced tactical, movement and technical information you need to instantly increase your 1v1 defending success in the exact 1v1 scenarios you face in the game",
         level: "Advanced",
         type: "1v1 Defending",
@@ -633,7 +633,7 @@ const positions: Position[] = [
       },
       {
         id: "cb-receiving-essential",
-        title: "Essential Receiving Centre-back Course",
+        name: "Essential Receiving Centre-back Course",
         description: "Learn the specific essential tactical, movement and technical information you need to instantly increase your receiving success in the exact 1v1 scenarios you face in the game",
         level: "Essential",
         type: "Receiving",
@@ -642,7 +642,7 @@ const positions: Position[] = [
       },
       {
         id: "cb-receiving-advanced",
-        title: "Advanced Receiving Centre-back Course",
+        name: "Advanced Receiving Centre-back Course",
         description: "Learn the specific advanced tactical, movement and technical information you need to instantly increase your receiving success in the exact 1v1 scenarios you face in the game",
         level: "Advanced",
         type: "Receiving",
@@ -827,7 +827,7 @@ export default function CoursesPage() {
                               </span>
                             </div>
                             <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                              {course.title}
+                              {course.name}
                             </h4>
                             <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
                               {course.description}
@@ -874,7 +874,7 @@ export default function CoursesPage() {
                               </span>
                             </div>
                             <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                              {course.title}
+                              {course.name}
                             </h4>
                             <p className="text-gray-500 dark:text-gray-400 text-sm">
                               Coming Soon

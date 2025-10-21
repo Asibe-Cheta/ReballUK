@@ -10,7 +10,7 @@ import type { Metadata } from "next";
 // Course data structure
 interface Course {
   id: string;
-  title: string;
+  name: string;
   description: string;
   level: "Essential" | "Advanced";
   type: string;
@@ -21,7 +21,7 @@ interface Course {
 const strikerCourses: Course[] = [
   {
     id: "striker-1v1-attacking-essential",
-    title: "Essential 1v1 Attacking Striker Finishing Course",
+    name: "Essential 1v1 Attacking Striker Finishing Course",
     description: "Learn the specific essential tactical, movement and technical information you need to instantly beat defenders and score goals. This course features the exact 8 1v1 attacking scenarios you face in the game.",
     level: "Essential",
     type: "1v1 Attacking",
@@ -30,7 +30,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-1v1-attacking-advanced",
-    title: "Advanced 1v1 Attacking Striker Finishing Course",
+    name: "Advanced 1v1 Attacking Striker Finishing Course",
     description: "Learn the specific advanced tactical, movement and technical information you need to become unstoppable in beating defenders and scoring goals. This course features the exact 8 1v1 attacking scenarios you face in the game.",
     level: "Advanced",
     type: "1v1 Attacking",
@@ -39,7 +39,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-1v1-keeper-essential",
-    title: "Essential 1v1's with Keeper Striker Course",
+    name: "Essential 1v1's with Keeper Striker Course",
     description: "Coming Soon",
     level: "Essential",
     type: "1v1's with Keeper",
@@ -48,7 +48,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-1v1-keeper-advanced",
-    title: "Advanced 1v1's with Keeper Striker Course",
+    name: "Advanced 1v1's with Keeper Striker Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "1v1's with Keeper",
@@ -57,7 +57,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-runs-finishing-essential",
-    title: "Essential Runs & Finishing in Box Striker Course",
+    name: "Essential Runs & Finishing in Box Striker Course",
     description: "Coming Soon",
     level: "Essential",
     type: "Runs & Finishing in Box",
@@ -66,7 +66,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-runs-finishing-advanced",
-    title: "Advanced Runs & Finishing in Box Striker Course",
+    name: "Advanced Runs & Finishing in Box Striker Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "Runs & Finishing in Box",
@@ -75,7 +75,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-1v2-essential",
-    title: "Essential 1v2 Striker Course",
+    name: "Essential 1v2 Striker Course",
     description: "Coming Soon",
     level: "Essential",
     type: "1v2",
@@ -84,7 +84,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-1v2-advanced",
-    title: "Advanced 1v2 Striker Course",
+    name: "Advanced 1v2 Striker Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "1v2",
@@ -93,7 +93,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-dribbling-essential",
-    title: "Essential Dribbling Striker Course",
+    name: "Essential Dribbling Striker Course",
     description: "Coming Soon",
     level: "Essential",
     type: "Dribbling",
@@ -102,7 +102,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-dribbling-advanced",
-    title: "Advanced Dribbling Striker Course",
+    name: "Advanced Dribbling Striker Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "Dribbling",
@@ -111,7 +111,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-receiving-essential",
-    title: "Essential Receiving Striker Course",
+    name: "Essential Receiving Striker Course",
     description: "Coming Soon",
     level: "Essential",
     type: "Receiving",
@@ -120,7 +120,7 @@ const strikerCourses: Course[] = [
   },
   {
     id: "striker-receiving-advanced",
-    title: "Advanced Receiving Striker Course",
+    name: "Advanced Receiving Striker Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "Receiving",
@@ -205,7 +205,7 @@ export default function StrikersPage() {
                             </span>
                           </div>
                           <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                            {course.title}
+                            {course.name}
                           </h4>
                           <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
                             {course.description}
@@ -252,7 +252,7 @@ export default function StrikersPage() {
                             </span>
                           </div>
                           <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                            {course.title}
+                            {course.name}
                           </h4>
                           <p className="text-gray-500 dark:text-gray-400 text-sm">
                             Coming Soon

@@ -243,7 +243,7 @@ export default async function CoachDashboard() {
                       {booking.user.name || booking.user.email}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                      {booking.course?.title || booking.sessionType}
+                      {booking.course?.name || booking.sessionType}
                     </p>
                   </div>
                   <div className="text-right">

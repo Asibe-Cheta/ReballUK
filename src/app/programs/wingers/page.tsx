@@ -10,7 +10,7 @@ import type { Metadata } from "next";
 // Course data structure
 interface Course {
   id: string;
-  title: string;
+  name: string;
   description: string;
   level: "Essential" | "Advanced";
   type: string;
@@ -21,7 +21,7 @@ interface Course {
 const wingerCourses: Course[] = [
   {
     id: "winger-1v1-attacking-crossing-essential",
-    title: "Essential 1v1 Attacking Winger Crossing Course",
+    name: "Essential 1v1 Attacking Winger Crossing Course",
     description: "Learn the specific essential tactical, movement and technical information you need to instantly beat defenders and deliver assists. This course features the exact 8 1v1 attacking scenarios you face in the game.",
     level: "Essential",
     type: "1v1 Attacking Crossing",
@@ -30,7 +30,7 @@ const wingerCourses: Course[] = [
   },
   {
     id: "winger-1v1-attacking-crossing-advanced",
-    title: "Advanced 1v1 Attacking Winger Crossing Course",
+    name: "Advanced 1v1 Attacking Winger Crossing Course",
     description: "Learn the specific advanced tactical, movement and technical information you need to become unstoppable in beating defenders and delivering assists. This course features the exact 8 1v1 attacking scenarios you face in the game.",
     level: "Advanced",
     type: "1v1 Attacking Crossing",
@@ -39,7 +39,7 @@ const wingerCourses: Course[] = [
   },
   {
     id: "winger-1v1-attacking-finishing-essential",
-    title: "Essential 1v1 Attacking Winger Finishing Course",
+    name: "Essential 1v1 Attacking Winger Finishing Course",
     description: "Learn the specific essential tactical, movement and technical information you need to instantly beat defenders and score goals. This course features the exact 8 1v1 attacking scenarios you face in the game.",
     level: "Essential",
     type: "1v1 Attacking Finishing",
@@ -48,7 +48,7 @@ const wingerCourses: Course[] = [
   },
   {
     id: "winger-1v1-attacking-finishing-advanced",
-    title: "Advanced 1v1 Attacking Winger Finishing Course",
+    name: "Advanced 1v1 Attacking Winger Finishing Course",
     description: "Learn the specific advanced tactical, movement and technical information you need to become unstoppable in beating defenders and scoring goals. This course features the exact 8 1v1 attacking scenarios you face in the game.",
     level: "Advanced",
     type: "1v1 Attacking Finishing",
@@ -57,7 +57,7 @@ const wingerCourses: Course[] = [
   },
   {
     id: "winger-1v1-keeper-essential",
-    title: "Essential 1v1's with Keeper Course",
+    name: "Essential 1v1's with Keeper Course",
     description: "Coming Soon",
     level: "Essential",
     type: "1v1's with Keeper",
@@ -66,7 +66,7 @@ const wingerCourses: Course[] = [
   },
   {
     id: "winger-1v1-keeper-advanced",
-    title: "Advanced 1v1's with Keeper Course",
+    name: "Advanced 1v1's with Keeper Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "1v1's with Keeper",
@@ -75,7 +75,7 @@ const wingerCourses: Course[] = [
   },
   {
     id: "winger-runs-finishing-essential",
-    title: "Essential Runs & Finishing in Box Course",
+    name: "Essential Runs & Finishing in Box Course",
     description: "Coming Soon",
     level: "Essential",
     type: "Runs & Finishing in Box",
@@ -84,7 +84,7 @@ const wingerCourses: Course[] = [
   },
   {
     id: "winger-runs-finishing-advanced",
-    title: "Advanced Runs & Finishing in Box Course",
+    name: "Advanced Runs & Finishing in Box Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "Runs & Finishing in Box",
@@ -93,7 +93,7 @@ const wingerCourses: Course[] = [
   },
   {
     id: "winger-1v2-essential",
-    title: "Essential 1v2 Course",
+    name: "Essential 1v2 Course",
     description: "Coming Soon",
     level: "Essential",
     type: "1v2",
@@ -102,7 +102,7 @@ const wingerCourses: Course[] = [
   },
   {
     id: "winger-1v2-advanced",
-    title: "Advanced 1v2 Course",
+    name: "Advanced 1v2 Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "1v2",
@@ -111,7 +111,7 @@ const wingerCourses: Course[] = [
   },
   {
     id: "winger-dribbling-essential",
-    title: "Essential Dribbling Course",
+    name: "Essential Dribbling Course",
     description: "Coming Soon",
     level: "Essential",
     type: "Dribbling",
@@ -120,7 +120,7 @@ const wingerCourses: Course[] = [
   },
   {
     id: "winger-dribbling-advanced",
-    title: "Advanced Dribbling Course",
+    name: "Advanced Dribbling Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "Dribbling",
@@ -129,7 +129,7 @@ const wingerCourses: Course[] = [
   },
   {
     id: "winger-receiving-essential",
-    title: "Essential Receiving Course",
+    name: "Essential Receiving Course",
     description: "Coming Soon",
     level: "Essential",
     type: "Receiving",
@@ -138,7 +138,7 @@ const wingerCourses: Course[] = [
   },
   {
     id: "winger-receiving-advanced",
-    title: "Advanced Receiving Course",
+    name: "Advanced Receiving Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "Receiving",
@@ -223,7 +223,7 @@ export default function WingersPage() {
                             </span>
                           </div>
                           <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                            {course.title}
+                            {course.name}
                           </h4>
                           <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
                             {course.description}
@@ -270,7 +270,7 @@ export default function WingersPage() {
                             </span>
                           </div>
                           <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                            {course.title}
+                            {course.name}
                           </h4>
                           <p className="text-gray-500 dark:text-gray-400 text-sm">
                             Coming Soon

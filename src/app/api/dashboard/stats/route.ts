@@ -97,8 +97,8 @@ export async function GET() {
           include: {
             course: {
               select: {
-                title: true,
-                level: true,
+                name: true,
+                type: true,
                 position: true,
               }
             },
@@ -183,7 +183,7 @@ export async function GET() {
         id: s.id,
         date: s.lastAccessedAt,
         type: (s.video?.analysisType || "PRACTICE") as "SISW" | "TAV" | "PRACTICE" | "ANALYSIS",
-        title: s.video?.title || s.course.title,
+        title: s.video?.title || s.course.name,
         duration: s.timeSpent,
         rating: s.rating,
         feedback: "",
@@ -192,8 +192,8 @@ export async function GET() {
         completionPercentage: s.completionPercentage,
         course: {
           id: s.courseId,
-          title: s.course.title,
-          level: s.course.level as "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "PROFESSIONAL",
+          title: s.course.name,
+          level: s.course.type as "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "PROFESSIONAL",
           position: s.course.position as "STRIKER" | "WINGER" | "CAM" | "FULLBACK" | "MIDFIELDER" | "DEFENDER" | "GOALKEEPER" | "OTHER",
         }
       }))

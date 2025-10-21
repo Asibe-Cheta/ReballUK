@@ -8,7 +8,7 @@ import { CheckCircle, Clock, Lock, ArrowLeft } from "lucide-react";
 const cdmCourses = [
   {
     id: "cdm-1v1-attacking-essential",
-    title: "Essential 1v1 Attacking CDM Course",
+    name: "Essential 1v1 Attacking CDM Course",
     description: "Coming Soon",
     level: "Essential",
     type: "1v1 Attacking",
@@ -16,7 +16,7 @@ const cdmCourses = [
   },
   {
     id: "cdm-1v1-attacking-advanced",
-    title: "Advanced 1v1 Attacking CDM Course",
+    name: "Advanced 1v1 Attacking CDM Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "1v1 Attacking",
@@ -24,7 +24,7 @@ const cdmCourses = [
   },
   {
     id: "cdm-1v1-defending-essential",
-    title: "Essential 1v1 Defending Course",
+    name: "Essential 1v1 Defending Course",
     description: "Coming Soon",
     level: "Essential",
     type: "1v1 Defending",
@@ -32,7 +32,7 @@ const cdmCourses = [
   },
   {
     id: "cdm-1v1-defending-advanced",
-    title: "Advanced 1v1 Defending Course",
+    name: "Advanced 1v1 Defending Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "1v1 Defending",
@@ -40,7 +40,7 @@ const cdmCourses = [
   },
   {
     id: "cdm-screening-essential",
-    title: "Essential Screening Course",
+    name: "Essential Screening Course",
     description: "Coming Soon",
     level: "Essential",
     type: "Screening",
@@ -48,7 +48,7 @@ const cdmCourses = [
   },
   {
     id: "cdm-screening-advanced",
-    title: "Advanced Screening Course",
+    name: "Advanced Screening Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "Screening",
@@ -56,7 +56,7 @@ const cdmCourses = [
   },
   {
     id: "cdm-dribbling-essential",
-    title: "Essential Dribbling Course",
+    name: "Essential Dribbling Course",
     description: "Coming Soon",
     level: "Essential",
     type: "Dribbling",
@@ -64,7 +64,7 @@ const cdmCourses = [
   },
   {
     id: "cdm-dribbling-advanced",
-    title: "Advanced Dribbling Course",
+    name: "Advanced Dribbling Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "Dribbling",
@@ -72,7 +72,7 @@ const cdmCourses = [
   },
   {
     id: "cdm-receiving-essential",
-    title: "Essential Receiving Course",
+    name: "Essential Receiving Course",
     description: "Coming Soon",
     level: "Essential",
     type: "Receiving",
@@ -80,7 +80,7 @@ const cdmCourses = [
   },
   {
     id: "cdm-receiving-advanced",
-    title: "Advanced Receiving Course",
+    name: "Advanced Receiving Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "Receiving",
@@ -158,7 +158,7 @@ export default function CDMPage() {
                             </span>
                           </div>
                           <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                            {course.title}
+                            {course.name}
                           </h4>
                           <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
                             {course.description}
@@ -210,7 +210,7 @@ export default function CDMPage() {
                             </span>
                           </div>
                           <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                            {course.title}
+                            {course.name}
                           </h4>
                           <p className="text-gray-500 dark:text-gray-400 text-sm">
                             Coming Soon

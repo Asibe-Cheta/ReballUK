@@ -181,29 +181,27 @@ async function seedCourses() {
       const course = await prisma.course.upsert({
         where: { id: courseData.id },
         update: {
-          title: courseData.title,
+          name: courseData.title,
           description: courseData.description,
           position: courseData.position,
-          level: courseData.level,
-          duration: courseData.duration,
-          price: courseData.price,
-          tags: courseData.tags,
-          isActive: courseData.isActive
+          type: courseData.level,
+          durationWeeks: courseData.duration,
+          price121: courseData.price,
+          available: courseData.isActive
         },
         create: {
           id: courseData.id,
-          title: courseData.title,
+          name: courseData.title,
           description: courseData.description,
           position: courseData.position,
-          level: courseData.level,
-          duration: courseData.duration,
-          price: courseData.price,
-          tags: courseData.tags,
-          isActive: courseData.isActive
+          type: courseData.level,
+          durationWeeks: courseData.duration,
+          price121: courseData.price,
+          available: courseData.isActive
         }
       })
 
-      console.log(`✅ ${course.title} - £${course.price}`)
+      console.log(`✅ ${course.name} - £${course.price121}`)
     } catch (error) {
       console.error(`❌ Failed to seed ${courseData.title}:`, error)
     }

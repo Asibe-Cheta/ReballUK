@@ -181,9 +181,9 @@ export const courseOperations = {
     }
   ): Promise<CourseWithRelations[]> {
     const where: Prisma.CourseWhereInput = {
-      isActive: true,
+      available: true,
       ...(filters?.position && { position: filters.position as string }),
-      ...(filters?.level && { level: filters.level as string }),
+      ...(filters?.level && { type: filters.level as string }),
     }
 
     return withRetry(async () => {
@@ -219,7 +219,7 @@ export const courseOperations = {
   async getCourseById(courseId: string): Promise<CourseWithRelations | null> {
     return withRetry(async () => {
       return await db.course.findUnique({
-        where: { id: courseId, isActive: true },
+        where: { id: courseId, available: true },
         include: {
           videos: {
             where: { isActive: true },
@@ -251,7 +251,7 @@ export const courseOperations = {
     })
 
     const where: Prisma.CourseWhereInput = {
-      isActive: true,
+      available: true,
       // Recommend courses for user's position and level
       ...(profile?.position && { position: profile.position }),
       ...(profile?.playingLevel && { level: profile.playingLevel }),
@@ -378,8 +378,7 @@ export const progressOperations = {
           course: {
             select: {
               id: true,
-              title: true,
-              thumbnailUrl: true,
+              name: true,
             }
           },
           video: {

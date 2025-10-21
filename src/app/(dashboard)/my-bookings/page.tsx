@@ -31,7 +31,7 @@ interface Booking {
   notes?: string
   course: {
     id: string
-    title: string
+    name: string
     description?: string
     duration: number
     level: string
@@ -239,7 +239,7 @@ export default function MyBookingsPage() {
                       <Target className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <CardTitle className="text-lg">{booking.course.title}</CardTitle>
+                      <CardTitle className="text-lg">{booking.course.name}</CardTitle>
                       <CardDescription>
                         {booking.course.position} Training • {booking.course.duration} minutes
                       </CardDescription>

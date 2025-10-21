@@ -8,7 +8,7 @@ import { CheckCircle, Clock, Lock, ArrowLeft } from "lucide-react";
 const fbCourses = [
   {
     id: "fb-1v1-attacking-essential",
-    title: "Essential 1v1 Attacking Full-back Course",
+    name: "Essential 1v1 Attacking Full-back Course",
     description: "Learn the specific essential tactical, movement and technical information you need to instantly beat defenders and deliver assists. This course features the exact 8 1v1 attacking scenarios you face in the game.",
     level: "Essential",
     type: "1v1 Attacking",
@@ -16,7 +16,7 @@ const fbCourses = [
   },
   {
     id: "fb-1v1-attacking-advanced",
-    title: "Advanced 1v1 Attacking Full-back Course",
+    name: "Advanced 1v1 Attacking Full-back Course",
     description: "Learn the specific advanced tactical, movement and technical information you need to become unstoppable in beating defenders and delivering assists. This course features the exact 8 1v1 attacking scenarios you face in the game.",
     level: "Advanced",
     type: "1v1 Attacking",
@@ -24,7 +24,7 @@ const fbCourses = [
   },
   {
     id: "fb-1v1-defending-essential",
-    title: "Essential 1v1 Defending Full-back Course",
+    name: "Essential 1v1 Defending Full-back Course",
     description: "Coming Soon",
     level: "Essential",
     type: "1v1 Defending",
@@ -32,7 +32,7 @@ const fbCourses = [
   },
   {
     id: "fb-1v1-defending-advanced",
-    title: "Advanced 1v1 Defending Full-back Course",
+    name: "Advanced 1v1 Defending Full-back Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "1v1 Defending",
@@ -40,7 +40,7 @@ const fbCourses = [
   },
   {
     id: "fb-dribbling-essential",
-    title: "Essential Dribbling Full-back Course",
+    name: "Essential Dribbling Full-back Course",
     description: "Coming Soon",
     level: "Essential",
     type: "Dribbling",
@@ -48,7 +48,7 @@ const fbCourses = [
   },
   {
     id: "fb-dribbling-advanced",
-    title: "Advanced Dribbling Full-back Course",
+    name: "Advanced Dribbling Full-back Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "Dribbling",
@@ -56,7 +56,7 @@ const fbCourses = [
   },
   {
     id: "fb-receiving-essential",
-    title: "Essential Receiving Full-back Course",
+    name: "Essential Receiving Full-back Course",
     description: "Coming Soon",
     level: "Essential",
     type: "Receiving",
@@ -64,7 +64,7 @@ const fbCourses = [
   },
   {
     id: "fb-receiving-advanced",
-    title: "Advanced Receiving Full-back Course",
+    name: "Advanced Receiving Full-back Course",
     description: "Coming Soon",
     level: "Advanced",
     type: "Receiving",
@@ -139,7 +139,7 @@ export default function FBPage() {
                             </span>
                           </div>
                           <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                            {course.title}
+                            {course.name}
                           </h4>
                           <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
                             {course.description}
@@ -182,7 +182,7 @@ export default function FBPage() {
                             </span>
                           </div>
                           <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                            {course.title}
+                            {course.name}
                           </h4>
                           <p className="text-gray-500 dark:text-gray-400 text-sm">
                             Coming Soon
