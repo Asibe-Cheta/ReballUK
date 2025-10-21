@@ -91,7 +91,7 @@ export default function MainNavbar() {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-8">
               <Link 
                 href="/" 
                 className={`font-medium transition-all duration-300 hover:opacity-70 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 ${
@@ -198,7 +198,7 @@ export default function MainNavbar() {
           <div className="flex items-center gap-4">
             
             {/* Desktop Profile Dropdown */}
-            <div className="hidden lg:block relative profile-dropdown">
+            <div className="hidden md:block relative profile-dropdown">
               <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className="flex items-center gap-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-300 hover:scale-110"
@@ -303,7 +303,7 @@ export default function MainNavbar() {
             </div>
 
             {/* Mobile menu button */}
-            <div className="lg:hidden flex items-center gap-2">
+            <div className="md:hidden flex items-center gap-2">
               {/* Mobile Theme Toggle */}
               <button
                 onClick={toggleTheme}
@@ -330,7 +330,7 @@ export default function MainNavbar() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="lg:hidden">
+          <div className="md:hidden">
             <div className={`px-2 pt-2 pb-3 space-y-1 backdrop-blur-xl border-t ${
               isScrolled ? 'bg-white/95 border-gray-200 dark:bg-black/95 dark:border-gray-800' : 'bg-background-secondary/50 border-white/10'
             }`}>
