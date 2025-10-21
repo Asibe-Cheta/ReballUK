@@ -1,14 +1,12 @@
 import Stripe from 'stripe'
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('STRIPE_SECRET_KEY is not set in environment variables')
-}
-
-// Initialize Stripe with the secret key
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2025-09-30.clover',
-  typescript: true,
-})
+// Initialize Stripe with the secret key (only if available)
+export const stripe = process.env.STRIPE_SECRET_KEY 
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-09-30.clover',
+      typescript: true,
+    })
+  : null
 
 // Helper function to format amount for Stripe (convert to cents)
 export function formatAmountForStripe(amount: number): number {
@@ -40,6 +38,10 @@ export async function createCourseCheckoutSession({
   cancelUrl: string
   metadata?: Record<string, string>
 }) {
+  if (!stripe) {
+    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
+  }
+
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
     payment_method_types: ['card'],
@@ -95,6 +97,10 @@ export async function createBookingCheckoutSession({
   cancelUrl: string
   metadata?: Record<string, string>
 }) {
+  if (!stripe) {
+    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
+  }
+
   const sessionTitle = sessionType === '1v1' 
     ? `1v1 Personal Training - ${position}` 
     : `Group Training - ${position}`
@@ -134,6 +140,9 @@ export async function createBookingCheckoutSession({
 
 // Retrieve a checkout session
 export async function retrieveCheckoutSession(sessionId: string) {
+  if (!stripe) {
+    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
+  }
   return await stripe.checkout.sessions.retrieve(sessionId)
 }
 
@@ -142,6 +151,10 @@ export async function constructWebhookEvent(
   payload: string | Buffer,
   signature: string
 ) {
+  if (!stripe) {
+    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
+  }
+
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
 
   if (!webhookSecret) {
