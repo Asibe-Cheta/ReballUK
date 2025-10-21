@@ -91,7 +91,7 @@ export default function MainNavbar() {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="flex items-center gap-8">
+            <nav className="hidden lg:flex items-center gap-8">
               <Link 
                 href="/" 
                 className={`font-medium transition-all duration-300 hover:opacity-70 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 ${
