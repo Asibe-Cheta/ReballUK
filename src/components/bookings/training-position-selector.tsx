@@ -14,7 +14,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-export type PlayerPosition = "STRIKER" | "WINGER" | "CAM" | "FULLBACK" | "GOALKEEPER" | "DEFENDER" | "MIDFIELDER" | "OTHER"
+export type PlayerPosition = "STRIKER" | "WINGER" | "CAM" | "CM" | "CDM" | "FULLBACK" | "CENTREBACK" | "OTHER"
 
 interface PositionOption {
   id: PlayerPosition
@@ -36,8 +36,8 @@ const positionOptions: PositionOption[] = [
   {
     id: "STRIKER",
     title: "Striker Training",
-    description: "Master goal-scoring techniques and finishing skills",
-    focus: ["Finishing", "Movement", "Shooting", "Positioning"],
+    description: "Master 1v1 attacking, finishing, and goal-scoring techniques",
+    focus: ["1v1 Attacking", "Finishing", "Movement", "Runs in Box"],
     icon: <Target className="h-6 w-6" />,
     color: "text-red-600 bg-red-50 dark:bg-red-900/20",
     difficulty: "INTERMEDIATE"
@@ -45,8 +45,8 @@ const positionOptions: PositionOption[] = [
   {
     id: "WINGER",
     title: "Winger Training",
-    description: "Develop speed, crossing, and dribbling abilities",
-    focus: ["Dribbling", "Crossing", "Speed", "1v1 Skills"],
+    description: "Develop 1v1 attacking, crossing, and finishing abilities",
+    focus: ["1v1 Attacking", "Crossing", "Finishing", "Dribbling"],
     icon: <Zap className="h-6 w-6" />,
     color: "text-blue-600 bg-blue-50 dark:bg-blue-900/20",
     difficulty: "ADVANCED"
@@ -54,46 +54,46 @@ const positionOptions: PositionOption[] = [
   {
     id: "CAM",
     title: "CAM Training",
-    description: "Enhance playmaking and creative attacking skills",
-    focus: ["Vision", "Passing", "Creativity", "Decision Making"],
+    description: "Enhance 1v1 attacking, playmaking and creative skills",
+    focus: ["1v1 Attacking", "Crossing", "Finishing", "Dribbling"],
     icon: <Eye className="h-6 w-6" />,
     color: "text-purple-600 bg-purple-50 dark:bg-purple-900/20",
     difficulty: "ADVANCED"
   },
   {
+    id: "CM",
+    title: "Central Midfielder Training",
+    description: "Develop 1v1 attacking, dribbling, and receiving skills",
+    focus: ["1v1 Attacking", "Dribbling", "Receiving", "Passing"],
+    icon: <Users className="h-6 w-6" />,
+    color: "text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20",
+    difficulty: "INTERMEDIATE"
+  },
+  {
+    id: "CDM",
+    title: "CDM Training",
+    description: "Master 1v1 defending, screening, and ball distribution",
+    focus: ["1v1 Defending", "Screening", "Dribbling", "Receiving"],
+    icon: <Shield className="h-6 w-6" />,
+    color: "text-teal-600 bg-teal-50 dark:bg-teal-900/20",
+    difficulty: "INTERMEDIATE"
+  },
+  {
     id: "FULLBACK",
     title: "Full-back Training",
-    description: "Build defensive and attacking full-back skills",
-    focus: ["Defending", "Crossing", "Positioning", "Stamina"],
+    description: "Build 1v1 defending, attacking, and crossing skills",
+    focus: ["1v1 Defending", "1v1 Attacking", "Crossing", "Dribbling"],
     icon: <Shield className="h-6 w-6" />,
     color: "text-green-600 bg-green-50 dark:bg-green-900/20",
     difficulty: "INTERMEDIATE"
   },
   {
-    id: "GOALKEEPER",
-    title: "Goalkeeper Training",
-    description: "Specialized goalkeeper techniques and reflexes",
-    focus: ["Shot Stopping", "Distribution", "Positioning", "Communication"],
-    icon: <Shield className="h-6 w-6" />,
-    color: "text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20",
-    difficulty: "INTERMEDIATE"
-  },
-  {
-    id: "DEFENDER",
-    title: "Defender Training",
-    description: "Master defensive techniques and positioning",
-    focus: ["Tackling", "Heading", "Positioning", "Communication"],
+    id: "CENTREBACK",
+    title: "Centre-back Training",
+    description: "Master 1v1 defending and receiving techniques",
+    focus: ["1v1 Defending", "Receiving", "Positioning", "Aerial Duels"],
     icon: <Shield className="h-6 w-6" />,
     color: "text-orange-600 bg-orange-50 dark:bg-orange-900/20",
-    difficulty: "BEGINNER"
-  },
-  {
-    id: "MIDFIELDER",
-    title: "Midfielder Training",
-    description: "Develop all-round midfield skills and control",
-    focus: ["Passing", "Control", "Vision", "Stamina"],
-    icon: <Users className="h-6 w-6" />,
-    color: "text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20",
     difficulty: "INTERMEDIATE"
   },
   {

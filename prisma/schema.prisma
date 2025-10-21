@@ -101,23 +101,25 @@ model Profile {
 }
 
 model Booking {
-  id            String        @id @default(cuid())
-  userId        String        @map("user_id")
-  courseId      String?       @map("course_id")
-  sessionType   String        @map("session_type")
-  position      String?
-  scheduledFor  DateTime      @map("scheduled_for")
-  duration      Int           @default(60)
-  status        BookingStatus @default(PENDING)
-  paymentStatus PaymentStatus @default(PENDING)
-  price         Decimal       @default(0)
-  amount        Decimal       @default(0)
-  notes         String?
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at")
-  course        Course?       @relation(fields: [courseId], references: [id])
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  videos        Video[]
+  id                    String        @id @default(cuid())
+  userId                String        @map("user_id")
+  courseId              String?       @map("course_id")
+  sessionType           String        @map("session_type")
+  position              String?
+  scheduledFor          DateTime      @map("scheduled_for")
+  duration              Int           @default(60)
+  status                BookingStatus @default(PENDING)
+  paymentStatus         PaymentStatus @default(PENDING)
+  price                 Decimal       @default(0)
+  amount                Decimal       @default(0)
+  stripePaymentIntentId String?       @map("stripe_payment_intent_id")
+  stripeSessionId       String?       @map("stripe_session_id")
+  notes                 String?
+  createdAt             DateTime      @default(now()) @map("created_at")
+  updatedAt             DateTime      @default(now()) @updatedAt @map("updated_at")
+  course                Course?       @relation(fields: [courseId], references: [id])
+  user                  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  videos                Video[]
 
   @@map("bookings")
 }
@@ -182,21 +184,23 @@ model Video {
 }
 
 model Course {
-  id           String     @id @default(cuid())
-  title        String
-  description  String?
-  position     String?
-  level        String?
-  duration     Int        @default(60)
-  price        Decimal    @default(0)
-  tags         String[]   @default([])
-  thumbnailUrl String?    @map("thumbnail_url")
-  isActive     Boolean    @default(true) @map("is_active")
-  createdAt    DateTime   @default(now()) @map("created_at")
-  updatedAt    DateTime   @default(now()) @updatedAt @map("updated_at")
-  bookings     Booking[]
-  progress     Progress[]
-  videos       Video[]
+  id              String     @id @default(uuid())
+  slug            String?    @unique
+  name            String
+  description     String?
+  position        String?
+  type            String?
+  durationWeeks   Int?       @map("duration_weeks")
+  price121        Decimal    @default(0) @map("price_121")
+  priceGroup      Decimal    @default(0) @map("price_group")
+  stripeProductId String?    @map("stripe_product_id")
+  stripePriceId   String?    @map("stripe_price_id")
+  available       Boolean    @default(true)
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @default(now()) @updatedAt @map("updated_at")
+  bookings        Booking[]
+  progress        Progress[]
+  videos          Video[]
 
   @@map("courses")
 }

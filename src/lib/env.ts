@@ -22,6 +22,15 @@ const envSchema = z.object({
   SENDGRID_API_KEY: z.string().optional(),
   SENDGRID_FROM_EMAIL: z.string().email().optional(),
   
+  // Stripe
+  STRIPE_SECRET_KEY: z.string().optional(),
+  STRIPE_PUBLISHABLE_KEY: z.string().optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().optional(),
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
+  
+  // App URL
+  NEXT_PUBLIC_APP_URL: z.string().url().optional(),
+  
   // Google Site Verification
   GOOGLE_SITE_VERIFICATION: z.string().optional(),
   
